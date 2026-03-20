@@ -3,64 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ezíbeats - Music Portfolio</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Album Grid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+        .album {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .album img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .album:hover {
+            transform: scale(1.05);
+        }
+        .track-list {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .album:hover .track-list {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">🎵 Ezíbeats</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#tracks">Tracks</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <section id="home" class="hero">
-        <div class="container">
-            <h1>Welcome to Ezíbeats</h1>
-            <p>Original music, protected and secure</p>
-        </div>
-    </section>
-
-    <section id="tracks" class="tracks">
-        <div class="container">
-            <h2>My Tracks</h2>
-            <div class="track-grid" id="trackGrid">
-                <!-- Tracks will be loaded here -->
+    <h1>Album Grid</h1>
+    <div class="album-grid">
+        <div class="album">
+            <img src="album1.jpg" alt="Album 1">
+            <div class="track-list">
+                <h3>Album 1</h3>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                </ul>
+                <audio controls>
+                    <source src="track1.mp3" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
             </div>
         </div>
-    </section>
-
-    <section id="about" class="about">
-        <div class="container">
-            <h2>About</h2>
-            <p>Ezíbeats creates original, high-quality music. All tracks are protected with secure streaming technology.</p>
+        <div class="album">
+            <img src="album2.jpg" alt="Album 2">
+            <div class="track-list">
+                <h3>Album 2</h3>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                </ul>
+                <audio controls>
+                    <source src="track2.mp3" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
         </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 Ezíbeats. All rights reserved.</p>
-    </footer>
-
-    <!-- Music Player Modal -->
-    <div id="playerModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="trackTitle"></h2>
-            <audio id="audioPlayer" controls>
-                <source id="audioSource" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            <div class="player-info">
-                <p id="trackInfo"></p>
+        <div class="album">
+            <img src="album3.jpg" alt="Album 3">
+            <div class="track-list">
+                <h3>Album 3</h3>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                </ul>
+                <audio controls>
+                    <source src="track3.mp3" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+        </div>
+        <div class="album">
+            <img src="album4.jpg" alt="Album 4">
+            <div class="track-list">
+                <h3>Album 4</h3>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                </ul>
+                <audio controls>
+                    <source src="track4.mp3" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+        </div>
+        <div class="album">
+            <img src="album5.jpg" alt="Album 5">
+            <div class="track-list">
+                <h3>Album 5</h3>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                </ul>
+                <audio controls>
+                    <source src="track5.mp3" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
             </div>
         </div>
     </div>
-
-    <script src="js/protection.js"></script>
-    <script src="js/app.js"></script>
 </body>
 </html>
