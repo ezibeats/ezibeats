@@ -3,140 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Album Grid</title>
+    <title>ARCH_WORLD_NEWS | ARCHIVE</title>
     <style>
-
-        
+        /* 1. GLOBAL SYSTEM & BACKGROUND */
         body {
-    background-image: url('your-art-piece.jpg'); /* Replace with your file name */
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Keeps the art still while content scrolls */
-    background-repeat: no-repeat;
-    
-    /* Optional: Add a subtle overlay to keep text readable */
-    background-color: rgba(255, 255, 255, 0.85); 
-    background-blend-mode: overlay;
-    
-    margin: 0;
-    padding: 20px;
-    font-family: "Helvetica", "Arial", sans-serif;
-    text-transform: uppercase;
-}
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            /* REPLACE 'background.jpg' WITH YOUR ART FILENAME */
+            background-image: url('background.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-color: #ffffff;
+            background-blend-mode: overlay;
+            
+            color: #000000;
+            font-family: "Helvetica", "Arial", sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
         }
+
+        header {
+            margin-bottom: 60px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 900;
+        }
+
+        .status-tag {
+            font-size: 10px;
+            background: #000;
+            color: #fff;
+            padding: 2px 6px;
+        }
+
+        /* 2. THE CLINICAL GRID */
         .album-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2px;
+            background-color: #000; 
+            border: 2px solid #000;
+            margin-bottom: 80px;
         }
-        .album {
+
+        /* 3. ALBUM ITEM & FOCUS EFFECT */
+        .album-item {
+            background-color: rgba(255, 255, 255, 0.1); 
             position: relative;
+            aspect-ratio: 1 / 1;
             overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.5;
+            border: 1px solid #000;
         }
-        .album img {
+
+        .album-grid:hover .album-item {
+            opacity: 0.2; /* Dims everything else when browsing */
+        }
+
+        .album-item:hover {
+            opacity: 1 !important;
+            z-index: 10;
+            background-color: #ffffff;
+        }
+
+        .album-item img {
             width: 100%;
-            border-radius: 10px;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.4s ease;
         }
-        .album:hover {
-            transform: scale(1.05);
+
+        .album-item:hover img {
+            filter: grayscale(0%);
         }
-        .track-list {
-            display: none;
+
+        /* 4. LABELS (REVEAL ON HOVER) */
+        .album-label {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
+            left: 0;
+            width: 100%;
+            background: #000;
+            color: #fff;
+            padding: 12px;
+            font-size: 11px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-sizing: border-box;
         }
-        .album:hover .track-list {
-            display: block;
+
+        .album-item:hover .album-label {
+            opacity: 1;
         }
-    </style>
-</head>
-<body>
-    <h1>Album Grid</h1>
-    <div class="album-grid">
-        <div class="album">
-            <img src="album1.jpg" alt="Album 1">
-            <div class="track-list">
-                <h3>Album 1</h3>
-                <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                </ul>
-                <audio controls>
-                    <source src="track1.mp3" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-        </div>
-        <div class="album">
-            <img src="album2.jpg" alt="Album 2">
-            <div class="track-list">
-                <h3>Album 2</h3>
-                <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                </ul>
-                <audio controls>
-                    <source src="track2.mp3" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-        </div>
-        <div class="album">
-            <img src="album3.jpg" alt="Album 3">
-            <div class="track-list">
-                <h3>Album 3</h3>
-                <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                </ul>
-                <audio controls>
-                    <source src="track3.mp3" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-        </div>
-        <div class="album">
-            <img src="album4.jpg" alt="Album 4">
-            <div class="track-list">
-                <h3>Album 4</h3>
-                <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                </ul>
-                <audio controls>
-                    <source src="track4.mp3" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-        </div>
-        <div class="album">
-            <img src="album5.jpg" alt="Album 5">
-            <div class="track-list">
-                <h3>Album 5</h3>
-                <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                </ul>
-                <audio controls>
-                    <source src="track5.mp3" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+
+        /* 5. INQUIRY FORM */
+        .contact-section {
+            max-width: 450px;
+            border: 2px solid #000;
+            padding: 30px;
+            background: rgba(255, 255,
