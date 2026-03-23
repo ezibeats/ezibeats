@@ -3,115 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCH_WORLD_NEWS | ARCHIVE</title>
+    <title>Ezibeats Music Site</title>
     <style>
-        /* 1. GLOBAL SYSTEM & BACKGROUND */
         body {
-            /* REPLACE 'background.jpg' WITH YOUR ART FILENAME */
-            background-image: url('background.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-color: #ffffff;
-            background-blend-mode: overlay;
-            
-            color: #000000;
-            font-family: "Helvetica", "Arial", sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 40px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            line-height: 1.2;
+            padding: 20px;
+            background-color: #f4f4f4;
         }
-
-        header {
-            margin-bottom: 60px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        h1 {
-            font-size: 18px;
-            margin: 0;
-            font-weight: 900;
-        }
-
-        .status-tag {
-            font-size: 10px;
-            background: #000;
-            color: #fff;
-            padding: 2px 6px;
-        }
-
-        /* 2. THE CLINICAL GRID */
         .album-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2px;
-            background-color: #000; 
-            border: 2px solid #000;
-            margin-bottom: 80px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
         }
-
-        /* 3. ALBUM ITEM & FOCUS EFFECT */
-        .album-item {
-            background-color: rgba(255, 255, 255, 0.1); 
-            position: relative;
-            aspect-ratio: 1 / 1;
+        .album {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            opacity: 0.5;
-            border: 1px solid #000;
+            position: relative;
+            transition: transform 0.2s;
         }
-
-        .album-grid:hover .album-item {
-            opacity: 0.2; /* Dims everything else when browsing */
+        .album:hover {
+            transform: scale(1.05);
         }
-
-        .album-item:hover {
-            opacity: 1 !important;
-            z-index: 10;
-            background-color: #ffffff;
-        }
-
-        .album-item img {
+        .album img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%);
-            transition: filter 0.4s ease;
+            height: auto;
+            display: block;
         }
-
-        .album-item:hover img {
-            filter: grayscale(0%);
-        }
-
-        /* 4. LABELS (REVEAL ON HOVER) */
-        .album-label {
+        .album-info {
+            padding: 10px;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            width: 100%;
-            background: #000;
-            color: #fff;
-            padding: 12px;
-            font-size: 11px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            box-sizing: border-box;
+            right: 0;
+            bottom: 0;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
         }
-
-        .album-item:hover .album-label {
-            opacity: 1;
+        .album:hover .album-info {
+            display: flex;
         }
-
-        /* 5. INQUIRY FORM */
-        .contact-section {
-            max-width: 450px;
-            border: 2px solid #000;
-            padding: 30px;
-            background: rgba(255, 255,
+    </style>
+</head>
+<body>
+    <h1>Ezibeats Album Collection</h1>
+    <div class="album-grid">
+        <div class="album">
+            <img src="album1.jpg" alt="Album 1">
+            <div class="album-info">
+                <h2>Album Title 1</h2>
+                <p>Track List:</p>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                    <li>Track 3</li>
+                </ul>
+            </div>
+        </div>
+        <div class="album">
+            <img src="album2.jpg" alt="Album 2">
+            <div class="album-info">
+                <h2>Album Title 2</h2>
+                <p>Track List:</p>
+                <ul>
+                    <li>Track 1</li>
+                    <li>Track 2</li>
+                    <li>Track 3</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Add more album divs here... up to the 25th album -->
+    </div>
+</body>
+</html>
