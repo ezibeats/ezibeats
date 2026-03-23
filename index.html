@@ -2,174 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v01</title>
+    <title>EZIBEATS_ARCHIVE_v02</title>
     <style>
-        /* BASE INTERFACE */
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: "Helvetica", "Arial", sans-serif;
-            margin: 0;
-            padding: 40px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            overflow: hidden;
-        }
-
-        #bg-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('VC-01.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
-            transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s ease;
-        }
-
-        body.is-previewing #bg-overlay { 
-            filter: blur(50px) brightness(0.2); 
-            transform: scale(1.1);
-        }
-
-        /* MASTER CONTROLS */
-        #mute-control {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: none;
-            border: 1px solid #fff;
-            color: #fff;
-            padding: 8px 12px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #mute-control:hover { background: #fff; color: #000; }
-        #mute-control.is-muted { background: #ff0000; border-color: #ff0000; color: #fff; }
-
-        #unlocker {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.6s ease;
-        }
-
-        .init-box {
-            border: 1px solid #fff;
-            padding: 30px;
-            font-size: 11px;
-            text-align: center;
-            line-height: 2;
-        }
-
-        h1 { font-size: 14px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; font-weight: 900; }
-
-        /* GRID ARCHITECTURE */
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
-            background-color: #fff;
-            border: 2px solid #fff;
-        }
-
-        .album {
-            background-color: #000;
-            position: relative;
-            aspect-ratio: 1 / 1;
-            overflow: hidden;
-            opacity: 0.3;
-            transition: opacity 0.4s ease;
-        }
-
-        .album:hover { opacity: 1 !important; z-index: 10; }
-        .album-grid:hover .album:not(:hover) { opacity: 0.05; }
-        .album img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* TRACKLIST LAYER */
-        .album-info {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
+        body { background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; padding: 40px; text-transform: uppercase; }
+        .album-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: #fff; border: 2px solid #fff; }
+        .album { background: #000; aspect-ratio: 1/1; position: relative; opacity: 0.4; transition: 0.3s; overflow: hidden; }
+        .album:hover { opacity: 1; }
+        .album-info { position: absolute; inset: 0; background: rgba(0,0,0,0.9); padding: 20px; display: flex; flex-direction: column; opacity: 0; transition: 0.2s; }
         .album:hover .album-info { opacity: 1; }
-        h2 { font-size: 10px; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 5px; color: #777; }
-        
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-        .tracklist li {
-            font-size: 10px;
-            padding: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
+        .tracklist li { font-size: 10px; padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
         .tracklist li:hover { background: #fff; color: #000; }
-
-        /* VISUAL FEEDBACK */
-        .timer-container { width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin-top: auto; }
-        .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
-
-        .eq-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 2px;
-            height: 12px;
-            margin-top: 5px;
-            opacity: 0.8;
-        }
-        .eq-bar {
-            width: 3px;
-            background: currentColor;
-            height: 2px;
-            transition: height 0.05s ease;
-        }
-
-        #status-log {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 8px;
-            color: #ff0000;
-            background: rgba(0,0,0,0.8);
-            padding: 5px;
-            display: none;
-        }
+        .timer-container { width: 100%; height: 2px; background: #222; margin-top: auto; }
+        .timer-bar { width: 0%; height: 100%; background: #fff; }
+        #unlocker { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <button id="mute-control" onclick="toggleMute()">AUDIO: ON</button>
-    <div id="status-log"></div>
-
-    <div id="unlocker" onclick="initializeSystem()">
-        <div class="init-box">
-            [ SYSTEM_READY ]<br>
-            CLICK_TO_INITIALIZE_AUDIO_ENGINE
-        </div>
+    <div id="unlocker" onclick="this.style.display='none';">
+        <div style="border: 1px solid #fff; padding: 20px;">[ INITIALIZE_SYSTEM ]</div>
     </div>
 
-    <div id="bg-overlay"></div>
-    <h1>EZIBEATS // ARCHIVE_V01 // PROJECT_INDEX</h1>
+    <h1>EZIBEATS // ARCHIVE_V02</h1>
 
     <div class="album-grid">
-        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
-            <img src="VC-01.jpg">
+        <div class="album">
             <div class="album-info">
                 <h2>PROJECT_001</h2>
                 <ul class="tracklist">
@@ -181,8 +39,7 @@
             </div>
         </div>
 
-        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
-            <img src="VC-01.jpg">
+        <div class="album">
             <div class="album-info">
                 <h2>PROJECT_002</h2>
                 <ul class="tracklist">
@@ -193,104 +50,41 @@
                 <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
-
-        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+        <div class="album"></div><div class="album"></div><div class="album"></div>
     </div>
 
-    <audio id="global-player" preload="auto" crossorigin="anonymous" style="display:none;"></audio>
+    <audio id="global-player"></audio>
 
     <script>
         const player = document.getElementById('global-player');
-        const status = document.getElementById('status-log');
-        let audioTimer, barInterval, audioCtx, analyzer, dataArray, source;
-        let isGlobalMuted = false;
+        let barInterval;
 
-        function logError(msg) {
-            status.style.display = 'block';
-            status.innerText = "ERROR: " + msg;
-        }
-
-        function initializeSystem() {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    analyzer = audioCtx.createAnalyser();
-                    source = audioCtx.createMediaElementSource(player);
-                    source.connect(analyzer);
-                    analyzer.connect(audioCtx.destination);
-                    analyzer.fftSize = 64; 
-                    dataArray = new Uint8Array(analyzer.frequencyBinCount);
-                }
-                player.play().catch(() => {});
-                player.pause();
-                document.getElementById('unlocker').style.opacity = '0';
-                setTimeout(() => { document.getElementById('unlocker').remove(); }, 600);
-            } catch(e) { logError("AUDIO_CONTEXT_FAILED"); }
-        }
-
-        function updateEqualizer(element) {
-            if (!analyzer) return;
-            let eqContainer = element.querySelector('.eq-container') || document.createElement('div');
-            if (!eqContainer.className) {
-                eqContainer.className = 'eq-container';
-                for(let i=0; i<6; i++) {
-                    const bar = document.createElement('div');
-                    bar.className = 'eq-bar';
-                    eqContainer.appendChild(bar);
-                }
-                element.appendChild(eqContainer);
-            }
-            const bars = eqContainer.querySelectorAll('.eq-bar');
-            function animate() {
-                if (player.paused) return;
-                analyzer.getByteFrequencyData(dataArray);
-                bars.forEach((bar, i) => {
-                    const val = dataArray[i * 2] || 0;
-                    bar.style.height = Math.max(2, (val/255)*12) + "px";
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
-
-        function startPreview(trackUrl, element) {
-            stopPreview(false);
-            if (isGlobalMuted) return;
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
-            player.src = './' + trackUrl;
-            player.load();
-            
-            player.play().then(() => {
-                status.style.display = 'none';
-                updateEqualizer(element);
-                let timeLeft = 200;
-                barInterval = setInterval(() => {
-                    timeLeft--;
-                    timerBar.style.width = (((200 - timeLeft) / 200) * 100) + "%";
-                    if (timeLeft <= 0) stopPreview();
-                }, 100);
-                audioTimer = setTimeout(() => stopPreview(), 20000);
-            }).catch(e => logError("FILE_NOT_FOUND: " + trackUrl));
-        }
-
-        function stopPreview(removeBlur = true) {
-            if (removeBlur) document.body.classList.remove('is-previewing');
-            clearTimeout(audioTimer);
+        function startPreview(file, element) {
+            // 1. Reset everything first
             clearInterval(barInterval);
             document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
-            player.pause();
-            player.src = "";
+            
+            // 2. Locate the specific bar for THIS album
+            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+            
+            // 3. Start Audio (Silently fails if file is missing)
+            player.src = './' + file;
+            player.play().catch(e => console.log("Audio file not found or blocked."));
+
+            // 4. Force Timer Movement (Independent of audio success)
+            let progress = 0;
+            barInterval = setInterval(() => {
+                progress += 0.5; // Moves across in 20 seconds
+                timerBar.style.width = progress + "%";
+                if (progress >= 100) stopPreview();
+            }, 100);
         }
 
-        function toggleMute() {
-            isGlobalMuted = !isGlobalMuted;
-            const btn = document.getElementById('mute-control');
-            player.muted = isGlobalMuted;
-            btn.innerText = isGlobalMuted ? "AUDIO: MUTED" : "AUDIO: ON";
-            btn.classList.toggle('is-muted', isGlobalMuted);
-            if (isGlobalMuted) stopPreview();
+        function stopPreview() {
+            clearInterval(barInterval);
+            player.pause();
+            player.src = "";
+            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
         }
     </script>
 </body>
