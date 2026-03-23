@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE_v01</title>
     <style>
+        /* 1. DYNAMIC SYSTEM BACKGROUND */
         #bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -16,7 +17,7 @@
         }
 
         body.is-previewing #bg-overlay {
-            filter: blur(20px) brightness(0.4);
+            filter: blur(30px) brightness(0.3);
         }
 
         body {
@@ -27,10 +28,12 @@
             padding: 40px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            overflow-x: hidden;
         }
 
-        h1 { font-size: 16px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; }
+        h1 { font-size: 14px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; font-weight: 900; }
 
+        /* 2. THE CLINICAL GRID */
         .album-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -52,10 +55,11 @@
         .album-grid:hover .album:not(:hover) { opacity: 0.05; }
         .album img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* 3. TRACKLIST & COUNTDOWN */
         .album-info {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             display: flex;
             flex-direction: column;
             padding: 15px;
@@ -65,30 +69,45 @@
         }
 
         .album:hover .album-info { opacity: 1; }
-
-        h2 { font-size: 12px; margin: 0 0 10px 0; border-bottom: 1px solid #fff; padding-bottom: 5px; }
+        h2 { font-size: 10px; margin: 0 0 12px 0; border-bottom: 1px solid #fff; padding-bottom: 5px; color: #888; }
         
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; overflow-y: auto; }
+        
         .tracklist li {
             font-size: 9px;
-            padding: 6px;
+            padding: 8px;
             border: 1px solid rgba(255,255,255,0.1);
             margin-bottom: -1px;
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: all 0.2s ease;
         }
 
-        .tracklist li:hover { background: #fff; color: #000; }
+        .tracklist li:hover { background: #fff; color: #000; text-overflow: clip; white-space: normal; }
 
-        .status { font-size: 8px; margin-top: 8px; opacity: 0.5; }
+        /* VISUAL TIMER BAR */
+        .timer-container {
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .timer-bar {
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.1s linear;
+        }
     </style>
 </head>
 <body>
 
     <div id="bg-overlay"></div>
-    <h1>EZIBEATS // AUDIO_ARCHIVE_SYSTEM</h1>
+    <h1>EZIBEATS // AUDIO_ARCHIVE // 20S_PREVIEW_SYSTEM</h1>
 
     <div class="album-grid">
         
@@ -97,11 +116,11 @@
             <div class="album-info">
                 <h2>PROJECT_001</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup) (1).mp3')">MASHUP_V1</li>
-                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup).mp3')">MASHUP_V2</li>
-                    <li onmouseenter="startPreview('Cosmic Slopurtunity.mp3')">COSMIC_SLOP</li>
+                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup) (1).mp3', this)">2026-03-23_10_43_13 x Untitled (Mashup) (1).mp3</li>
+                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup).mp3', this)">2026-03-23_10_43_13 x Untitled (Mashup).mp3</li>
+                    <li onmouseenter="startPreview('Cosmic Slopurtunity.mp3', this)">Cosmic Slopurtunity.mp3</li>
                 </ul>
-                <div class="status">PREVIEW_20S</div>
+                <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
 
@@ -110,74 +129,83 @@
             <div class="album-info">
                 <h2>PROJECT_002</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('Did You Remember Your Pills v1 (1).mp3')">REMEMBER_PILLS_V1</li>
-                    <li onmouseenter="startPreview('Did You Remember Your Pills v1.mp3')">REMEMBER_PILLS_V2</li>
-                    <li onmouseenter="startPreview('Untitled (Vocals).mp3')">UNTITLED_VOCALS</li>
+                    <li onmouseenter="startPreview('Did You Remember Your Pills v1 (1).mp3', this)">Did You Remember Your Pills v1 (1).mp3</li>
+                    <li onmouseenter="startPreview('Did You Remember Your Pills v1.mp3', this)">Did You Remember Your Pills v1.mp3</li>
+                    <li onmouseenter="startPreview('Untitled (Vocals).mp3', this)">Untitled (Vocals).mp3</li>
                 </ul>
-                <div class="status">PREVIEW_20S</div>
+                <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
 
         <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
             <img src="VC-01.jpg">
             <div class="album-info">
-                <h2>ALBUM_01</h2>
+                <h2>ALBUM 1</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('Did You Remember Your Pills v1 (1).mp3')">PILLS_ALT</li>
-                    <li onmouseenter="startPreview('Untitled (Vocals).mp3')">VOCALS_ONLY</li>
+                    <li onmouseenter="startPreview('Did You Remember Your Pills v1 (1).mp3', this)">Did You Remember Your Pills v1 (1).mp3</li>
+                    <li onmouseenter="startPreview('Did You Remember Your Pills v1.mp3', this)">Did You Remember Your Pills v1.mp3</li>
+                    <li onmouseenter="startPreview('Untitled (Vocals).mp3', this)">Untitled (Vocals).mp3</li>
                 </ul>
-                <div class="status">PREVIEW_20S</div>
+                <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
 
         <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
             <img src="VC-01.jpg">
             <div class="album-info">
-                <h2>ALBUM_02</h2>
+                <h2>ALBUM 2</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('Cosmic Slopurtunity.mp3')">COSMIC_SLOP</li>
-                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup).mp3')">MASHUP_V2</li>
+                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup) (1).mp3', this)">2026-03-23_10_43_13 x Untitled (Mashup) (1).mp3</li>
+                    <li onmouseenter="startPreview('2026-03-23_10_43_13 x Untitled (Mashup).mp3', this)">2026-03-23_10_43_13 x Untitled (Mashup).mp3</li>
+                    <li onmouseenter="startPreview('Cosmic Slopurtunity.mp3', this)">Cosmic Slopurtunity.mp3</li>
                 </ul>
-                <div class="status">PREVIEW_20S</div>
+                <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
 
-        <div class="album"></div><div class="album"></div><div class="album"></div>
+        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+
     </div>
 
     <audio id="global-player" style="display:none;"></audio>
 
     <script>
         const player = document.getElementById('global-player');
-        let timer;
+        let previewTimer;
+        let progressInterval;
 
-        function startPreview(trackUrl) {
-            clearTimeout(timer);
-            player.src = trackUrl;
-            player.volume = 0;
-            player.play();
+        function startPreview(trackUrl, element) {
+            // Reset existing
+            stopPreview(false);
             
-            let vol = 0;
-            const fadeIn = setInterval(() => {
-                if (vol < 1) { vol += 0.1; player.volume = vol.toFixed(1); }
-                else { clearInterval(fadeIn); }
-            }, 50);
+            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+            player.src = trackUrl;
+            player.volume = 1;
+            player.play().catch(e => console.log("System Ready."));
 
-            timer = setTimeout(() => { fadeOutPlayer(); }, 20000); 
+            let timeLeft = 200; // 20 seconds in 100ms chunks
+            progressInterval = setInterval(() => {
+                timeLeft--;
+                let percentage = ((200 - timeLeft) / 200) * 100;
+                timerBar.style.width = percentage + "%";
+                if (timeLeft <= 0) { stopPreview(); }
+            }, 100);
+
+            previewTimer = setTimeout(() => { stopPreview(); }, 20000);
         }
 
-        function stopPreview() {
-            document.body.classList.remove('is-previewing');
-            fadeOutPlayer();
-        }
-
-        function fadeOutPlayer() {
-            clearTimeout(timer);
-            let vol = player.volume;
-            const fadeOut = setInterval(() => {
-                if (vol > 0) { vol -= 0.1; player.volume = Math.max(0, vol.toFixed(1)); }
-                else { clearInterval(fadeOut); player.pause(); player.src = ""; }
-            }, 50);
+        function stopPreview(removeBlur = true) {
+            if (removeBlur) document.body.classList.remove('is-previewing');
+            clearTimeout(previewTimer);
+            clearInterval(progressInterval);
+            
+            // Reset all bars
+            document.querySelectorAll('.timer-bar').forEach(bar => bar.style.width = "0%");
+            
+            player.pause();
+            player.src = "";
         }
     </script>
 </body>
