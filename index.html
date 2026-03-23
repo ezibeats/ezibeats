@@ -3,100 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ezibeats Music Site</title>
+    <title>EZIBEATS_ARCHIVE_v01</title>
     <style>
-        body {
+        /* 1. THE DYNAMIC BACKGROUND */
+        #bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('VC-01.jpg');
             background-size: cover;
-            background-attachment: fixed;
             background-position: center;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: white;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            z-index: -1;
+            transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Blur the background when an album is active */
+        body.is-previewing #bg-overlay {
+            filter: blur(15px) brightness(0.5);
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: "Helvetica", "Arial", sans-serif;
+            margin: 0;
+            padding: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 { font-size: 18px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; }
+
+        /* 2. THE CLINICAL GRID */
         .album-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
+            gap: 2px;
+            background-color: #fff;
+            border: 2px solid #fff;
         }
 
         .album {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            background-color: #000;
             position: relative;
-            transition: transform 0.2s;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
+            opacity: 0.4;
             cursor: pointer;
         }
 
+        /* 3. FOCUS STATE */
         .album:hover {
-            transform: scale(1.05);
+            opacity: 1 !important;
+            z-index: 10;
         }
 
-        .album img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .album-grid:hover .album:not(:hover) {
+            opacity: 0.1; /* Dim non-focused items heavily */
         }
 
+        .album img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 4. TRACKLIST OVERLAY */
         .album-info {
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
             display: flex;
-            align-items: center;
-            justify-content: center;
             flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s ease;
+            font-size: 10px;
         }
 
-        .album:hover .album-info {
-            opacity: 1;
-        }
+        .album:hover .album-info { opacity: 1; }
+        ul { list-style: none; padding: 0; margin: 10px 0 0 0; }
+        li { margin-bottom: 5px; border-left: 2px solid #fff; padding-left: 5px; }
 
-        h1 {
-            text-align: center;
-        }
     </style>
 </head>
 <body>
-    <h1>🎵 Ezibeats Album Collection</h1>
+
+    <div id="bg-overlay"></div>
+
+    <h1>EZIBEATS // AUDIO_ARCHIVE_SYSTEM</h1>
+
     <div class="album-grid">
-        <div class="album">
+        <div class="album" onmouseenter="startPreview('track1.mp3')" onmouseleave="stopPreview()">
             <img src="VC-01.jpg" alt="Album 1">
             <div class="album-info">
-                <h2>Album Title 1</h2>
-                <p>Track List:</p>
+                <h2>PROJECT_001</h2>
                 <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                    <li>Track 3</li>
+                    <li>01_SAMPLE_TRACK</li>
+                    <li>PREVIEW_ACTIVE: 20S</li>
                 </ul>
             </div>
         </div>
-        <div class="album">
+
+        <div class="album" onmouseenter="startPreview('track2.mp3')" onmouseleave="stopPreview()">
             <img src="VC-01.jpg" alt="Album 2">
             <div class="album-info">
-                <h2>Album Title 2</h2>
-                <p>Track List:</p>
+                <h2>PROJECT_002</h2>
                 <ul>
-                    <li>Track 1</li>
-                    <li>Track 2</li>
-                    <li>Track 3</li>
+                    <li>01_SAMPLE_TRACK</li>
+                    <li>PREVIEW_ACTIVE: 20S</li>
                 </ul>
             </div>
         </div>
-        <!-- Add more album divs here... up to the 25th album -->
-    </div>
+        
+        </div>
+
+    <audio id="global-player" style="display:none;"></audio>
+
+    <script>
+        const player = document.getElementById('global-player');
+        const body = document.body;
+        let timer;
+
+        function startPreview(trackUrl) {
+            body.classList.add('is-previewing');
+            player.src = trackUrl;
+            player.volume = 0;
+            player.play();
+            
+            // Fade in
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                if (vol < 1) {
+                    vol += 0.1;
+                    player.volume = vol.toFixed(1);
+                } else {
+                    clearInterval(fadeIn);
+                }
+            }, 50);
+
+            // Auto-stop after 20 seconds
+            timer = setTimeout(() => {
+                stopPreview();
+            }, 20000); 
+        }
+
+        function stopPreview() {
+            body.classList.remove('is-previewing');
+            clearTimeout(timer);
+            
+            // Fade out
+            let vol = player.volume;
+            const fadeOut = setInterval(() => {
+                if (vol > 0) {
+                    vol -= 0.1;
+                    player.volume = Math.max(0, vol.toFixed(1));
+                } else {
+                    clearInterval(fadeOut);
+                    player.pause();
+                    player.src = "";
+                }
+            }, 50);
+        }
+    </script>
+
 </body>
 </html>
