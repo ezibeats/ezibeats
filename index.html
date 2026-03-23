@@ -170,41 +170,50 @@
     <audio id="global-player" style="display:none;"></audio>
 
     <script>
-        const player = document.getElementById('global-player');
-        let previewTimer;
-        let progressInterval;
+    const player = document.getElementById('global-player');
+    let audioTimer;
+    let barInterval;
 
-        function startPreview(trackUrl, element) {
-            // Reset existing
-            stopPreview(false);
-            
-            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
-            player.src = trackUrl;
-            player.volume = 1;
-            player.play().catch(e => console.log("System Ready."));
+    // Run this ONCE to unlock the audio engine
+    function initializeSystem() {
+        player.play().catch(() => {});
+        player.pause();
+        document.getElementById('unlocker').style.opacity = '0';
+        setTimeout(() => { document.getElementById('unlocker').remove(); }, 500);
+    }
 
-            let timeLeft = 200; // 20 seconds in 100ms chunks
-            progressInterval = setInterval(() => {
+    // This ONE function handles EVERY track in your archive
+    function startPreview(trackUrl, element) {
+        stopPreview(false);
+        const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+        
+        // Encode the filename to handle spaces/brackets safely
+        const cleanPath = './' + encodeURI(trackUrl);
+        
+        player.src = cleanPath;
+        player.load();
+        
+        player.play().then(() => {
+            let timeLeft = 200;
+            barInterval = setInterval(() => {
                 timeLeft--;
-                let percentage = ((200 - timeLeft) / 200) * 100;
-                timerBar.style.width = percentage + "%";
+                timerBar.style.width = (((200 - timeLeft) / 200) * 100) + "%";
                 if (timeLeft <= 0) { stopPreview(); }
             }, 100);
+            audioTimer = setTimeout(() => { stopPreview(); }, 20000);
+        }).catch(e => {
+            console.error("Path error for:", cleanPath, e);
+        });
+    }
 
-            previewTimer = setTimeout(() => { stopPreview(); }, 20000);
-        }
-
-        function stopPreview(removeBlur = true) {
-            if (removeBlur) document.body.classList.remove('is-previewing');
-            clearTimeout(previewTimer);
-            clearInterval(progressInterval);
-            
-            // Reset all bars
-            document.querySelectorAll('.timer-bar').forEach(bar => bar.style.width = "0%");
-            
-            player.pause();
-            player.src = "";
-        }
-    </script>
+    function stopPreview(removeBlur = true) {
+        if (removeBlur) document.body.classList.remove('is-previewing');
+        clearTimeout(audioTimer);
+        clearInterval(barInterval);
+        document.querySelectorAll('.timer-bar').forEach(bar => bar.style.width = "0%");
+        player.pause();
+        player.src = "";
+    }
+</script>
 </body>
 </html>
