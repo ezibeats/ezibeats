@@ -1,105 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v01</title>
-    <style>
-        /* BASE INTERFACE */
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: "Helvetica", "Arial", sans-serif;
-            margin: 0;
-            padding: 40px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            overflow: hidden; /* Prevents scrollbars during hover */
+transition: opacity 0.3s ease;
         }
 
-        #bg-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('VC-01.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
-            transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s ease;
-        }
-
-        body.is-previewing #bg-overlay { 
-            filter: blur(50px) brightness(0.2); 
-            transform: scale(1.1);
-        }
-
-        /* MASTER CONTROLS */
-        #mute-control {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: none;
-            border: 1px solid #fff;
-            color: #fff;
-            padding: 8px 12px;
+        .album:hover .album-info { opacity: 1; }
+        h2 { font-size: 10px; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 5px; color: #777; }
+        
+        .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .tracklist li {
             font-size: 10px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #mute-control:hover { background: #fff; color: #000; }
-        #mute-control.is-muted { background: #ff0000; border-color: #ff0000; color: #fff; }
-
-        #unlocker {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.6s ease;
-        }
-
-        .init-box {
-            border: 1px solid #fff;
-            padding: 30px;
-            font-size: 11px;
-            text-align: center;
-            line-height: 2;
-        }
-
-        h1 { font-size: 14px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; font-weight: 900; }
-
-        /* GRID ARCHITECTURE */
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
-            background-color: #fff;
-            border: 2px solid #fff;
-        }
-
-        .album {
-            background-color: #000;
+            transition: all 0.2s ease;
             position: relative;
-            aspect-ratio: 1 / 1;
-            overflow: hidden;
-            opacity: 0.3;
-            transition: opacity 0.4s ease;
         }
 
-        .album:hover { opacity: 1 !important; z-index: 10; }
-        .album-grid:hover .album:not(:hover) { opacity: 0.05; }
-        .album img { width: 100%; height: 100%; object-fit: cover; }
+        .tracklist li:hover { background: #fff; color: #000; }
 
-        /* TRACKLIST LAYER */
-        .album-info {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+        /* VISUAL FEEDBACK */
+        .timer-container { width: 100%; height: 1px; background: rgba(255,255,255,0.1); margin-top: auto; }
+        .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
+
+        .eq-container {
             display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            opacity: 0
+            align-items: flex-end;
+            gap: 2px;
+            height: 12px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+        .eq-bar {
+            width: 3px;
+            background: currentColor;
+            height: 2px;
+            transition: height 0.05s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="mute-control" onclick="toggleMute()">AUDIO: ON</button>
+
+    <div id="unlocker" onclick="initializeSystem()">
+        <div class="init-box">
+            [ SYSTEM_READY ]<br>
+            CLICK_TO_INITIALIZE_AUDIO_ENGINE
+        </div>
+    </div>
+
+    <div id="bg-overlay"></div>
+    <h1>EZIBEATS // ARCHIVE_V01 // PROJECT_INDEX</h1>
+
+    <div class="album-grid">
+        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
+            <img src="VC-01.jpg">
+            <div class="album-info">
+                <h2>PROJECT_001</h2>
+                <ul class="tracklist">
+                    <li onmouseenter="startPreview('test1.mp3', this)">TEST_01</li>
+                    <li onmouseenter="startPreview('test2.mp3', this)">TEST_02</li>
+                    <li onmouseenter="startPreview('test3.mp3', this)">TEST_03</li>
+                </ul>
+                <div class="timer-container"><div class="timer-bar"></div></div>
+            </div>
+        </div>
+
+        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
+            <img src="VC-01.jpg">
+            <div class="album-info">
+                <h2>PROJECT_002</h2>
+                <ul class="tracklist">
+                    <li onmouseenter="startPreview('test4.mp3', this)">TEST_04</li>
+                    <li onmouseenter="startPreview('test5.mp3', this)">TEST_05</li>
+                    <li onmouseenter="startPreview('test6.mp3', this)">TEST_06</li>
+                </ul>
+                <div class="timer-container"><div class="timer-bar"></div></div>
+            </div>
+        </div>
+
+        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+    </div>
+
+    <audio id="global-player" preload="auto" crossorigin="anonymous" style="display:none;"></audio>
+
+    <script>
+        const player = document.getElementById('global-player');
+        let audioTimer, barInterval, audioCtx, analyzer, dataArray, source;
+        let isGlobalMuted = false;
+
+        function initializeSystem() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyzer = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(player);
+                source.connect(analyzer);
+                analyzer.connect(audioCtx.destination);
+                analyzer.fftSize = 64; 
+                dataArray = new Uint8Array(analyzer.frequencyBinCount);
+            }
+            player.play().catch(() => {});
+            player.pause();
+            document.getElementById('unlocker').style.opacity = '0';
+            setTimeout(() => { document.getElementById('unlocker').remove(); }, 600);
+        }
+
+        function updateEqualizer(element) {
+            if (!analyzer) return;
+            let eqContainer = element.querySelector('.eq-container') || document.createElement('div');
+            if (!eqContainer.className) {
+                eqContainer.className = 'eq-container';
+                for(let i=0; i<6; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'eq-bar';
+                    eqContainer.appendChild(bar);
+                }
+                element.appendChild(eqContainer);
+            }
+            const bars = eqContainer.querySelectorAll('.eq-bar');
+            function animate() {
+                if (player.paused) return;
+                analyzer.getByteFrequencyData(dataArray);
+                bars.forEach((bar, i) => {
+                    const val = dataArray[i * 2] || 0;
+                    bar.style.height = Math.max(2, (val/255)*12) + "px";
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function startPreview(trackUrl, element) {
+            stopPreview(false);
+            if (isGlobalMuted) return;
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+            player.src = './' + trackUrl;
+            player.load();
+            
+            player.play().then(() => {
+                updateEqualizer(element);
+                let timeLeft = 200;
+                barInterval = setInterval(() => {
+                    timeLeft--;
+                    timerBar.style.width = (((200 - timeLeft) / 200) * 100) + "%";
