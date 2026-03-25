@@ -2,159 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MUSIC_ARCHIVE_v02</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZIBEATS_ARCHIVE_v01</title>
     <style>
-        body { background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; padding: 40px; text-transform: uppercase; margin: 0; }
-        h1 { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; }
+        /* MUTE BUTTON STYLING */
+        #mute-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: none;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 8px 12px;
+            font-size: 10px;
+            font-family: "Helvetica", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #mute-control:hover { background: #fff; color: #000; }
+        #mute-control.is-muted { background: #ff0000; border-color: #ff0000; color: #fff; }
 
-        /* Grid System */
-        .album-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: #fff; border: 2px solid #fff; }
-        
-        .album { 
-            background: #000; 
-            aspect-ratio: 1/1; 
-            position: relative; 
-            opacity: 0.6; 
-            transition: 0.3s; 
-            overflow: hidden; 
-            background-position: center; 
+        #bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('VC-01.jpg');
             background-size: cover;
-            filter: grayscale(100%); 
+            background-position: center;
+            z-index: -1;
+            transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .album:hover { 
-            opacity: 1; 
-            filter: grayscale(0%); 
+        body.is-previewing #bg-overlay { filter: blur(30px) brightness(0.3); }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: "Helvetica", "Arial", sans-serif;
+            margin: 0;
+            padding: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            overflow-x: hidden;
         }
 
-        /* Info Overlay */
-        .album-info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.9); 
-            padding: 20px; display: flex; flex-direction: column; 
-            opacity: 0; transition: 0.2s; pointer-events: none; 
+        #unlocker {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
         }
-        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+
+        .init-box {
+            border: 1px solid #fff;
+            padding: 30px;
+            font-size: 11px;
+            text-align: center;
+            line-height: 2;
+        }
+
+        h1 { font-size: 14px; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 40px; font-weight: 900; }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            background-color: #fff;
+            border: 2px solid #fff;
+        }
+
+        .album {
+            background-color: #000;
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
+            opacity: 0.4;
+        }
+
+        .album:hover { opacity: 1 !important; z-index: 10; }
+        .album-grid:hover .album:not(:hover) { opacity: 0.05; }
+        .album img { width: 100%; height: 100%; object-fit: cover; }
+
+        .album-info {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .album:hover .album-info { opacity: 1; }
+        h2 { font-size: 10px; margin: 0 0 12px 0; border-bottom: 1px solid #fff; padding-bottom: 5px; color: #888; }
         
-        .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-        .tracklist li { 
-            font-size: 10px; padding: 10px; border-bottom: 1px solid #222; 
-            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+        .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; overflow-y: auto; }
+        .tracklist li {
+            font-size: 9px;
+            padding: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: -1px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.2s ease;
         }
+
         .tracklist li:hover { background: #fff; color: #000; }
-
-        /* Active Track Dot */
-        .status-dot { width: 6px; height: 6px; background: #ff0000; border-radius: 50%; display: none; }
-        .playing .status-dot { display: block; animation: pulse 1s infinite; }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        
-        /* Progress Bar */
-        .timer-container { width: 100%; height: 4px; background: #222; margin-top: auto; }
+        .timer-container { width: 100%; height: 2px; background: rgba(255,255,255,0.1); margin-top: 10px; }
         .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
-        
-        #unlocker { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="unlocker" onclick="this.style.display='none';">
-        <div style="border: 1px solid #fff; padding: 20px; letter-spacing: 2px;">[ INITIALIZE_SYSTEM ]</div>
+    <button id="mute-control" onclick="toggleMute()">Audio: ON</button>
+
+    <div id="unlocker" onclick="initializeSystem()">
+        <div class="init-box">
+            [ SYSTEM_READY ]<br>
+            CLICK_TO_INITIALIZE_AUDIO_ENGINE
+        </div>
     </div>
 
-    <h1>MUSIC // ARCHIVE_V02</h1>
+    <div id="bg-overlay"></div>
+    <h1>EZIBEATS // ARCHIVE_V01 // 20S_PREVIEW</h1>
 
     <div class="album-grid">
         
-        <div class="album" style="background-image: url('project_1.jpg');" onmouseleave="stopPreview()">
+        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
+            <img src="VC-01.jpg">
             <div class="album-info">
                 <h2>PROJECT_001</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('test1.mp3', this)">TEST_01 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test2.mp3', this)">TEST_02 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test3.mp3', this)">TEST_03 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test1.mp3', this)">TEST_01</li>
+                    <li onmouseenter="startPreview('test2.mp3', this)">TEST_02</li>
+                    <li onmouseenter="startPreview('test3.mp3', this)">TEST_03</li>
                 </ul>
                 <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
 
-        <div class="album" style="background-image: url('project_2.jpg');" onmouseleave="stopPreview()">
+        <div class="album" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="stopPreview()">
+            <img src="VC-01.jpg">
             <div class="album-info">
                 <h2>PROJECT_002</h2>
                 <ul class="tracklist">
-                    <li onmouseenter="startPreview('test4.mp3', this)">TEST_04 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test5.mp3', this)">TEST_05 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test6.mp3', this)">TEST_06 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test4.mp3', this)">TEST_04</li>
+                    <li onmouseenter="startPreview('test5.mp3', this)">TEST_05</li>
+                    <li onmouseenter="startPreview('test6.mp3', this)">TEST_06</li>
                 </ul>
                 <div class="timer-container"><div class="timer-bar"></div></div>
             </div>
         </div>
-        <div class="album" style="background-image: url('project_3.jpg');" onmouseleave="stopPreview()">
-            <div class="album-info">
-                <h2>PROJECT_003</h2>
-                <ul class="tracklist">
-                    <li onmouseenter="startPreview('test7.mp3', this)">TEST_01 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test8.mp3', this)">TEST_02 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test9.mp3', this)">TEST_03 <span class="status-dot"></span></li>
-                </ul>
-                <div class="timer-container"><div class="timer-bar"></div></div>
-            </div>
-        </div>
-        
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
-        <div class="album"></div>
 
+        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
     </div>
 
-    <audio id="global-player"></audio>
+    <audio id="global-player" preload="auto" style="display:none;"></audio>
 
     <script>
         const player = document.getElementById('global-player');
+        let audioTimer;
         let barInterval;
+        let isGlobalMuted = false;
 
-        function startPreview(file, element) {
-            // Reset indicators and timers
-            clearInterval(barInterval);
-            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
-            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
+        function toggleMute() {
+            const btn = document.getElementById('mute-control');
+            isGlobalMuted = !isGlobalMuted;
             
-            // Activate current track
-            element.classList.add('playing');
-            const album = element.closest('.album');
-            const timerBar = album.querySelector('.timer-bar');
-
-            player.pause();
-            player.src = file; 
-            
-            player.play().then(() => {
-                console.log("PLAYING: " + file);
-            }).catch(e => {
-                console.error("AUDIO ERROR: ", e.message);
-            });
-
-            let progress = 0;
-            barInterval = setInterval(() => {
-                progress += 0.5; 
-                if(timerBar) timerBar.style.width = progress + "%";
-                if (progress >= 100) stopPreview();
-            }, 100);
+            if (isGlobalMuted) {
+                player.muted = true;
+                btn.innerText = "Audio: MUTED";
+                btn.classList.add('is-muted');
+            } else {
+                player.muted = false;
+                btn.innerText = "Audio: ON";
+                btn.classList.remove('is-muted');
+            }
         }
 
-        function stopPreview() {
+        function initializeSystem() {
+            player.play().catch(() => {});
+            player.pause();
+            document.getElementById('unlocker').style.opacity = '0';
+            setTimeout(() => { document.getElementById('unlocker').remove(); }, 500);
+        }
+
+        function startPreview(trackUrl, element) {
+            stopPreview(false);
+            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+            
+            player.src = './' + trackUrl;
+            player.volume = 1.0; 
+            player.load();
+            
+            player.play().then(() => {
+                let timeLeft = 200;
+                barInterval = setInterval(() => {
+                    timeLeft--;
+                    timerBar.style.width = (((200 - timeLeft) / 200) * 100) + "%";
+                    if (timeLeft <= 0) { stopPreview(); }
+                }, 100);
+                audioTimer = setTimeout(() => { stopPreview(); }, 20000);
+            }).catch(e => {
+                console.error("LOAD ERROR:", e);
+            });
+        }
+
+        function stopPreview(removeBlur = true) {
+            if (removeBlur) document.body.classList.remove('is-previewing');
+            clearTimeout(audioTimer);
             clearInterval(barInterval);
+            document.querySelectorAll('.timer-bar').forEach(bar => bar.style.width = "0%");
             player.pause();
             player.src = "";
-            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
-            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
         }
     </script>
 </body>
