@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <title>MUSIC_ARCHIVE_v02</title>
     <style>
-        body { background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; padding: 40px; text-transform: uppercase; }
+        body { background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; padding: 40px; text-transform: uppercase; margin: 0; }
+        h1 { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; }
+
+        /* Grid System */
         .album-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: #fff; border: 2px solid #fff; }
-        .album { background: #000; aspect-ratio: 1/1; position: relative; opacity: 0.4; transition: 0.3s; overflow: hidden; }
-        .album:hover { opacity: 1; }
         
-        /* THE FIX: Added pointer-events so the mouse can reach the tracks */
+        .album { 
+            background: #000; 
+            aspect-ratio: 1/1; 
+            position: relative; 
+            opacity: 0.6; 
+            transition: 0.3s; 
+            overflow: hidden; 
+            background-position: center; 
+            background-size: cover;
+            filter: grayscale(100%); 
+        }
+
+        .album:hover { 
+            opacity: 1; 
+            filter: grayscale(0%); 
+        }
+
+        /* Info Overlay */
         .album-info { 
             position: absolute; inset: 0; background: rgba(0,0,0,0.9); 
             padding: 20px; display: flex; flex-direction: column; 
@@ -18,12 +36,25 @@
         .album:hover .album-info { opacity: 1; pointer-events: auto; }
         
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-        .tracklist li { font-size: 10px; padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
+        .tracklist li { 
+            font-size: 10px; padding: 10px; border-bottom: 1px solid #222; 
+            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+        }
         .tracklist li:hover { background: #fff; color: #000; }
+
+        /* Active Track Dot */
+        .status-dot { width: 6px; height: 6px; background: #ff0000; border-radius: 50%; display: none; }
+        .playing .status-dot { display: block; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
         
-        /* THE FIX: Increased height to 4px for visibility */
+        /* Progress Bar */
         .timer-container { width: 100%; height: 4px; background: #222; margin-top: auto; }
-        .timer-bar { width: 0%; height: 100%; background: #fff; }
+        .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
         
         #unlocker { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
@@ -31,31 +62,47 @@
 <body>
 
     <div id="unlocker" onclick="this.style.display='none';">
-        <div style="border: 1px solid #fff; padding: 20px;">[ INITIALIZE_SYSTEM ]</div>
+        <div style="border: 1px solid #fff; padding: 20px; letter-spacing: 2px;">[ INITIALIZE_SYSTEM ]</div>
     </div>
 
     <h1>MUSIC // ARCHIVE_V02</h1>
 
-    <div class="album" style="background-image: url('cover1.jpg'); background-size: cover;" onmouseleave="stopPreview()">
-    <div class="album-info">
-        <h2>PROJECT_001</h2>
-        <ul class="tracklist">
-            <li onmouseenter="startPreview('test1.mp3', this)">TEST_01</li>
-            <li onmouseenter="startPreview('test2.mp3', this)">TEST_02</li>
-        </ul>
-        <div class="timer-container"><div class="timer-bar"></div></div>
-    </div>
-</div>
+    <div class="album-grid">
+        
+        <div class="album" style="background-image: url('project_1.jpg');" onmouseleave="stopPreview()">
+            <div class="album-info">
+                <h2>PROJECT_001</h2>
+                <ul class="tracklist">
+                    <li onmouseenter="startPreview('test1.mp3', this)">TEST_01 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test2.mp3', this)">TEST_02 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test3.mp3', this)">TEST_03 <span class="status-dot"></span></li>
+                </ul>
+                <div class="timer-container"><div class="timer-bar"></div></div>
+            </div>
+        </div>
 
-<div class="album" style="background-image: url('cover2.jpg'); background-size: cover;" onmouseleave="stopPreview()">
-    <div class="album-info">
-        <h2>PROJECT_002</h2>
-        <ul class="tracklist">
-            <li onmouseenter="startPreview('test4.mp3', this)">TEST_04</li>
-        </ul>
-        <div class="timer-container"><div class="timer-bar"></div></div>
+        <div class="album" style="background-image: url('project_2.jpg');" onmouseleave="stopPreview()">
+            <div class="album-info">
+                <h2>PROJECT_002</h2>
+                <ul class="tracklist">
+                    <li onmouseenter="startPreview('test4.mp3', this)">TEST_04 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test5.mp3', this)">TEST_05 <span class="status-dot"></span></li>
+                    <li onmouseenter="startPreview('test6.mp3', this)">TEST_06 <span class="status-dot"></span></li>
+                </ul>
+                <div class="timer-container"><div class="timer-bar"></div></div>
+            </div>
+        </div>
+        
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+        <div class="album"></div>
+
     </div>
-</div>
 
     <audio id="global-player"></audio>
 
@@ -64,23 +111,29 @@
         let barInterval;
 
         function startPreview(file, element) {
-            // 1. Reset everything first
+            // Reset indicators and timers
             clearInterval(barInterval);
             document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
             
-            // 2. Locate the specific bar for THIS album
-            const albumInfo = element.closest('.album-info');
-            const timerBar = albumInfo.querySelector('.timer-bar');
-            
-            // 3. Start Audio
-            player.src = './' + file;
-            player.play().catch(e => console.log("Audio block/missing"));
+            // Activate current track
+            element.classList.add('playing');
+            const album = element.closest('.album');
+            const timerBar = album.querySelector('.timer-bar');
 
-            // 4. Force Timer Movement
+            player.pause();
+            player.src = file; 
+            
+            player.play().then(() => {
+                console.log("PLAYING: " + file);
+            }).catch(e => {
+                console.error("AUDIO ERROR: ", e.message);
+            });
+
             let progress = 0;
             barInterval = setInterval(() => {
                 progress += 0.5; 
-                timerBar.style.width = progress + "%";
+                if(timerBar) timerBar.style.width = progress + "%";
                 if (progress >= 100) stopPreview();
             }, 100);
         }
@@ -90,48 +143,8 @@
             player.pause();
             player.src = "";
             document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
         }
-        <script>
-    const player = document.getElementById('global-player');
-    let barInterval;
-
-    function startPreview(file, element) {
-        clearInterval(barInterval);
-        document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
-        
-        const album = element.closest('.album');
-        const timerBar = album.querySelector('.timer-bar');
-
-        // FORCE VOLUME AND SOURCE
-        player.pause();
-        player.src = file; 
-        player.volume = 1.0; 
-
-        player.play().then(() => {
-            console.log("PLAYING: " + file);
-        }).catch(e => {
-            // This will tell us EXACTLY why it's silent
-            console.error("AUDIO ERROR: ", e.message);
-            if(e.name === "NotAllowedError") {
-                alert("Browser blocked audio. Please click anywhere on the page first!");
-            }
-        });
-
-        let progress = 0;
-        barInterval = setInterval(() => {
-            progress += 0.5; 
-            timerBar.style.width = progress + "%";
-            if (progress >= 100) stopPreview();
-        }, 100);
-    }
-
-    function stopPreview() {
-        clearInterval(barInterval);
-        player.pause();
-        player.src = "";
-        document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
-    }
-</script>
-    
+    </script>
 </body>
 </html>
