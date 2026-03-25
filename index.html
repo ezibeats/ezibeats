@@ -97,6 +97,47 @@
             player.src = "";
             document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
         }
-    </script>
+        <script>
+    const player = document.getElementById('global-player');
+    let barInterval;
+
+    function startPreview(file, element) {
+        clearInterval(barInterval);
+        document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+        
+        const album = element.closest('.album');
+        const timerBar = album.querySelector('.timer-bar');
+
+        // FORCE VOLUME AND SOURCE
+        player.pause();
+        player.src = file; 
+        player.volume = 1.0; 
+
+        player.play().then(() => {
+            console.log("PLAYING: " + file);
+        }).catch(e => {
+            // This will tell us EXACTLY why it's silent
+            console.error("AUDIO ERROR: ", e.message);
+            if(e.name === "NotAllowedError") {
+                alert("Browser blocked audio. Please click anywhere on the page first!");
+            }
+        });
+
+        let progress = 0;
+        barInterval = setInterval(() => {
+            progress += 0.5; 
+            timerBar.style.width = progress + "%";
+            if (progress >= 100) stopPreview();
+        }, 100);
+    }
+
+    function stopPreview() {
+        clearInterval(barInterval);
+        player.pause();
+        player.src = "";
+        document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+    }
+</script>
+    
 </body>
 </html>
