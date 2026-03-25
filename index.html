@@ -8,13 +8,23 @@
         .album-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: #fff; border: 2px solid #fff; }
         .album { background: #000; aspect-ratio: 1/1; position: relative; opacity: 0.4; transition: 0.3s; overflow: hidden; }
         .album:hover { opacity: 1; }
-        .album-info { position: absolute; inset: 0; background: rgba(0,0,0,0.9); padding: 20px; display: flex; flex-direction: column; opacity: 0; transition: 0.2s; }
-        .album:hover .album-info { opacity: 1; }
+        
+        /* THE FIX: Added pointer-events so the mouse can reach the tracks */
+        .album-info { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.9); 
+            padding: 20px; display: flex; flex-direction: column; 
+            opacity: 0; transition: 0.2s; pointer-events: none; 
+        }
+        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+        
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .tracklist li { font-size: 10px; padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
         .tracklist li:hover { background: #fff; color: #000; }
-        .timer-container { width: 100%; height: 2px; background: #222; margin-top: auto; }
+        
+        /* THE FIX: Increased height to 4px for visibility */
+        .timer-container { width: 100%; height: 4px; background: #222; margin-top: auto; }
         .timer-bar { width: 0%; height: 100%; background: #fff; }
+        
         #unlocker { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
@@ -27,7 +37,7 @@
     <h1>EZIBEATS // ARCHIVE_V02</h1>
 
     <div class="album-grid">
-        <div class="album">
+        <div class="album" onmouseleave="stopPreview()">
             <div class="album-info">
                 <h2>PROJECT_001</h2>
                 <ul class="tracklist">
@@ -39,7 +49,7 @@
             </div>
         </div>
 
-        <div class="album">
+        <div class="album" onmouseleave="stopPreview()">
             <div class="album-info">
                 <h2>PROJECT_002</h2>
                 <ul class="tracklist">
@@ -65,16 +75,17 @@
             document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
             
             // 2. Locate the specific bar for THIS album
-            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
+            const albumInfo = element.closest('.album-info');
+            const timerBar = albumInfo.querySelector('.timer-bar');
             
-            // 3. Start Audio (Silently fails if file is missing)
+            // 3. Start Audio
             player.src = './' + file;
-            player.play().catch(e => console.log("Audio file not found or blocked."));
+            player.play().catch(e => console.log("Audio block/missing"));
 
-            // 4. Force Timer Movement (Independent of audio success)
+            // 4. Force Timer Movement
             let progress = 0;
             barInterval = setInterval(() => {
-                progress += 0.5; // Moves across in 20 seconds
+                progress += 0.5; 
                 timerBar.style.width = progress + "%";
                 if (progress >= 100) stopPreview();
             }, 100);
