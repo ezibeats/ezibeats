@@ -5,101 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE_v04.6</title>
     <style>
-        body { 
-            background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; text-transform: uppercase; overflow: hidden;
-        }
+        b<style>
+    /* ... Keep your existing core styles (body, fonts) ... */
 
-        /* 1. MECHANICAL SLIDE CONTAINER */
-        .page-container {
-            display: flex; flex-direction: column;
-            height: 100vh; width: 100vw;
-            transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
-        }
+    /* 1. THE MAIN STACK */
+    .page-container {
+        display: flex; flex-direction: column;
+        height: 100vh; width: 100vw;
+        transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+    }
 
-        /* 2. THREE EQUAL PANELS */
-        .panel {
-            flex: 1; border-bottom: 1px solid #fff;
-            display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-            transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-        .panel h2 { font-size: 8vw; font-weight: 900; pointer-events: none; transition: 0.5s; z-index: 5; }
+    /* 2. THE PANELS */
+    .panel {
+        flex: 1; border-bottom: 1px solid #fff;
+        display: flex; align-items: center; justify-content: center;
+        position: relative; overflow: hidden;
+        transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
+    }
 
-        /* 3. THE EXPANDED STATE (MUSIC ACTIVE) */
-        .music-active .panel:nth-child(1) { flex: 10; align-items: center; }
-        .music-active .panel:nth-child(2), 
-        .music-active .panel:nth-child(3) { flex: 0.15; background: #080808; opacity: 0.5; }
-        
-        /* Moving the Title to a "Label" position */
-        .music-active .panel:nth-child(1) h2 { 
-            font-size: 10px; position: absolute; top: 20px; left: 20px; 
-            letter-spacing: 5px; pointer-events: auto; cursor: pointer;
-        }
+    /* 3. THE TEXT LABEL (Moves to Top-Left on Click) */
+    .panel h2 { 
+        font-size: 8vw; font-weight: 900; pointer-events: none; 
+        transition: all 0.5s ease; z-index: 10; 
+    }
 
-        /* 4. THE BLUR LAYER */
-        #archive-blur-layer {
-            opacity: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.5s, filter 0.6s ease;
-            pointer-events: none;
-        }
-        .music-active #archive-blur-layer { opacity: 1; pointer-events: auto; }
+    /* 4. THE EXPANDED STATE (THE FIX) */
+    .music-active .panel:nth-child(1) { 
+        flex: 15; /* Expands much further */
+        display: block; /* Disables flex centering to allow absolute centering of the grid */
+    }
 
-        /* ENVIRONMENT BLUR ON HOVER */
-        body.is-previewing #archive-blur-layer { filter: blur(25px) brightness(0.3); }
-        body.is-previewing .panel:nth-child(2), 
-        body.is-previewing .panel:nth-child(3) { filter: blur(15px); }
+    .music-active .panel:nth-child(1) h2 { 
+        font-size: 12px; position: absolute; top: 20px; left: 20px; 
+        letter-spacing: 5px; pointer-events: auto; cursor: pointer;
+    }
 
-        /* 5. THE 3x3 GRID */
-        .album-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); 
-            gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
-        }
-        .album { 
-            background: #000; aspect-ratio: 1/1; position: relative; 
-            background-size: cover; cursor: crosshair;
-            transition: transform 0.4s ease, filter 0.4s ease;
-        }
-        
-        /* BREAKING THE BLUR */
-        .album:hover { 
-            transform: scale(1.15); z-index: 1000;
-            filter: blur(0px) brightness(1.2); 
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-        }
+    /* 5. THE 3x3 GRID CONTAINER (CENTRALIZED) */
+    #archive-content {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%); /* THE FIX: Forces center regardless of text */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, filter 0.6s ease;
+        z-index: 50; /* Sits above everything */
+    }
 
-        .album-info { position: absolute; inset: 0; background: rgba(0,0,0,0.9); opacity: 0; padding: 10px; transition: 0.3s; pointer-events: none; }
-        .album:hover .album-info { opacity: 1; pointer-events: auto; }
-        
-        .tracklist { list-style: none; padding: 0; margin: 0; }
-        .tracklist li { font-size: 9px; padding: 5px 0; border-bottom: 1px solid #222; cursor: pointer; }
-        .tracklist li:hover { color: #888; }
+    .music-active #archive-content {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
 
-        /* INITIALIZE SCREEN */
-        #unlocker { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    </style>
-</head>
+    /* 6. THE GRID & BLUR */
+    .album-grid { 
+        display: grid; grid-template-columns: repeat(3, 1fr); 
+        gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
+    }
+    
+    body.is-previewing #archive-content { filter: blur(25px) brightness(0.2); }
+    
+    .album { background: #000; aspect-ratio: 1/1; position: relative; background-size: cover; transition: 0.4s; }
+    
+    /* THE FOREFRONT POP */
+    .album:hover { 
+        transform: scale(1.2); z-index: 1000;
+        filter: blur(0px) brightness(1.2); /* Break the blur */
+    }
+    
+    /* ... Keep your existing album-info and tracklist CSS ... */
+</style>
+
 <body>
-
-    <div id="unlocker" onclick="this.style.display='none';">
-        <div style="border: 1px solid #fff; padding: 25px;">[ INITIALIZE_SYSTEM ]</div>
-    </div>
-
     <div class="page-container" id="master-stack">
         
         <div class="panel" onclick="this.parentElement.classList.add('music-active')">
-            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.classList.remove('music-active')">MUSIC</h2>
-            <div id="archive-blur-layer" onclick="event.stopPropagation()">
+            <h2 onclick="event.stopPropagation(); document.getElementById('master-stack').classList.remove('music-active')">
+                MUSIC
+            </h2>
+
+            <div id="archive-content" onclick="event.stopPropagation()">
                 <div class="album-grid">
                     <div class="album" style="background-image: url('project_1.jpg');" 
                          onmouseenter="document.body.classList.add('is-previewing')" 
                          onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
                         <div class="album-info">
+                            <h2>PRJ_001</h2>
                             <ul class="tracklist">
-                                <li onmouseenter="startPreview('test1.mp3', this)">MASHUP_V1</li>
-                                <li onmouseenter="startPreview('test2.mp3', this)">MASHUP_V2</li>
-                                <li onmouseenter="startPreview('test3.mp3', this)">COSMIC_SLOP</li>
+                                <li onmouseenter="startPreview('test1.mp3', this)">TRACK_01</li>
+                                <li onmouseenter="startPreview('test2.mp3', this)">TRACK_02</li>
                             </ul>
                         </div>
                     </div>
@@ -114,19 +108,5 @@
         <div class="panel"><h2>SHOWS</h2></div>
 
     </div>
-
-    <audio id="global-player"></audio>
-
-    <script>
-        const player = document.getElementById('global-player');
-        function startPreview(file, element) {
-            player.src = './' + file;
-            player.play().catch(e => {});
-        }
-        function stopPreview() {
-            player.pause();
-            player.src = "";
-        }
-    </script>
 </body>
 </html>
