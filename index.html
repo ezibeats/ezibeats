@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE_v04.8</title>
     <style>
+
+        /* 1. Force the active panel to the absolute front */
+.music-active .panel:nth-child(1),
+.merch-active .panel:nth-child(2),
+.shows-active .panel:nth-child(3) {
+    z-index: 999 !important; /* Higher than everything else */
+    pointer-events: auto !important; /* Ensures clicks hit the grid */
+}
+
+/* 2. Ensure the other panels don't "overlap" the active one */
+.music-active .panel:nth-child(2), 
+.music-active .panel:nth-child(3) {
+    z-index: 1;
+    pointer-events: none; /* Stops the bottom bars from stealing your mouse */
+}
+
+/* 3. The Final Grid Correction */
+#archive-content {
+    z-index: 1000; /* Sits inside the panel, but on top of the text */
+    pointer-events: auto;
+}
         /* 1. CORE SYSTEM */
         body { 
             background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
