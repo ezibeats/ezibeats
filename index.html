@@ -44,4 +44,128 @@
         .merch-active .panel:nth-child(1), .merch-active .panel:nth-child(3),
         .shows-active .panel:nth-child(1), .shows-active .panel:nth-child(2) { 
             flex: 0.15; opacity: 0.2; filter: grayscale(1) blur(5px); 
-            pointer-events: none; /* Stops background bars from stealing mouse focus
+            pointer-events: none; /* Stops background bars from stealing mouse focus */
+        }
+
+        /* 4. HEADER LABELS */
+        .music-active .panel:nth-child(1) h2, 
+        .merch-active .panel:nth-child(2) h2, 
+        .shows-active .panel:nth-child(3) h2 { 
+            font-size: 12px; position: absolute; top: 20px; left: 20px; 
+            letter-spacing: 5px; pointer-events: auto; cursor: pointer;
+        }
+
+        /* 5. CONTENT LAYER (CENTERED GRID) */
+        .content-layer {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            opacity: 0; visibility: hidden; transition: 0.6s; z-index: 1000; width: 100%;
+            display: flex; justify-content: center;
+        }
+
+        .music-active #archive-content, 
+        .merch-active #merch-content, 
+        .shows-active #shows-content {
+            opacity: 1; visibility: visible; pointer-events: auto;
+        }
+
+        /* 6. THE GRID & BLUR ENGINE */
+        .album-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); 
+            gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
+        }
+
+        /* Blur neighbors when one is hovered */
+        .album-grid:hover .album:not(:hover) {
+            filter: blur(15px) brightness(0.2) grayscale(100%);
+            transform: scale(0.95);
+            opacity: 0.4;
+        }
+        
+        .album { 
+            background: #111; aspect-ratio: 1/1; position: relative; 
+            background-size: cover; transition: 0.4s; cursor: crosshair;
+        }
+        
+        .album:hover { 
+            transform: scale(1.2) !important; 
+            z-index: 2000 !important;
+            filter: blur(0px) brightness(1.2) !important; 
+            box-shadow: 0 0 80px rgba(0,0,0,1), 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* TRACKLIST INFO BOX */
+        .album-info { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.98); 
+            opacity: 0; padding: 15px; transition: 0.3s; pointer-events: none;
+        }
+        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+        
+        .tracklist { list-style: none; padding: 0; margin: 0; }
+        .tracklist li { font-size: 9px; padding: 8px 0; border-bottom: 1px solid #222; }
+        .tracklist li:hover { color: #888; }
+
+        .placeholder-text { font-size: 10px; letter-spacing: 4px; text-align: center; line-height: 2; }
+    </style>
+</head>
+<body>
+
+    <div class="page-container" id="master-stack">
+        
+        <div class="panel" onclick="this.parentElement.className='page-container music-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MUSIC</h2>
+            <div id="archive-content" class="content-layer" onclick="event.stopPropagation()">
+                <div class="album-grid">
+                    <div class="album" style="background-image: url('prj1.jpg');" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                        <div class="album-info">
+                            <h3>PRJ_001</h3>
+                            <ul class="tracklist">
+                                <li onmouseenter="startPreview('test1.mp3')">TRACK_01</li>
+                                <li onmouseenter="startPreview('test2.mp3')">TRACK_02</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="album" style="background-image: url('prj2.jpg');" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                        <div class="album-info">
+                            <h3>PRJ_002</h3>
+                            <ul class="tracklist">
+                                <li onmouseenter="startPreview('test3.mp3')">TRACK_01</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="album"></div><div class="album"></div><div class="album"></div>
+                    <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" onclick="this.parentElement.className='page-container merch-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MERCH</h2>
+            <div id="merch-content" class="content-layer">
+                <div class="placeholder-text">[ HEAVY_GOODS_SYSTEM ]<br>- DROP_01: TACTICAL_FLIGHT_JACKET<br>- DROP_02: LOGOWEAR</div>
+            </div>
+        </div>
+
+        <div class="panel" onclick="this.parentElement.className='page-container shows-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">SHOWS</h2>
+            <div id="shows-content" class="content-layer">
+                <div class="placeholder-text">[ LIVE_INTEL ]<br>- CHICAGO // 2026<br>- LONDON // 2026</div>
+            </div>
+        </div>
+
+    </div>
+
+    <audio id="global-player"></audio>
+
+    <script>
+        const player = document.getElementById('global-player');
+        function startPreview(file) {
+            player.src = './' + file;
+            player.play().catch(e => { console.log("Audio play blocked by browser.") });
+        }
+        function stopPreview() {
+            player.pause();
+            player.src = "";
+        }
+    </script>
+</body>
+</html>
