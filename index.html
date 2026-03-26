@@ -3,110 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v04.6</title>
+    <title>EZIBEATS_ARCHIVE_v04.7</title>
     <style>
-        b<style>
-    /* ... Keep your existing core styles (body, fonts) ... */
+        body { 
+            background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; text-transform: uppercase; overflow: hidden;
+        }
 
-    /* 1. THE MAIN STACK */
-    .page-container {
-        display: flex; flex-direction: column;
-        height: 100vh; width: 100vw;
-        transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
-    }
+        .page-container {
+            display: flex; flex-direction: column;
+            height: 100vh; width: 100vw;
+            transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
 
-    /* 2. THE PANELS */
-    .panel {
-        flex: 1; border-bottom: 1px solid #fff;
-        display: flex; align-items: center; justify-content: center;
-        position: relative; overflow: hidden;
-        transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
-    }
+        .panel {
+            flex: 1; border-bottom: 1px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
+        }
 
-    /* 3. THE TEXT LABEL (Moves to Top-Left on Click) */
-    .panel h2 { 
-        font-size: 8vw; font-weight: 900; pointer-events: none; 
-        transition: all 0.5s ease; z-index: 10; 
-    }
+        .panel h2 { 
+            font-size: 8vw; font-weight: 900; pointer-events: none; 
+            transition: all 0.5s ease; z-index: 10; 
+        }
 
-    /* 4. THE EXPANDED STATE (THE FIX) */
-    .music-active .panel:nth-child(1) { 
-        flex: 15; /* Expands much further */
-        display: block; /* Disables flex centering to allow absolute centering of the grid */
-    }
+        /* ACTIVE STATES */
+        .music-active .panel:nth-child(1) { flex: 20; display: block; }
+        .merch-active .panel:nth-child(2) { flex: 20; display: block; }
+        .shows-active .panel:nth-child(3) { flex: 20; display: block; }
 
-    .music-active .panel:nth-child(1) h2 { 
-        font-size: 12px; position: absolute; top: 20px; left: 20px; 
-        letter-spacing: 5px; pointer-events: auto; cursor: pointer;
-    }
+        /* COMPRESSED STATES */
+        .music-active .panel:nth-child(2), .music-active .panel:nth-child(3),
+        .merch-active .panel:nth-child(1), .merch-active .panel:nth-child(3),
+        .shows-active .panel:nth-child(1), .shows-active .panel:nth-child(2) { 
+            flex: 0.15; opacity: 0.4; filter: grayscale(1); 
+        }
 
-    /* 5. THE 3x3 GRID CONTAINER (CENTRALIZED) */
-    #archive-content {
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%); /* THE FIX: Forces center regardless of text */
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.6s ease, filter 0.6s ease;
-        z-index: 50; /* Sits above everything */
-    }
+        /* HEADER LABELS */
+        .music-active .panel:nth-child(1) h2, 
+        .merch-active .panel:nth-child(2) h2, 
+        .shows-active .panel:nth-child(3) h2 { 
+            font-size: 12px; position: absolute; top: 20px; left: 20px; 
+            letter-spacing: 5px; pointer-events: auto; cursor: pointer;
+        }
 
-    .music-active #archive-content {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
+        /* CONTENT LAYER */
+        .content-layer {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            opacity: 0; visibility: hidden; transition: 0.6s; z-index: 50; width: 100%;
+            display: flex; justify-content: center;
+        }
 
-    /* 6. THE GRID & BLUR */
-    .album-grid { 
-        display: grid; grid-template-columns: repeat(3, 1fr); 
-        gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
-    }
-    
-    body.is-previewing #archive-content { filter: blur(25px) brightness(0.2); }
-    
-    .album { background: #000; aspect-ratio: 1/1; position: relative; background-size: cover; transition: 0.4s; }
-    
-    /* THE FOREFRONT POP */
-    .album:hover { 
-        transform: scale(1.2); z-index: 1000;
-        filter: blur(0px) brightness(1.2); /* Break the blur */
-    }
-    
-    /* ... Keep your existing album-info and tracklist CSS ... */
-</style>
+        .music-active #archive-content, .merch-active #merch-content, .shows-active #shows-content {
+            opacity: 1; visibility: visible; pointer-events: auto;
+        }
 
+        /* MUSIC GRID */
+        .album-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); 
+            gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
+        }
+        
+        body.is-previewing #archive-content { filter: blur(20px) brightness(0.2); }
+        
+        .album { 
+            background: #111; aspect-ratio: 1/1; position: relative; 
+            background-size: cover; transition: 0.4s; cursor: crosshair;
+        }
+        
+        .album:hover { transform: scale(1.15); z-index: 1000; filter: blur(0px) brightness(1.2); }
+
+        .album-info { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.95); 
+            opacity: 0; padding: 15px; transition: 0.3s; pointer-events: none;
+        }
+        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+        
+        .tracklist { list-style: none; padding: 0; margin: 0; }
+        .tracklist li { font-size: 9px; padding: 8px 0; border-bottom: 1px solid #222; }
+        .tracklist li:hover { color: #888; }
+
+        /* PLACEHOLDER TEXT FOR MERCH/SHOWS */
+        .placeholder-text { font-size: 10px; letter-spacing: 4px; text-align: center; line-height: 2; }
+    </style>
+</head>
 <body>
+
     <div class="page-container" id="master-stack">
         
-        <div class="panel" onclick="this.parentElement.classList.add('music-active')">
-            <h2 onclick="event.stopPropagation(); document.getElementById('master-stack').classList.remove('music-active')">
-                MUSIC
-            </h2>
-
-            <div id="archive-content" onclick="event.stopPropagation()">
+        <div class="panel" onclick="this.parentElement.className='page-container music-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MUSIC</h2>
+            <div id="archive-content" class="content-layer" onclick="event.stopPropagation()">
                 <div class="album-grid">
-                    <div class="album" style="background-image: url('project_1.jpg');" 
-                         onmouseenter="document.body.classList.add('is-previewing')" 
-                         onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
-                        <div class="album-info">
-                            <h2>PRJ_001</h2>
-                            <ul class="tracklist">
-                                <li onmouseenter="startPreview('test1.mp3', this)">TRACK_01</li>
-                                <li onmouseenter="startPreview('test2.mp3', this)">TRACK_02</li>
-                            </ul>
-                        </div>
+                    <div class="album" style="background-image: url('prj1.jpg');" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                        <div class="album-info"><h3>PRJ_001</h3><ul class="tracklist"><li onmouseenter="startPreview('test1.mp3')">TRACK_01</li><li onmouseenter="startPreview('test2.mp3')">TRACK_02</li></ul></div>
                     </div>
-                    <div class="album"></div><div class="album"></div>
+                    <div class="album" style="background-image: url('prj2.jpg');" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                        <div class="album-info"><h3>PRJ_002</h3><ul class="tracklist"><li onmouseenter="startPreview('test3.mp3')">TRACK_01</li></ul></div>
+                    </div>
+                    <div class="album" style="background-image: url('prj3.jpg');" onmouseenter="document.body.classList.add('is-previewing')" onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                        <div class="album-info"><h3>PRJ_003</h3><ul class="tracklist"><li onmouseenter="startPreview('test4.mp3')">TRACK_01</li></ul></div>
+                    </div>
                     <div class="album"></div><div class="album"></div><div class="album"></div>
                     <div class="album"></div><div class="album"></div><div class="album"></div>
                 </div>
             </div>
         </div>
 
-        <div class="panel"><h2>MERCH</h2></div>
-        <div class="panel"><h2>SHOWS</h2></div>
+        <div class="panel" onclick="this.parentElement.className='page-container merch-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MERCH</h2>
+            <div id="merch-content" class="content-layer">
+                <div class="placeholder-text">
+                    [ HEAVY_GOODS_SYSTEM ]<br>
+                    - DROP_01: TACTICAL_FLIGHT_JACKET (TBA)<br>
+                    - DROP_02: ARCHIVE_LOGOWEAR (TBA)
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" onclick="this.parentElement.className='page-container shows-active'">
+            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">SHOWS</h2>
+            <div id="shows-content" class="content-layer">
+                <div class="placeholder-text">
+                    [ LIVE_INTEL ]<br>
+                    - CHICAGO_IL // 2026<br>
+                    - LONDON_UK // 2026
+                </div>
+            </div>
+        </div>
 
     </div>
+
+    <audio id="global-player"></audio>
+
+    <script>
+        const player = document.getElementById('global-player');
+        function startPreview(file) {
+            player.src = './' + file;
+            player.play().catch(e => { console.log("Audio blocked") });
+        }
+        function stopPreview() {
+            player.pause();
+            player.src = "";
+        }
+    </script>
 </body>
 </html>
