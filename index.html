@@ -5,28 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE_v04.8</title>
     <style>
-
-        /* 1. Force the active panel to the absolute front */
-.music-active .panel:nth-child(1),
-.merch-active .panel:nth-child(2),
-.shows-active .panel:nth-child(3) {
-    z-index: 999 !important; /* Higher than everything else */
-    pointer-events: auto !important; /* Ensures clicks hit the grid */
-}
-
-/* 2. Ensure the other panels don't "overlap" the active one */
-.music-active .panel:nth-child(2), 
-.music-active .panel:nth-child(3) {
-    z-index: 1;
-    pointer-events: none; /* Stops the bottom bars from stealing your mouse */
-}
-
-/* 3. The Final Grid Correction */
-#archive-content {
-    z-index: 1000; /* Sits inside the panel, but on top of the text */
-    pointer-events: auto;
-}
-        /* 1. CORE SYSTEM */
+        /* 1. GLOBAL SYSTEM SETTINGS */
         body { 
             background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
             margin: 0; padding: 0; text-transform: uppercase; overflow: hidden;
@@ -51,32 +30,18 @@
             transition: all 0.5s ease; z-index: 10; 
         }
 
-        /* 2. ACTIVE STATES - THE EXPANSION */
-        .music-active .panel:nth-child(1) { flex: 20; display: block; z-index: 100; }
-        .merch-active .panel:nth-child(2) { flex: 20; display: block; z-index: 100; }
-        .shows-active .panel:nth-child(3) { flex: 20; display: block; z-index: 100; }
+        /* 2. ACTIVE STATES (THE FRONT-ROW FIX) */
+        .music-active .panel:nth-child(1),
+        .merch-active .panel:nth-child(2),
+        .shows-active .panel:nth-child(3) {
+            flex: 20; display: block; 
+            z-index: 999 !important; /* Pulls active panel to the absolute front */
+            pointer-events: auto !important; 
+        }
 
-        /* 3. COMPRESSED STATES - THE SHRINK */
+        /* 3. COMPRESSED STATES (THE BACKGROUND FADE) */
         .music-active .panel:nth-child(2), .music-active .panel:nth-child(3),
         .merch-active .panel:nth-child(1), .merch-active .panel:nth-child(3),
         .shows-active .panel:nth-child(1), .shows-active .panel:nth-child(2) { 
-            flex: 0.15; opacity: 0.4; filter: grayscale(1); 
-        }
-
-        /* 4. HEADER LABELS */
-        .music-active .panel:nth-child(1) h2, 
-        .merch-active .panel:nth-child(2) h2, 
-        .shows-active .panel:nth-child(3) h2 { 
-            font-size: 12px; position: absolute; top: 20px; left: 20px; 
-            letter-spacing: 5px; pointer-events: auto; cursor: pointer;
-        }
-
-        /* 5. CONTENT LAYERS */
-        .content-layer {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            opacity: 0; visibility: hidden; transition: 0.6s; z-index: 50; width: 100%;
-            display: flex; justify-content: center;
-        }
-
-        .music-active #archive-content, 
-        .merch-active #
+            flex: 0.15; opacity: 0.2; filter: grayscale(1) blur(5px); 
+            pointer-events: none; /* Stops background bars from stealing mouse focus
