@@ -2,114 +2,169 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EZIBEATS_ARCHIVE_v02_STABLE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZIBEATS_ARCHIVE_v03.4</title>
     <style>
+        /* SYSTEM CORE */
         body { 
             background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
-            padding: 40px; text-transform: uppercase; margin: 0; letter-spacing: 1px;
+            margin: 0; padding: 0; text-transform: uppercase; overflow-x: hidden;
+            letter-spacing: 1px;
         }
-        h1 { font-size: 14px; letter-spacing: 4px; margin-bottom: 30px; border-bottom: 2px solid #fff; padding-bottom: 10px; }
 
-        /* THE GRID */
+        /* BLUR ENGINE */
+        #main-content {
+            transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 40px;
+        }
+        body.is-previewing #main-content {
+            filter: blur(25px) brightness(0.3);
+        }
+
+        /* UPPER SECTION (The 3x3 Control Panel) */
+        .upper-section {
+            height: 50vh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid #222;
+        }
+
         .album-grid { 
-            display: grid; grid-template-columns: repeat(5, 1fr); 
-            gap: 2px; background: #fff; border: 2px solid #fff; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 2px; 
+            background: #fff; 
+            border: 2px solid #fff;
+            width: 450px; 
         }
         
         .album { 
-            background: #000; aspect-ratio: 1/1; position: relative; overflow: hidden; 
-            background-position: center; background-size: cover;
-            filter: grayscale(100%); transition: 0.5s; opacity: 0.6;
+            background: #000; aspect-ratio: 1/1; position: relative; 
+            cursor: crosshair; transition: transform 0.4s ease;
+            background-size: cover; background-position: center;
         }
 
-        .album:hover { opacity: 1; filter: grayscale(0%); z-index: 10; }
+        .album:hover { 
+            transform: scale(1.1);
+            z-index: 100;
+        }
 
-        /* THE HOVER PANEL */
         .album-info { 
-            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.9); 
-            padding: 20px; display: flex; flex-direction: column; 
-            opacity: 0; transition: 0.3s; pointer-events: none; 
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.95);
+            padding: 15px; display: flex; flex-direction: column; 
+            opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none;
         }
-        
         .album:hover .album-info { opacity: 1; pointer-events: auto; }
-        h2 { font-size: 12px; margin: 0 0 10px 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        h2 { font-size: 10px; margin: 0 0 10px 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
         
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .tracklist li { 
-            font-size: 10px; padding: 10px 0; border-bottom: 1px solid #222; 
-            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+            font-size: 9px; padding: 8px 0; border-bottom: 1px solid #111; 
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
         }
-        .tracklist li:hover { background: #fff; color: #000; }
+        .tracklist li:hover { color: #888; }
 
-        /* PULSING STATUS DOT */
-        .status-dot { width: 6px; height: 6px; background: #ff0000; border-radius: 50%; display: none; }
+        /* AUDIO STATUS */
+        .status-dot { width: 5px; height: 5px; background: #ff0000; border-radius: 50%; display: none; box-shadow: 0 0 5px #ff0000; }
         .playing .status-dot { display: block; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+        .timer-container { width: 100%; height: 1px; background: #222; margin-top: auto; }
+        .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
+
+        /* LOWER SECTION */
+        .category-row {
+            border-top: 1px solid #fff; padding: 50px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: 0.3s;
         }
-        
-        /* PROGRESS BAR */
-        .timer-container { width: 100%; height: 2px; background: #222; margin-top: auto; }
-        .timer-bar { width: 0%; height: 100%; background: #fff; }
-        
-        /* INITIALIZE SYSTEM BOX */
+        .category-row:last-child { border-bottom: 1px solid #fff; }
+        .category-row:hover { background: #fff; color: #000; }
+        .category-row h3 { font-size: 7vw; margin: 0; font-weight: 900; }
+
+        /* INITIALIZE SCREEN */
         #unlocker { 
             position: fixed; inset: 0; background: #000; z-index: 9999; 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.5s;
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 600px) {
+            .album-grid { width: 90%; }
+            .category-row h3 { font-size: 12vw; }
         }
     </style>
 </head>
 <body>
 
-    <div id="unlocker" onclick="this.style.display='none';">
-        <div style="border: 1px solid #fff; padding: 25px; letter-spacing: 3px;">[ INITIALIZE_SYSTEM ]</div>
+    <div id="unlocker" onclick="this.style.opacity='0'; setTimeout(()=>{this.style.display='none'}, 500);">
+        <div style="border: 1px solid #fff; padding: 25px;">[ INITIALIZE_SYSTEM ]</div>
     </div>
 
-    <h1>EZIBEATS // ARCHIVE_V02</h1>
-
-    <div class="album-grid">
+    <div id="main-content">
         
-        <div class="album" style="background-image: url('project_1.jpg');" onmouseleave="stopPreview()">
-            <div class="album-info">
-                <h2>PROJECT_001</h2>
-                <ul class="tracklist">
-                    <li onmouseenter="startPreview('test1.mp3', this)">TEST_01 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test2.mp3', this)">TEST_02 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test3.mp3', this)">TEST_03 <span class="status-dot"></span></li>
-                </ul>
-                <div class="timer-container"><div class="timer-bar"></div></div>
+        <div class="upper-section">
+            <h1 style="font-size: 10px; letter-spacing: 5px; margin-bottom: 20px;">AUDIO_ARCHIVE_v03.4</h1>
+            
+            <div class="album-grid">
+                <div class="album" style="background-image: url('project_1.jpg');" 
+                     onmouseenter="document.body.classList.add('is-previewing')" 
+                     onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                    <div class="album-info">
+                        <h2>PROJECT_001</h2>
+                        <ul class="tracklist">
+                            <li onmouseenter="startPreview('test1.mp3', this)">UNTITLED_MASHUP_V1 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test2.mp3', this)">UNTITLED_MASHUP_V2 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test3.mp3', this)">COSMIC_SLOPURTUNITY <span class="status-dot"></span></li>
+                        </ul>
+                        <div class="timer-container"><div class="timer-bar"></div></div>
+                    </div>
+                </div>
+
+                <div class="album" style="background-image: url('project_2.jpg');" 
+                     onmouseenter="document.body.classList.add('is-previewing')" 
+                     onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                    <div class="album-info">
+                        <h2>PROJECT_002</h2>
+                        <ul class="tracklist">
+                            <li onmouseenter="startPreview('test4.mp3', this)">REMEMBER_PILLS_V1 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test5.mp3', this)">REMEMBER_PILLS_V2 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test6.mp3', this)">UNTITLED_VOCALS <span class="status-dot"></span></li>
+                        </ul>
+                        <div class="timer-container"><div class="timer-bar"></div></div>
+                    </div>
+                </div>
+
+                <div class="album" style="background-image: url('project_3.jpg');" 
+                     onmouseenter="document.body.classList.add('is-previewing')" 
+                     onmouseleave="document.body.classList.remove('is-previewing'); stopPreview()">
+                    <div class="album-info">
+                        <h2>PROJECT_003</h2>
+                        <ul class="tracklist">
+                            <li onmouseenter="startPreview('test7.mp3', this)">TEST_TRACK_07 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test8.mp3', this)">TEST_TRACK_08 <span class="status-dot"></span></li>
+                            <li onmouseenter="startPreview('test9.mp3', this)">TEST_TRACK_09 <span class="status-dot"></span></li>
+                        </ul>
+                        <div class="timer-container"><div class="timer-bar"></div></div>
+                    </div>
+                </div>
+
+                <div class="album"></div><div class="album"></div><div class="album"></div>
+                <div class="album"></div><div class="album)</div><div class="album"></div>
             </div>
         </div>
 
-        <div class="album" style="background-image: url('project_2.jpg');" onmouseleave="stopPreview()">
-            <div class="album-info">
-                <h2>PROJECT_002</h2>
-                <ul class="tracklist">
-                    <li onmouseenter="startPreview('test4.mp3', this)">TEST_04 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test5.mp3', this)">TEST_05 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test6.mp3', this)">TEST_06 <span class="status-dot"></span></li>
-                </ul>
-                <div class="timer-container"><div class="timer-bar"></div></div>
-            </div>
+        <div class="lower-section">
+            <div class="category-row"><h3>MUSIC</h3></div>
+            <div class="category-row"><h3>MERCH</h3></div>
+            <div class="category-row"><h3>SHOWS</h3></div>
         </div>
 
-        <div class="album" style="background-image: url('project_3.jpg');" onmouseleave="stopPreview()">
-            <div class="album-info">
-                <h2>PROJECT_003</h2>
-                <ul class="tracklist">
-                    <li onmouseenter="startPreview('test7.mp3', this)">TEST_07 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test8.mp3', this)">TEST_08 <span class="status-dot"></span></li>
-                    <li onmouseenter="startPreview('test9.mp3', this)">TEST_09 <span class="status-dot"></span></li>
-                </ul>
-                <div class="timer-container"><div class="timer-bar"></div></div>
-            </div>
-        </div>
-        
-        <div class="album"></div><div class="album"></div>
     </div>
 
     <audio id="global-player"></audio>
@@ -124,12 +179,11 @@
             document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
             
             element.classList.add('playing');
-            const album = element.closest('.album');
-            const timerBar = album.querySelector('.timer-bar');
+            const timerBar = element.closest('.album-info').querySelector('.timer-bar');
 
             player.pause();
-            player.src = './' + file; // Unified root path
-            player.play().catch(e => console.log("System initialization required."));
+            player.src = './' + file;
+            player.play().catch(e => {});
 
             let progress = 0;
             barInterval = setInterval(() => {
@@ -143,7 +197,7 @@
             clearInterval(barInterval);
             player.pause();
             player.src = "";
-            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+            document.querySelectorAll('.timer-bar').forEach(bar => bar.style.width = "0%");
             document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
         }
     </script>
