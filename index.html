@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v05.0</title>
+    <title>EZIBEATS_ARCHIVE_v05.2</title>
     <style>
         /* 1. GLOBAL SYSTEM SETTINGS */
         body { 
@@ -23,6 +23,7 @@
             position: relative; overflow: hidden;
             transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
             z-index: 1;
+            cursor: pointer; /* Entire panel is now a trigger */
         }
 
         .panel h2 { 
@@ -30,75 +31,70 @@
             transition: all 0.5s ease; z-index: 10; 
         }
 
-        /* 2. THE EXPANSION FIX (FOR ALL PANELS) */
+        /* 2. NAVIGATION & EXIT SYSTEM */
+        .close-btn {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 11px; font-weight: 100; letter-spacing: 2px;
+            cursor: pointer; opacity: 0; visibility: hidden;
+            transition: 0.4s; z-index: 2001;
+            padding: 8px 12px; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .close-btn:hover { background: #fff; color: #000; border-color: #fff; }
+
+        .music-active .close-btn, .merch-active .close-btn, .shows-active .close-btn {
+            opacity: 1; visibility: visible;
+        }
+
+        /* 3. ACTIVE & MINIMIZED STATES */
         .music-active .panel:nth-child(1),
         .merch-active .panel:nth-child(2),
         .shows-active .panel:nth-child(3) {
-            flex: 60; /* Forced expansion to clear the stack */
-            display: block; 
-            z-index: 999 !important; 
-            pointer-events: auto !important; 
+            flex: 80; display: block; z-index: 999 !important; cursor: default;
         }
 
-        /* 3. COMPRESSED STATES */
-        .music-active .panel:nth-child(2), .music-active .panel:nth-child(3),
-        .merch-active .panel:nth-child(1), .merch-active .panel:nth-child(3),
-        .shows-active .panel:nth-child(1), .shows-active .panel:nth-child(2) { 
-            flex: 0.1; opacity: 0.1; filter: grayscale(1) blur(10px); 
-            pointer-events: none; 
+        /* Minimized panels remain clickable "Hot-Bars" */
+        .music-active .panel:not(:nth-child(1)),
+        .merch-active .panel:not(:nth-child(2)),
+        .shows-active .panel:not(:nth-child(3)) { 
+            flex: 1.5; opacity: 0.4; filter: grayscale(1) blur(2px); 
+            z-index: 1001; /* Keep them above the active content layer */
         }
 
-        /* 4. NAVIGATION LABELS */
+        .panel:not(.active):hover {
+            opacity: 1 !important; filter: none !important; background: #111;
+        }
+
+        /* Labels adjust when active */
         .music-active .panel:nth-child(1) h2, 
         .merch-active .panel:nth-child(2) h2, 
         .shows-active .panel:nth-child(3) h2 { 
             font-size: 11px; position: absolute; top: 20px; left: 20px; 
-            letter-spacing: 6px; pointer-events: auto; cursor: pointer;
+            letter-spacing: 6px; 
         }
 
-        /* 5. CONTENT LAYER */
+        /* 4. CONTENT GRID */
         .content-layer {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             opacity: 0; visibility: hidden; transition: 0.6s; z-index: 1000; width: 100%;
             display: flex; justify-content: center;
         }
 
-        .music-active #archive-content, 
-        .merch-active #merch-content, 
-        .shows-active #shows-content {
+        .music-active #archive-content, .merch-active #merch-content, .shows-active #shows-content {
             opacity: 1; visibility: visible; pointer-events: auto;
         }
 
-        /* 6. GRID ENGINE */
         .album-grid { 
             display: grid; grid-template-columns: repeat(3, 1fr); 
             gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
         }
-
-        /* Global blur trigger when any slot is hovered */
-        .album-grid:hover .album:not(:hover) {
-            filter: blur(20px) brightness(0.1) grayscale(100%);
-            transform: scale(0.92);
-        }
         
-        .album { 
-            background: #111; aspect-ratio: 1/1; position: relative; 
-            background-size: cover; transition: 0.4s; cursor: crosshair;
-        }
-        
-        .album:hover { 
-            transform: scale(1.15) !important; 
-            z-index: 2000 !important;
-            filter: blur(0px) brightness(1.2) !important; 
-            box-shadow: 0 0 100px rgba(0,0,0,1);
-        }
+        .album { background: #111; aspect-ratio: 1/1; position: relative; background-size: cover; transition: 0.4s; cursor: crosshair; }
+        .album:hover { transform: scale(1.1) !important; z-index: 2000 !important; box-shadow: 0 0 100px #000; }
+        .album-grid:hover .album:not(:hover) { filter: blur(15px) brightness(0.2); }
 
-        .album-info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.98); 
-            opacity: 0; padding: 15px; transition: 0.3s; pointer-events: none;
-        }
+        /* TRACKLIST */
+        .album-info { position: absolute; inset: 0; background: rgba(0,0,0,0.98); opacity: 0; padding: 15px; transition: 0.3s; pointer-events: none; }
         .album:hover .album-info { opacity: 1; pointer-events: auto; }
-        
         .tracklist { list-style: none; padding: 0; margin: 0; }
         .tracklist li { font-size: 9px; padding: 8px 0; border-bottom: 1px solid #222; }
         .tracklist li:hover { color: #888; }
@@ -111,33 +107,35 @@
     <div class="page-container" id="master-stack">
         
         <div class="panel" onclick="this.parentElement.className='page-container music-active'">
-            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MUSIC</h2>
+            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
+            <h2>MUSIC</h2>
             <div id="archive-content" class="content-layer" onclick="event.stopPropagation()">
                 <div class="album-grid">
-                    <div class="album" style="background-image: url('prj1.jpg');" onmouseenter="startPreview('test1.mp3')" onmouseleave="stopPreview()">
+                    <div class="album" style="background-image: url('prj1.jpg');">
                         <div class="album-info">
                             <h3>PRJ_001</h3>
                             <ul class="tracklist">
-                                <li>TRACK_01</li>
+                                <li onmouseenter="startPreview('test1.mp3')">01_TRACK_TITLE_A</li>
+                                <li onmouseenter="startPreview('test2.mp3')">02_TRACK_TITLE_B</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="album"></div><div class="album"></div><div class="album"></div>
-                    <div class="album"></div><div class="album"></div><div class="album"></div>
-                    <div class="album"></div><div class="album"></div>
+                    <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
                 </div>
             </div>
         </div>
 
         <div class="panel" onclick="this.parentElement.className='page-container merch-active'">
-            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">MERCH</h2>
+            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
+            <h2>MERCH</h2>
             <div id="merch-content" class="content-layer" onclick="event.stopPropagation()">
-                <div class="placeholder-text">[ HEAVY_GOODS_SYSTEM ]<br>- DROP_01: TACTICAL_FLIGHT_JACKET<br>- DROP_02: LOGOWEAR</div>
+                <div class="placeholder-text">[ HEAVY_GOODS_SYSTEM ]<br>- DROP_01: TACTICAL_FLIGHT_JACKET</div>
             </div>
         </div>
 
         <div class="panel" onclick="this.parentElement.className='page-container shows-active'">
-            <h2 onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">SHOWS</h2>
+            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
+            <h2>SHOWS</h2>
             <div id="shows-content" class="content-layer" onclick="event.stopPropagation()">
                 <div class="placeholder-text">[ LIVE_INTEL ]<br>- CHICAGO // 2026<br>- LONDON // 2026</div>
             </div>
@@ -151,12 +149,14 @@
         const player = document.getElementById('global-player');
         function startPreview(file) {
             player.src = './' + file;
-            player.play().catch(e => { console.log("Interaction required for audio.") });
+            player.play().catch(e => { console.log("Audio blocked.") });
         }
         function stopPreview() {
-            player.pause();
-            player.src = "";
+            player.pause(); player.src = "";
         }
+        document.querySelectorAll('.album-grid').forEach(grid => {
+            grid.addEventListener('mouseleave', stopPreview);
+        });
     </script>
 </body>
 </html>
