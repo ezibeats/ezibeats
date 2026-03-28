@@ -3,191 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v05.2</title>
+    <title>EZIBEATS_ARCHIVE_V06</title>
     <style>
-        /* 1. GLOBAL SYSTEM SETTINGS */
-        body { 
-            background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; text-transform: uppercase; overflow: hidden;
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #ff0000; /* Tactical Red */
+            --grid-gap: 10px;
         }
 
-        .page-container {
-            display: flex; flex-direction: column;
-            height: 100vh; width: 100vw;
-            transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        body, html {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
         }
 
-        .panel {
-            flex: 1; border-bottom: 1px solid #fff;
-            display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-            transition: all 0.7s cubic-bezier(0.85, 0, 0.15, 1);
-            z-index: 1;
-            cursor: pointer; /* Entire panel is now a trigger */
+        /* --- GLOBAL UI --- */
+        #ui-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 100;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .panel h2 { 
-            font-size: 8vw; font-weight: 900; pointer-events: none; 
-            transition: all 0.5s ease; z-index: 10; 
-        }
-
-        /* 2. NAVIGATION & EXIT SYSTEM */
-        .close-btn {
-            position: absolute; top: 20px; right: 20px;
-            font-size: 11px; font-weight: 100; letter-spacing: 2px;
-            cursor: pointer; opacity: 0; visibility: hidden;
-            transition: 0.4s; z-index: 2001;
-            padding: 8px 12px; border: 1px solid rgba(255,255,255,0.2);
-        }
-        .close-btn:hover { background: #fff; color: #000; border-color: #fff; }
-
-        .music-active .close-btn, .merch-active .close-btn, .shows-active .close-btn {
-            opacity: 1; visibility: visible;
-        }
-
-        /* 3. ACTIVE & MINIMIZED STATES */
-        .music-active .panel:nth-child(1),
-        .merch-active .panel:nth-child(2),
-        .shows-active .panel:nth-child(3) {
-            flex: 80; display: block; z-index: 999 !important; cursor: default;
-        }
-
-        /* Minimized panels remain clickable "Hot-Bars" */
-        .music-active .panel:not(:nth-child(1)),
-        .merch-active .panel:not(:nth-child(2)),
-        .shows-active .panel:not(:nth-child(3)) { 
-            flex: 1.5; opacity: 0.4; filter: grayscale(1) blur(2px); 
-            z-index: 1001; /* Keep them above the active content layer */
-        }
-
-        .panel:not(.active):hover {
-            opacity: 1 !important; filter: none !important; background: #111;
-        }
-
-        /* Labels adjust when active */
-        .music-active .panel:nth-child(1) h2, 
-        .merch-active .panel:nth-child(2) h2, 
-        .shows-active .panel:nth-child(3) h2 { 
-            font-size: 11px; position: absolute; top: 20px; left: 20px; 
-            letter-spacing: 6px; 
-        }
-
-        /* 4. CONTENT GRID */
-        .content-layer {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            opacity: 0; visibility: hidden; transition: 0.6s; z-index: 1000; width: 100%;
-            display: flex; justify-content: center;
-        }
-
-        .music-active #archive-content, .merch-active #merch-content, .shows-active #shows-content {
-            opacity: 1; visibility: visible; pointer-events: auto;
-        }
-
-        .album-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); 
-            gap: 2px; background: #fff; border: 1px solid #fff; width: 450px;
-        }
+        .header { pointer-events: auto; letter-spacing: 5px; font-weight: bold; }
         
-        .album { background: #111; aspect-ratio: 1/1; position: relative; background-size: cover; transition: 0.4s; cursor: crosshair; }
-        .album:hover { transform: scale(1.1) !important; z-index: 2000 !important; box-shadow: 0 0 100px #000; }
-        .album-grid:hover .album:not(:hover) { filter: blur(15px) brightness(0.2); }
+        /* --- NAVIGATION HOT-BAR --- */
+        .nav-bar {
+            pointer-events: auto;
+            display: flex;
+            gap: 30px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
 
-        /* TRACKLIST */
-        .album-info { position: absolute; inset: 0; background: rgba(0,0,0,0.98); opacity: 0; padding: 15px; transition: 0.3s; pointer-events: none; }
-        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+        .nav-item { cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 12px; }
+        .nav-item:hover, .nav-item.active { opacity: 1; color: var(--accent-color); }
+
+        /* --- THE GRID ENGINE --- */
+        #archive-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--grid-gap);
+            width: 90vw;
+            max-width: 1200px;
+        }
+
+        .album {
+            aspect-ratio: 1/1;
+            background-color: #1a1a1a;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Hover Effect */
+        .album:hover {
+            transform: scale(1.02);
+            z-index: 2;
+            border-color: #fff;
+        }
+
+        .album-info {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
+            opacity: 0;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .album:hover .album-info { opacity: 1; }
+
+        .album-info h3 { margin: 0 0 15px 0; font-size: 14px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
         .tracklist { list-style: none; padding: 0; margin: 0; }
-        .tracklist li { font-size: 9px; padding: 8px 0; border-bottom: 1px solid #222; }
-        .tracklist li:hover { color: #888; }
+        .tracklist li {
+            font-size: 10px;
+            padding: 5px 0;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s;
+        }
+        .tracklist li:hover { color: var(--accent-color); padding-left: 5px; }
 
-        .placeholder-text { font-size: 11px; letter-spacing: 5px; text-align: center; line-height: 2.5; }
+        /* Status Placeholder */
+        .empty-slot::before {
+            content: "[ DATA_PENDING ]";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8px;
+            color: #333;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="merch-content" class="content-layer" onclick="event.stopPropagation()">
-    <div class="album-grid">
-        <div class="album" style="background-image: url('jacket_render.jpg');">
-            <div class="album-info">
-                <h3>[ FLIGHT_JACKET_V1 ]</h3>
-                <ul class="tracklist">
-                    <li>MAT: RIPSTOP_GORETEX</li>
-                    <li>COL: PHANTOM_BLACK</li>
-                    <li>SIZE: S / M / L / XL</li>
-                    <li style="border: 1px solid #fff; margin-top: 10px; text-align: center; cursor: pointer;">[ ACQUIRE_ITEM ]</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="album" style="background-image: url('boot_render.jpg');">
-            <div class="album-info">
-                <h3>[ TERRAIN_BOOT_01 ]</h3>
-                <ul class="tracklist">
-                    <li>MAT: CLEAR_RUBBER_SOLE</li>
-                    <li>FEAT: NEOPRENE_LINER</li>
-                    <li>SIZE: US_8 - US_12</li>
-                    <li style="border: 1px solid #fff; margin-top: 10px; text-align: center; cursor: pointer;">[ ACQUIRE_ITEM ]</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="album"></div><div class="album"></div><div class="album"></div>
-        <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
-    </div>
-</div>
-
-    <div class="page-container" id="master-stack">
+    <div id="ui-layer">
+        <div class="header">EZIBEATS_ARCHIVE // SYSTEM_v06.0</div>
         
-        <div class="panel" onclick="this.parentElement.className='page-container music-active'">
-            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
-            <h2>MUSIC</h2>
-            <div id="archive-content" class="content-layer" onclick="event.stopPropagation()">
-                <div class="album-grid">
-                    <div class="album" style="background-image: url('prj1.jpg');">
-                        <div class="album-info">
-                            <h3>PRJ_001</h3>
-                            <ul class="tracklist">
-                                <li onmouseenter="startPreview('test1.mp3')">01_TRACK_TITLE_A</li>
-                                <li onmouseenter="startPreview('test2.mp3')">02_TRACK_TITLE_B</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
+        <div class="nav-bar">
+            <div class="nav-item active">[ MUSIC ]</div>
+            <div class="nav-item">[ MERCH ]</div>
+            <div class="nav-item">[ SHOWS ]</div>
+            <div class="nav-item" style="margin-left: auto; color: var(--accent-color);">[ EXIT_ARCHIVE ]</div>
+        </div>
+    </div>
+
+    <div id="archive-container">
+        <div class="album-grid">
+            
+            <div class="album" style="background-image: url('PROJECT_001/cover.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_001 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_001/test1.mp3')">01_TRACK_01</li>
+                        <li onmouseenter="startPreview('PROJECT_001/test2.mp3')">02_TRACK_02</li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="panel" onclick="this.parentElement.className='page-container merch-active'">
-            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
-            <h2>MERCH</h2>
-            <div id="merch-content" class="content-layer" onclick="event.stopPropagation()">
-                <div class="placeholder-text">[ HEAVY_GOODS_SYSTEM ]<br>- DROP_01: TACTICAL_FLIGHT_JACKET</div>
+            <div class="album" style="background-image: url('PROJECT_002/cover.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_002 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_002/test4.mp3')">01_TRACK_04</li>
+                    </ul>
+                </div>
             </div>
-        </div>
 
-        <div class="panel" onclick="this.parentElement.className='page-container shows-active'">
-            <div class="close-btn" onclick="event.stopPropagation(); this.parentElement.parentElement.className='page-container'">[ EXIT_ARCHIVE ]</div>
-            <h2>SHOWS</h2>
-            <div id="shows-content" class="content-layer" onclick="event.stopPropagation()">
-                <div class="placeholder-text">[ LIVE_INTEL ]<br>- CHICAGO // 2026<br>- LONDON // 2026</div>
+            <div class="album" style="background-image: url('PROJECT_003/cover.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_003 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_003/test6.mp3')">01_TRACK_06</li>
+                    </ul>
+                </div>
             </div>
-        </div>
 
-    </div>
-
-    <audio id="global-player"></audio>
-
-    <script>
-        const player = document.getElementById('global-player');
-        function startPreview(file) {
-            player.src = './' + file;
-            player.play().catch(e => { console.log("Audio blocked.") });
-        }
-        function stopPreview() {
-            player.pause(); player.src = "";
-        }
-        document.querySelectorAll('.album-grid').forEach(grid => {
-            grid.addEventListener('mouseleave', stopPreview);
-        });
-    </script>
-</body>
-</html>
+            <div class="album" style="background-image: url('PROJECT_004/project_4.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_004 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT
