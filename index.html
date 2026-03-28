@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_V06</title>
+    <title>EZIBEATS_ARCHIVE_V06_4</title>
     <style>
         :root {
             --bg-color: #0a0a0a;
             --text-color: #ffffff;
-            --accent-color: #ff0000; /* Tactical Red */
-            --grid-gap: 10px;
+            --accent-color: #ff0000;
+            --grid-gap: 12px;
         }
 
         body, html {
@@ -21,161 +21,6 @@
             height: 100vh;
         }
 
-        /* --- GLOBAL UI --- */
         #ui-layer {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 100;
-            pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .header { pointer-events: auto; letter-spacing: 5px; font-weight: bold; }
-        
-        /* --- NAVIGATION HOT-BAR --- */
-        .nav-bar {
-            pointer-events: auto;
-            display: flex;
-            gap: 30px;
-            background: rgba(255,255,255,0.05);
-            padding: 10px 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .nav-item { cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 12px; }
-        .nav-item:hover, .nav-item.active { opacity: 1; color: var(--accent-color); }
-
-        /* --- THE GRID ENGINE --- */
-        #archive-container {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--grid-gap);
-            width: 90vw;
-            max-width: 1200px;
-        }
-
-        .album {
-            aspect-ratio: 1/1;
-            background-color: #1a1a1a;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Hover Effect */
-        .album:hover {
-            transform: scale(1.02);
-            z-index: 2;
-            border-color: #fff;
-        }
-
-        .album-info {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(15px);
-            opacity: 0;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .album:hover .album-info { opacity: 1; }
-
-        .album-info h3 { margin: 0 0 15px 0; font-size: 14px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        
-        .tracklist { list-style: none; padding: 0; margin: 0; }
-        .tracklist li {
-            font-size: 10px;
-            padding: 5px 0;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: 0.2s;
-        }
-        .tracklist li:hover { color: var(--accent-color); padding-left: 5px; }
-
-        /* Status Placeholder */
-        .empty-slot::before {
-            content: "[ DATA_PENDING ]";
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8px;
-            color: #333;
-        }
-
-    </style>
-</head>
-<body>
-
-    <div id="ui-layer">
-        <div class="header">EZIBEATS_ARCHIVE // SYSTEM_v06.0</div>
-        
-        <div class="nav-bar">
-            <div class="nav-item active">[ MUSIC ]</div>
-            <div class="nav-item">[ MERCH ]</div>
-            <div class="nav-item">[ SHOWS ]</div>
-            <div class="nav-item" style="margin-left: auto; color: var(--accent-color);">[ EXIT_ARCHIVE ]</div>
-        </div>
-    </div>
-
-    <div id="archive-container">
-        <div class="album-grid">
-            
-            <div class="album" style="background-image: url('PROJECT_001/cover.jpg');">
-                <div class="album-info">
-                    <h3>[ PROJECT_001 ]</h3>
-                    <ul class="tracklist">
-                        <li onmouseenter="startPreview('PROJECT_001/test1.mp3')">01_TRACK_01</li>
-                        <li onmouseenter="startPreview('PROJECT_001/test2.mp3')">02_TRACK_02</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="album" style="background-image: url('PROJECT_002/cover.jpg');">
-                <div class="album-info">
-                    <h3>[ PROJECT_002 ]</h3>
-                    <ul class="tracklist">
-                        <li onmouseenter="startPreview('PROJECT_002/test4.mp3')">01_TRACK_04</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="album" style="background-image: url('PROJECT_003/cover.jpg');">
-                <div class="album-info">
-                    <h3>[ PROJECT_003 ]</h3>
-                    <ul class="tracklist">
-                        <li onmouseenter="startPreview('PROJECT_003/test6.mp3')">01_TRACK_06</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="album" style="background-image: url('PROJECT_004/project_4.jpg');">
-                <div class="album-info">
-                    <h3>[ PROJECT_004 ]</h3>
-                    <ul class="tracklist">
-                        <li onmouseenter="startPreview('PROJECT
+            top: 0;
