@@ -128,17 +128,74 @@
 
     </div>
 
-    <script>
-        let audio = null;
-        function play(src) {
-            if (audio) { audio.pause(); audio.currentTime = 0; }
-            audio = new Audio(src);
-            audio.play().catch(() => console.log("User must click page to enable audio"));
+    let audio = null;
+    let timerInterval = null;
+    let currentTrackElement = null;
+
+    function openItem(element) {
+        document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function closeAll(event) {
+        // Only close if clicking the background (body), not the grid
+        if (event.target.tagName === 'BODY') {
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            if (audio) {
+                audio.pause();
+                audio = null;
+                resetTimer();
+            }
         }
-        // Stops music when mouse leaves the entire grid
-        document.querySelector('.archive-grid').addEventListener('mouseleave', () => {
-            if (audio) { audio.pause(); audio = null; }
-        });
-    </script>
+    }
+
+    function play(src, element) {
+        if (audio) { audio.pause(); }
+        
+        currentTrackElement = element; // Keep track of what is playing
+        audio = new Audio(src);
+        
+        // --- THE "NEXT TRACK" LOGIC ---
+        audio.onended = function() {
+            playNext();
+        };
+
+        audio.play();
+        resetTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+        
+        // Visual cue: highlight playing track
+        document.querySelectorAll('.tracks li').forEach(li => li.style.color = "#666");
+        element.style.color = "#ff0000";
+    }
+
+    function playNext() {
+        if (!currentTrackElement) return;
+        
+        // Find the next song in the current list
+        let next = currentTrackElement.nextElementSibling;
+        if (next) {
+            // Get the 'onclick' string and extract the file path
+            let nextSrc = next.getAttribute('onclick').match(/'([^']+)'/)[1];
+            play(nextSrc, next);
+        } else {
+            // End of album
+            resetTimer();
+        }
+    }
+
+    function updateTimer() {
+        if (audio) {
+            let mins = Math.floor(audio.currentTime / 60);
+            let secs = Math.floor(audio.currentTime % 60);
+            document.getElementById('timer').innerText = 
+                `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        document.getElementById('timer').innerText = "TRACK_TIME: 00:00";
+    }
 </body>
 </html>
