@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_V06_4</title>
+    <title>EZIBEATS_ARCHIVE_V06_6</title>
     <style>
         :root {
             --bg-color: #0a0a0a;
             --text-color: #ffffff;
             --accent-color: #ff0000;
-            --grid-gap: 12px;
+            --grid-gap: 15px;
         }
 
         body, html {
@@ -21,6 +21,190 @@
             height: 100vh;
         }
 
+        /* --- UI LAYER --- */
         #ui-layer {
             position: fixed;
-            top: 0;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 100;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .header { pointer-events: auto; letter-spacing: 6px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        
+        .nav-bar {
+            pointer-events: auto;
+            display: flex;
+            gap: 40px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item { cursor: pointer; opacity: 0.4; transition: 0.3s; font-size: 11px; letter-spacing: 2px; }
+        .nav-item:hover, .nav-item.active { opacity: 1; color: var(--accent-color); }
+
+        /* --- GRID ENGINE --- */
+        #archive-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--grid-gap);
+            width: 85vw;
+            max-width: 1000px;
+        }
+
+        .album {
+            aspect-ratio: 1/1;
+            background-color: #111;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: crosshair;
+        }
+
+        .album:hover { transform: scale(1.04); z-index: 5; border-color: #fff; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+
+        .album-info {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: 0.25s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        .album:hover .album-info { opacity: 1; }
+
+        .album-info h3 { margin: 0 0 15px 0; font-size: 12px; letter-spacing: 4px; border-bottom: 1px solid #444; padding-bottom: 10px; color: var(--accent-color); }
+        
+        .tracklist { list-style: none; padding: 0; margin: 0; }
+        .tracklist li {
+            font-size: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: 0.2s;
+            color: #888;
+        }
+        .tracklist li:hover { color: #fff; padding-left: 10px; border-bottom-color: var(--accent-color); }
+
+        .empty-slot::before {
+            content: "[ NO_DATA ]";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8px;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <div class="header">EZIBEATS_ARCHIVE // SYS_v06.6</div>
+        <div class="nav-bar">
+            <div class="nav-item active">[ MUSIC ]</div>
+            <div class="nav-item">[ MERCH ]</div>
+            <div class="nav-item">[ SHOWS ]</div>
+            <div class="nav-item" style="margin-left: auto; color: var(--accent-color);">[ EXIT ]</div>
+        </div>
+    </div>
+
+    <div id="archive-container">
+        <div class="album-grid">
+            
+            <div class="album" style="background-image: url('PROJECT_001/project_1.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_001 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_001/test1.mp3')">TRACK_01</li>
+                        <li onmouseenter="startPreview('PROJECT_001/test2.mp3')">TRACK_02</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="album" style="background-image: url('PROJECT_002/project_2.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_002 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_002/test4.mp3')">TRACK_04</li>
+                        <li onmouseenter="startPreview('PROJECT_002/test5.mp3')">TRACK_05</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="album empty-slot"></div>
+
+            <div class="album" style="background-image: url('PROJECT_004/project_4.jpg');">
+                <div class="album-info">
+                    <h3>[ PROJECT_004 ]</h3>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('PROJECT_004/test10.mp3')">TRACK_10</li>
+                        <li onmouseenter="startPreview('PROJECT_004/test11.mp3')">TRACK_11</li>
+                        <li onmouseenter="startPreview('PROJECT_004/test12.mp3')">TRACK_12</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="album empty-slot"></div>
+            <div class="album empty-slot"></div>
+            <div class="album empty-slot"></div>
+            <div class="album empty-slot"></div>
+            <div class="album empty-slot"></div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentAudio = null;
+
+        function startPreview(file) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            currentAudio = new Audio(file);
+            currentAudio.play().catch(e => {
+                console.warn("AUDIO_START_BLOCKED: Interact with the page first.");
+            });
+        }
+
+        // Kill audio on exit
+        document.querySelector('.album-grid').addEventListener('mouseleave', () => {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+        });
+
+        // Unlock audio context on first user click
+        window.addEventListener('click', () => {
+            console.log("SYSTEM_READY");
+        }, { once: true });
+    </script>
+</body>
+</html>
