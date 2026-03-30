@@ -5,195 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE_v06.2</title>
     <style>
-        body {
-            margin: 0; padding: 0;
-            background: #000; color: #fff;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+       /* --- SECTION CONTROL --- */
+#archive-section, #merch-section, #shows-section {
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+}
 
-        /* --- LANDING PAGE --- */
-        #landing-page {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 1000;
-            background: #000;
-            transition: opacity 0.6s ease, visibility 0.6s;
-        }
+/* Logic to show the active section */
+body.view-music #archive-section { display: flex; opacity: 1; }
+body.view-merch #merch-section { display: flex; opacity: 1; }
+body.view-shows #shows-section { display: flex; opacity: 1; }
 
-        .gateway-title {
-            font-size: 14px; letter-spacing: 8px; font-weight: bold;
-            margin-bottom: 50px; opacity: 0.8;
-        }
+body.view-active #landing-page { opacity: 0; visibility: hidden; }
 
-        .nav-container {
-            display: flex; flex-direction: column; gap: 20px; text-align: center;
-        }
-
-        .nav-btn {
-            font-size: 18px; letter-spacing: 4px; color: #444;
-            cursor: pointer; transition: 0.3s; padding: 10px;
-        }
-
-        .nav-btn:hover { color: #fff; transform: scale(1.1); }
-        .nav-btn.active-link { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.5); }
-
-        /* --- ARCHIVE SECTION (HIDDEN BY DEFAULT) --- */
-        #archive-section {
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.8s ease;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 40px 20px;
-        }
-
-        /* Logic for showing the archive */
-        body.show-music #landing-page { opacity: 0; visibility: hidden; }
-        body.show-music #archive-section { opacity: 1; visibility: hidden; visibility: visible; }
-
-        /* --- EXISTING MUSIC STYLES --- */
-        .ui-header { 
-            width: 100%; max-width: 800px; 
-            margin-bottom: 30px; border-bottom: 1px solid #222; 
-            padding-bottom: 10px; display: flex; justify-content: space-between;
-        }
-        .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
-        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 800px; }
-        .item { aspect-ratio: 1/1; background-color: #111; background-size: cover; background-position: center; position: relative; border: 1px solid #333; transition: 0.3s ease; cursor: pointer; }
-        .info { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .item.active .info { opacity: 1; pointer-events: auto; }
-        .item.active { border-color: #fff; z-index: 10; }
-        .info h3 { margin: 0 0 12px; font-size: 11px; color: #ff0000; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .tracks { list-style: none; padding: 0; margin: 0; }
-        .tracks li { font-size: 10px; padding: 8px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; transition: 0.2s; }
-        .tracks li:hover { color: #fff; padding-left: 5px; }
-        .tracks li.playing { color: #ff0000; font-weight: bold; }
-        .empty { border: 1px dashed #222; opacity: 0.2; }
+/* --- CALENDAR STYLES (BRUTALIST TABLE) --- */
+.calendar-table {
+    width: 100%; max-width: 600px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.calendar-table td {
+    padding: 15px;
+    border-bottom: 1px solid #222;
+    color: #666;
+}
+.calendar-table tr:hover td { color: #fff; background: #050505; }
+.date { color: #ff0000; width: 100px; }
     </style>
 </head>
 <body onclick="closeAll(event)">
 
     <div id="landing-page">
-        <div class="gateway-title">EZIBEATS_ARCHIVE // V.06</div>
-        <div class="nav-container">
-            <div class="nav-btn active-link" onclick="enterArchive()">[ MUSIC ]</div>
-            <div class="nav-btn">[ MERCH ]</div>
+        <div class="section-panel" onclick="switchView('music')">
+            <div class="nav-btn">[ MUSIC ]</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
+        </div>
+        <div class="section-panel" onclick="switchView('merch')">
+            <div class="nav-btn">[ CLOTHING ]</div>
+            <div class="panel-bg-text">DESIGN_20/20</div>
+        </div>
+        <div class="section-panel" onclick="switchView('shows')">
             <div class="nav-btn">[ SHOWS ]</div>
+            <div class="panel-bg-text">LIVE_LOGS</div>
         </div>
     </div>
 
     <div id="archive-section">
         <div class="ui-header">
-            <div class="title">EZIBEATS_ARCHIVE // AUDIO_GRID</div>
+            <div class="title">EZIBEATS // AUDIO_GRID</div>
             <div id="timer">TRACK_TIME: 00:00</div>
         </div>
-
         <div class="archive-grid" onclick="event.stopPropagation()">
-            <div class="item" style="background-image: url('PROJECT_001/project_1.jpg');" onmouseenter="openItem(this)">
-                <div class="info">
-                    <h3>[ PROJECT_001 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_001/test1.mp3', this)">01_TRACK_01</li>
-                        <li onclick="play('PROJECT_001/test2.mp3', this)">02_TRACK_02</li>
-                    </ul>
-                </div>
             </div>
+    </div>
 
-            <div class="item" style="background-image: url('PROJECT_002/project_2.jpg');" onmouseenter="openItem(this)">
-                <div class="info">
-                    <h3>[ PROJECT_002 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_002/test4.mp3', this)">01_TRACK_04</li>
-                        <li onclick="play('PROJECT_002/test5.mp3', this)">02_TRACK_05</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="item empty"></div>
-
-            <div class="item" style="background-image: url('PROJECT_004/project_4.jpg');" onmouseenter="openItem(this)">
-                <div class="info">
-                    <h3>[ PROJECT_004 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
-                        <li onclick="play('PROJECT_004/test11.mp3', this)">02_TRACK_11</li>
-                        <li onclick="play('PROJECT_004/test12.mp3', this)">03_TRACK_12</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="item empty"></div><div class="item empty"></div>
-            <div class="item empty"></div><div class="item empty"></div>
-            <div class="item empty"></div>
+    <div id="merch-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // ARCHIVAL_CLOTHING</div>
+            <div class="title">COLLECTION_01 [20/20]</div>
         </div>
+        <div class="archive-grid">
+            <div class="item" style="background-image: url('CLOTHING/item1.jpg');">
+                <div class="info"><h3>[ 1 OF 20 ]</h3><p>RIPSTOP / HAND-PAINTED</p></div>
+            </div>
+            </div>
+    </div>
+
+    <div id="shows-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // LIVE_SCHEDULE</div>
+        </div>
+        <table class="calendar-table">
+            <tr><td class="date">APR_12</td><td>LONDON // THE_WAREHOUSE</td><td>TICKETS_NA</td></tr>
+            <tr><td class="date">MAY_05</td><td>PARIS // ARCHIVE_STUDIOS</td><td>TICKETS_SOON</td></tr>
+        </table>
     </div>
 
     <script>
-        let audio = null;
-        let timerInterval = null;
-        let currentTrack = null;
-
-        // --- GATEWAY LOGIC ---
-        function enterArchive() {
-            document.body.classList.add('show-music');
-        }
-
-        // --- MUSIC LOGIC ---
-        function openItem(element) {
-            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-            element.classList.add('active');
+        // --- VIEW SWITCHER ---
+        function switchView(viewName) {
+            document.body.classList.add('view-active');
+            document.body.classList.remove('view-music', 'view-merch', 'view-shows');
+            document.body.classList.add('view-' + viewName);
         }
 
         function closeAll(event) {
-            // Only triggers if the archive is actually visible
-            if (document.body.classList.contains('show-music') && event.target.tagName === 'BODY') {
-                document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-                if (audio) {
-                    audio.pause();
-                    audio = null;
-                    resetTimer();
-                    clearHighlights();
-                }
+            // Clicking the background returns to the "Chopped" Gateway
+            if (event.target.tagName === 'BODY') {
+                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
+                if (audio) { audio.pause(); audio = null; resetTimer(); }
             }
         }
-
-        function play(src, element) {
-            if (audio) { audio.pause(); }
-            clearHighlights();
-            currentTrack = element;
-            element.classList.add('playing');
-            audio = new Audio(src);
-            audio.onended = function() {
-                let next = currentTrack.nextElementSibling;
-                if (next && next.tagName === 'LI') { next.click(); } 
-                else { resetTimer(); clearHighlights(); }
-            };
-            audio.play().catch(err => console.log("Engine blocked."));
-            resetTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            if (audio) {
-                let mins = Math.floor(audio.currentTime / 60);
-                let secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('timer').innerText = 
-                    `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            document.getElementById('timer').innerText = "TRACK_TIME: 00:00";
-        }
-
-        function clearHighlights() {
-            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
-        }
+        
+        // ... (Keep your existing play, timer, and highlight functions here)
     </script>
 </body>
 </html>
