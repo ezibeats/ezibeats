@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v06.5</title>
+    <title>EZIBEATS_ARCHIVE_v06.8</title>
     <style>
         body {
             margin: 0; padding: 0;
@@ -12,30 +12,44 @@
             overflow-x: hidden; min-height: 100vh;
         }
 
-        /* --- LANDING PAGE (CHOPPED 3RDS) --- */
+        /* --- HORIZONTAL LANDING PAGE --- */
         #landing-page {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            display: flex; z-index: 1000;
-            background: #000;
+            display: flex; flex-direction: column; /* Stacked Vertically */
+            z-index: 1000; background: #000;
             transition: opacity 0.5s ease, visibility 0.5s;
         }
 
         .section-panel {
-            flex: 1; height: 100%;
-            border-right: 1px solid #222;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.4s ease;
-            position: relative;
+            flex: 1; width: 100%;
+            border-bottom: 1px solid #222;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative; overflow: hidden;
         }
 
-        .section-panel:last-child { border-right: none; }
-        .section-panel:hover { background: #050505; flex: 1.1; }
-        
-        .nav-btn { font-size: 16px; letter-spacing: 6px; color: #444; transition: 0.3s; }
-        .section-panel:hover .nav-btn { color: #ff0000; }
-        .panel-bg-text { position: absolute; bottom: 20px; left: 20px; font-size: 9px; color: #222; letter-spacing: 2px; }
+        .section-panel:last-child { border-bottom: none; }
+
+        /* Enlarged Central Wording */
+        .nav-btn {
+            font-size: 60px; /* Massively enlarged */
+            letter-spacing: 15px;
+            color: #1a1a1a; /* Muted dark grey by default */
+            transition: 0.4s ease;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        /* Hover State */
+        .section-panel:hover { background: #050505; flex: 1.4; }
+        .section-panel:hover .nav-btn { 
+            color: #ff0000; 
+            letter-spacing: 25px; 
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
+        }
+
+        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
 
         /* --- MODULE CONTROL --- */
         #archive-section, #merch-section, #shows-section {
@@ -50,10 +64,10 @@
         body.view-merch #merch-section { display: flex; opacity: 1; }
         body.view-shows #shows-section { display: flex; opacity: 1; }
 
-        /* --- SHARED UI ELEMENTS --- */
+        /* --- UI ELEMENTS --- */
         .ui-header { width: 100%; max-width: 800px; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
         .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; }
+        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
 
         .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 800px; }
         .item { aspect-ratio: 1/1; background-color: #111; background-size: cover; background-position: center; position: relative; border: 1px solid #333; cursor: pointer; }
@@ -66,7 +80,6 @@
         .tracks li { font-size: 10px; padding: 8px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
 
-        /* --- CALENDAR --- */
         .calendar-table { width: 100%; max-width: 600px; border-collapse: collapse; font-size: 12px; }
         .calendar-table td { padding: 15px; border-bottom: 1px solid #222; color: #666; }
         .date { color: #ff0000; width: 100px; }
@@ -75,21 +88,18 @@
 <body onclick="closeAll(event)">
 
     <div id="landing-page">
-        <div id="landing-page">
-    <div class="section-panel" onclick="switchView('music')">
-        <div class="nav-btn">MUSIC</div>
-        <div class="panel-bg-text">AUDIO_ARCHIVE</div>
-    </div>
-
-    <div class="section-panel" onclick="switchView('merch')">
-        <div class="nav-btn">CLOTHING</div>
-        <div class="panel-bg-text">DESIGN_20/20</div>
-    </div>
-
-    <div class="section-panel" onclick="switchView('shows')">
-        <div class="nav-btn">SHOWS</div>
-        <div class="panel-bg-text">LIVE_LOGS</div>
-    
+        <div class="section-panel" onclick="switchView('music')">
+            <div class="nav-btn">MUSIC</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
+        </div>
+        <div class="section-panel" onclick="switchView('merch')">
+            <div class="nav-btn">CLOTHING</div>
+            <div class="panel-bg-text">DESIGN_20/20</div>
+        </div>
+        <div class="section-panel" onclick="switchView('shows')">
+            <div class="nav-btn">SHOWS</div>
+            <div class="panel-bg-text">LIVE_LOGS</div>
+        </div>
     </div>
 
     <div id="archive-section">
@@ -108,7 +118,7 @@
                     </ul>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 
     <div id="merch-section">
@@ -120,7 +130,7 @@
             <div class="item" style="background-image: url('CLOTHING/item1.jpg');" onmouseenter="openItem(this)">
                 <div class="info"><h3>[ 1 OF 20 ]</h3><p>RIPSTOP / PAINTED</p></div>
             </div>
-            </div>
+        </div>
     </div>
 
     <div id="shows-section">
@@ -149,15 +159,14 @@
 
         function closeAll(event) {
             if (event.target.tagName === 'BODY') {
-                if (document.body.classList.contains('view-active')) {
-                    document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
-                }
+                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
                 document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
                 if (audio) { audio.pause(); audio = null; resetTimer(); clearHighlights(); }
             }
         }
 
         function play(src, element) {
+            event.stopPropagation();
             if (audio) { audio.pause(); }
             clearHighlights();
             currentTrack = element;
@@ -176,12 +185,4 @@
             if (audio) {
                 let mins = Math.floor(audio.currentTime / 60);
                 let secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function resetTimer() { clearInterval(timerInterval); document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; }
-        function clearHighlights() { document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing')); }
-    </script>
-</body>
-</html>
+                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString
