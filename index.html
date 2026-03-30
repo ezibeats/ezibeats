@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v06.8</title>
+    <title>EZIBEATS_ARCHIVE_v06.9</title>
     <style>
         body {
             margin: 0; padding: 0;
@@ -12,11 +12,11 @@
             overflow-x: hidden; min-height: 100vh;
         }
 
-        /* --- HORIZONTAL LANDING PAGE --- */
+        /* --- LANDING PAGE: STACKED --- */
         #landing-page {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            display: flex; flex-direction: column; /* Stacked Vertically */
+            display: flex; flex-direction: column;
             z-index: 1000; background: #000;
             transition: opacity 0.5s ease, visibility 0.5s;
         }
@@ -26,40 +26,33 @@
             border-bottom: 1px solid #222;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative; overflow: hidden;
+            position: relative;
         }
 
-        .section-panel:last-child { border-bottom: none; }
-
-        /* Enlarged Central Wording */
         .nav-btn {
-            font-size: 60px; /* Massively enlarged */
-            letter-spacing: 15px;
-            color: #1a1a1a; /* Muted dark grey by default */
-            transition: 0.4s ease;
-            font-weight: 900;
-            text-transform: uppercase;
+            font-size: 60px; letter-spacing: 15px;
+            color: #1a1a1a; transition: 0.4s ease;
+            font-weight: 900; text-transform: uppercase;
         }
 
-        /* Hover State */
         .section-panel:hover { background: #050505; flex: 1.4; }
-        .section-panel:hover .nav-btn { 
-            color: #ff0000; 
-            letter-spacing: 25px; 
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
-        }
+        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
 
-        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
-
-        /* --- MODULE CONTROL --- */
+        /* --- MODULE VISIBILITY LOGIC --- */
         #archive-section, #merch-section, #shows-section {
             display: none; opacity: 0;
-            transition: opacity 0.5s ease;
             flex-direction: column; align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
+            min-height: 100vh;
         }
 
-        body.view-active #landing-page { opacity: 0; visibility: hidden; }
+        /* Triggered states */
+        body.view-active #landing-page { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; /* Allows clicking through to the content */
+        }
+        
         body.view-music #archive-section { display: flex; opacity: 1; }
         body.view-merch #merch-section { display: flex; opacity: 1; }
         body.view-shows #shows-section { display: flex; opacity: 1; }
@@ -67,11 +60,11 @@
         /* --- UI ELEMENTS --- */
         .ui-header { width: 100%; max-width: 800px; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
         .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
+        #timer { font-size: 11px; color: #ff0000; }
 
         .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 800px; }
         .item { aspect-ratio: 1/1; background-color: #111; background-size: cover; background-position: center; position: relative; border: 1px solid #333; cursor: pointer; }
-        .item.active { border-color: #fff; z-index: 10; }
+        .item.active { border-color: #fff; }
         
         .info { position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 20px; pointer-events: none; }
         .item.active .info { opacity: 1; pointer-events: auto; }
@@ -80,9 +73,9 @@
         .tracks li { font-size: 10px; padding: 8px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
 
-        .calendar-table { width: 100%; max-width: 600px; border-collapse: collapse; font-size: 12px; }
-        .calendar-table td { padding: 15px; border-bottom: 1px solid #222; color: #666; }
-        .date { color: #ff0000; width: 100px; }
+        .calendar-table { width: 100%; max-width: 600px; border-collapse: collapse; font-size: 12px; margin-top: 20px; }
+        .calendar-table td { padding: 20px; border-bottom: 1px solid #222; color: #888; }
+        .date { color: #ff0000; width: 100px; font-weight: bold; }
     </style>
 </head>
 <body onclick="closeAll(event)">
@@ -90,15 +83,12 @@
     <div id="landing-page">
         <div class="section-panel" onclick="switchView('music')">
             <div class="nav-btn">MUSIC</div>
-            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
         </div>
         <div class="section-panel" onclick="switchView('merch')">
             <div class="nav-btn">CLOTHING</div>
-            <div class="panel-bg-text">DESIGN_20/20</div>
         </div>
         <div class="section-panel" onclick="switchView('shows')">
             <div class="nav-btn">SHOWS</div>
-            <div class="panel-bg-text">LIVE_LOGS</div>
         </div>
     </div>
 
@@ -114,7 +104,6 @@
                     <ul class="tracks">
                         <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
                         <li onclick="play('PROJECT_004/test11.mp3', this)">02_TRACK_11</li>
-                        <li onclick="play('PROJECT_004/test12.mp3', this)">03_TRACK_12</li>
                     </ul>
                 </div>
             </div>
@@ -123,11 +112,11 @@
 
     <div id="merch-section">
         <div class="ui-header">
-            <div class="title">EZIBEATS // ARCHIVAL_CLOTHING</div>
-            <div class="title">COLLECTION_01 [20/20]</div>
+            <div class="title">EZIBEATS // DESIGN_LOG</div>
+            <div class="title">20/20</div>
         </div>
         <div class="archive-grid" onclick="event.stopPropagation()">
-            <div class="item" style="background-image: url('CLOTHING/item1.jpg');" onmouseenter="openItem(this)">
+             <div class="item" style="background-image: url('CLOTHING/item1.jpg');" onmouseenter="openItem(this)">
                 <div class="info"><h3>[ 1 OF 20 ]</h3><p>RIPSTOP / PAINTED</p></div>
             </div>
         </div>
@@ -135,8 +124,9 @@
 
     <div id="shows-section">
         <div class="ui-header"><div class="title">EZIBEATS // LIVE_SCHEDULE</div></div>
-        <table class="calendar-table">
+        <table class="calendar-table" onclick="event.stopPropagation()">
             <tr><td class="date">APR_12</td><td>LONDON // THE_WAREHOUSE</td><td>TICKETS_NA</td></tr>
+            <tr><td class="date">MAY_05</td><td>PARIS // ARCHIVE_HALL</td><td>TICKETS_NA</td></tr>
         </table>
     </div>
 
@@ -146,6 +136,7 @@
         let currentTrack = null;
 
         function switchView(viewName) {
+            event.stopPropagation(); // Prevents immediate closing
             document.body.classList.add('view-active');
             document.body.classList.remove('view-music', 'view-merch', 'view-shows');
             document.body.classList.add('view-' + viewName);
@@ -158,24 +149,20 @@
         }
 
         function closeAll(event) {
-            if (event.target.tagName === 'BODY') {
+            // Only close if clicking the actual background of the sections
+            if (event.target.tagName === 'BODY' || event.target.id === 'archive-section' || event.target.id === 'merch-section' || event.target.id === 'shows-section') {
                 document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
-                document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-                if (audio) { audio.pause(); audio = null; resetTimer(); clearHighlights(); }
+                if (audio) { audio.pause(); audio = null; resetTimer(); }
             }
         }
 
         function play(src, element) {
             event.stopPropagation();
             if (audio) { audio.pause(); }
-            clearHighlights();
+            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
             currentTrack = element;
             element.classList.add('playing');
             audio = new Audio(src);
-            audio.onended = function() {
-                let next = currentTrack.nextElementSibling;
-                if (next) next.click();
-            };
             audio.play();
             resetTimer();
             timerInterval = setInterval(updateTimer, 1000);
@@ -185,4 +172,15 @@
             if (audio) {
                 let mins = Math.floor(audio.currentTime / 60);
                 let secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString
+                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function resetTimer() { 
+            clearInterval(timerInterval); 
+            let t = document.getElementById('timer');
+            if(t) t.innerText = "TRACK_TIME: 00:00"; 
+        }
+    </script>
+</body>
+</html>
