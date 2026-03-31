@@ -13,13 +13,22 @@
             overflow-x: hidden; min-height: 100vh;
         }
 
-        /* --- LANDING PAGE: HORIZONTAL STACK --- */
+        /* --- LANDING PAGE --- */
         #landing-page {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             display: flex; flex-direction: column;
-            z-index: 1000; background: #000;
+            z-index: 2000; 
+            background: #000;
             transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        /* CRITICAL MOBILE FIX: Teleports landing page behind content when active */
+        body.view-active #landing-page { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+            z-index: -1; 
         }
 
         .section-panel {
@@ -49,16 +58,14 @@
 
         /* --- MODULE VISIBILITY --- */
         #archive-section, #merch-section, #shows-section {
-            display: none; opacity: 0;
-            flex-direction: column; align-items: center;
+            display: none; 
+            opacity: 0;
+            flex-direction: column; 
+            align-items: center;
             padding: 60px 20px;
             min-height: 100vh;
-        }
-
-        body.view-active #landing-page { 
-            opacity: 0; 
-            visibility: hidden; 
-            pointer-events: none; 
+            position: relative;
+            z-index: 10;
         }
         
         body.view-music #archive-section { display: flex; opacity: 1; }
@@ -80,3 +87,139 @@
         .tracks { list-style: none; padding: 0; margin: 0; }
         .tracks li { font-size: 10px; padding: 8px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
+
+        /* --- CALENDAR --- */
+        .calendar-table { width: 100%; max-width: 600px; border-collapse: collapse; font-size: 12px; margin-top: 20px; }
+        .calendar-table td { padding: 25px 20px; border-bottom: 1px solid #222; color: #888; }
+        .date { color: #ff0000; width: 100px; font-weight: bold; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .nav-btn { font-size: 32px; letter-spacing: 8px; }
+            .section-panel:hover { flex: 1.1; }
+            .archive-grid { grid-template-columns: repeat(2, 1fr); }
+            .ui-header { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body onclick="closeAll(event)">
+
+    <div id="landing-page">
+        <div class="section-panel" onclick="switchView(event, 'music')">
+            <div class="nav-btn">MUSIC</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'merch')">
+            <div class="nav-btn">CLOTHING</div>
+            <div class="panel-bg-text">DESIGN_LOG_20/20</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'shows')">
+            <div class="nav-btn">SHOWS</div>
+            <div class="panel-bg-text">LIVE_LOGS</div>
+        </div>
+    </div>
+
+    <div id="archive-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // AUDIO_GRID</div>
+            <div id="timer">TRACK_TIME: 00:00</div>
+        </div>
+        <div class="archive-grid" onclick="event.stopPropagation()">
+            <div class="item" style="background-image: url('PROJECT_004/project_4.jpg');" onmouseenter="openItem(this)" onclick="openItem(this)">
+                <div class="info">
+                    <h3>[ PROJECT_004 ]</h3>
+                    <ul class="tracks">
+                        <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
+                        <li onclick="play('PROJECT_004/test11.mp3', this)">02_TRACK_11</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="merch-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // ARCHIVAL_SERIES</div>
+            <div class="title">[ 20 / 20 ]</div>
+        </div>
+        <div class="archive-grid" onclick="event.stopPropagation()">
+             <div class="item" style="background-image: url('CLOTHING/item1.jpg');" onmouseenter="openItem(this)" onclick="openItem(this)">
+                <div class="info"><h3>[ 1 OF 20 ]</h3><p>RIPSTOP / PAINTED</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shows-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // LIVE_SCHEDULE</div>
+        </div>
+        <table class="calendar-table" onclick="event.stopPropagation()">
+            <tr><td class="date">APR_12</td><td>LONDON // THE_WAREHOUSE</td><td>TICKETS_NA</td></tr>
+            <tr><td class="date">MAY_05</td><td>PARIS // ARCHIVE_HALL</td><td>TICKETS_NA</td></tr>
+        </table>
+    </div>
+
+    <script>
+        let audio = null;
+        let timerInterval = null;
+        let currentTrack = null;
+
+        function switchView(e, viewName) {
+            if (e) e.stopPropagation();
+            document.body.classList.add('view-active');
+            document.body.classList.remove('view-music', 'view-merch', 'view-shows');
+            document.body.classList.add('view-' + viewName);
+            window.scrollTo(0,0);
+        }
+
+        function openItem(element) {
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function closeAll(event) {
+            const validClosers = ['archive-section', 'merch-section', 'shows-section'];
+            if (event.target.tagName === 'BODY' || validClosers.includes(event.target.id)) {
+                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
+                if (audio) { 
+                    audio.pause(); 
+                    audio = null; 
+                    resetTimer(); 
+                    document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
+                }
+            }
+        }
+
+        function play(src, element) {
+            if (window.event) window.event.stopPropagation();
+            if (audio) { audio.pause(); }
+            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
+            currentTrack = element;
+            element.classList.add('playing');
+            audio = new Audio(src);
+            audio.onended = function() {
+                let next = currentTrack.nextElementSibling;
+                if (next) next.click();
+            };
+            audio.play();
+            resetTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (audio) {
+                let mins = Math.floor(audio.currentTime / 60);
+                let secs = Math.floor(audio.currentTime % 60);
+                let t = document.getElementById('timer');
+                if(t) t.innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function resetTimer() { 
+            clearInterval(timerInterval); 
+            let t = document.getElementById('timer');
+            if(t) t.innerText = "TRACK_TIME: 00:00"; 
+        }
+    </script>
+</body>
+</html>
