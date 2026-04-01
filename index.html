@@ -208,4 +208,93 @@
                 <tr class="past-show"><td class="date-cell">FEB 10 18</td><td>RED_SEA / HONEY</td></tr>
                 <tr class="past-show"><td class="date-cell">JAN 13 18</td><td>RED_SEA / HONEY</td></tr>
                 <tr class="past-show"><td class="date-cell">DEC 10 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 11 17</td><td>RED
+                <tr class="past-show"><td class="date-cell">NOV 11 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 14 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 16 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">AUG 12 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUL 08 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 24 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 10 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 13 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 08 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 11 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">FEB 11 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JAN 14 17</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 10 16</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 12 16</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 08 16</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 10 16</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">AUG 13 16</td><td>RED_SEA / HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUL 15 16</td><td>HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 10 16</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 14 16</td><td>PALMERS</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 09 16</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 12 16</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">FEB 13 16</td><td>HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 05 15</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 07 15</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 10 15</td><td>PALMERS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 12 15</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">AUG 08 15</td><td>HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">JUL 11 15</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 13 15</td><td>PALMERS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 09 15</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 11 15</td><td>HONEY</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 14 15</td><td>RED_SEA</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let audio = null;
+        let timerInterval = null;
+
+        function switchView(e, viewName) {
+            if (e) e.stopPropagation();
+            document.body.classList.add('view-active');
+            document.body.classList.remove('view-music', 'view-merch', 'view-shows');
+            document.body.classList.add('view-' + viewName);
+            window.scrollTo(0,0);
+        }
+
+        function openItem(element) {
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function closeAll(event) {
+            const validClosers = ['archive-section', 'merch-section', 'shows-section'];
+            if (event.target.tagName === 'BODY' || validClosers.includes(event.target.id)) {
+                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
+                if (audio) { audio.pause(); audio = null; resetTimer(); }
+                document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            }
+        }
+
+        function play(src, element) {
+            if (window.event) window.event.stopPropagation();
+            if (audio) audio.pause();
+            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
+            element.classList.add('playing');
+            audio = new Audio(src);
+            audio.play();
+            resetTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (audio) {
+                let mins = Math.floor(audio.currentTime / 60);
+                let secs = Math.floor(audio.currentTime % 60);
+                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function resetTimer() { 
+            clearInterval(timerInterval); 
+            if(document.getElementById('timer')) document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
+        }
+    </script>
+</body>
+</html>
