@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v06.95</title>
+    <title>EZIBEATS_ARCHIVE_v06.96</title>
     <style>
         /* --- CORE SYSTEM --- */
         body {
@@ -106,4 +106,41 @@
         }
 
         .calendar-table { width: 100%; border-collapse: collapse; }
-        .past-show td { padding: 15px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444;
+        .past-show td { padding: 15px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; transition: 0.2s; }
+        .past-show:hover td { color: #fff; background: #050505; }
+        .date-cell { width: 120px; font-weight: bold; color: #600; text-transform: uppercase;}
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .nav-btn { font-size: 32px; letter-spacing: 8px; }
+            .archive-grid { grid-template-columns: repeat(2, 1fr); }
+            .ui-header { flex-direction: column; gap: 10px; }
+            .date-cell { width: 90px; }
+        }
+    </style>
+</head>
+<body onclick="closeAll(event)">
+
+    <div id="landing-page">
+        <div class="section-panel" onclick="switchView(event, 'music')">
+            <div class="nav-btn">MUSIC</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'merch')">
+            <div class="nav-btn">CLOTHING</div>
+            <div class="panel-bg-text">DESIGN_LOG_20/20</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'shows')">
+            <div class="nav-btn">SHOWS</div>
+            <div class="panel-bg-text">LIVE_LOGS</div>
+        </div>
+    </div>
+
+    <div id="archive-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // AUDIO_GRID</div>
+            <div id="timer">TRACK_TIME: 00:00</div>
+        </div>
+        <div class="archive-grid" onclick="event.stopPropagation()">
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_004/project_4_a.jpg');">
