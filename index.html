@@ -3,110 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v07.09</title>
+    <title>EZIBEATS_ARCHIVE_v07.15</title>
     <style>
-        /* --- CORE SYSTEM --- */
-        body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; min-height: 100vh; }
-
-        /* --- LANDING PAGE --- */
-        #landing-page { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; z-index: 2000; background: #000; transition: opacity 0.5s ease; }
-        body.view-active #landing-page { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
-        .section-panel { flex: 1; width: 100%; border-bottom: 1px solid #222; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
-        .nav-btn { font-size: 60px; letter-spacing: 15px; color: #1a1a1a; transition: 0.4s; font-weight: 900; text-transform: uppercase; }
-        .section-panel:hover { background: #050505; flex: 1.4; }
-        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; }
-        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
-
-        /* --- MODULE VISIBILITY --- */
-        #archive-section, #merch-section, #shows-section { display: none; opacity: 0; flex-direction: column; align-items: center; padding: 60px 20px; min-height: 100vh; position: relative; z-index: 10; }
-        body.view-music #archive-section { display: flex; opacity: 1; }
-        body.view-merch #merch-section { display: flex; opacity: 1; }
-        body.view-shows #shows-section { display: flex; opacity: 1; }
-
-        /* --- UI ELEMENTS --- */
-        .ui-header { width: 100%; max-width: 800px; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; position: sticky; top: 0; background: #000; z-index: 100; }
+        body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; }
+        
+        /* --- UI SCANNED HEADER --- */
+        .ui-header { 
+            width: 100%; max-width: 800px; margin: 0 auto 30px; 
+            border-bottom: 1px solid #222; padding: 60px 0 10px; 
+            display: flex; justify-content: space-between; 
+            position: sticky; top: 0; background: #000; z-index: 100; 
+        }
         .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; }
-
-        /* --- STARK GRID (Music/Merch) --- */
-        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; width: 100%; max-width: 800px; background: #111; }
-        .item { aspect-ratio: 1/1; background-color: #fff; cursor: crosshair; position: relative; overflow: hidden; opacity: 0.3; filter: grayscale(100%); transition: opacity 0.4s; }
-        .item.in-view { opacity: 1; }
-        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: 0; transition: none; }
-        .info { position: absolute; inset: 0; background: #fff; color: #000; opacity: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px; pointer-events: none; z-index: 10; transition: opacity 0.2s; }
-        .item.active .info { opacity: 1; pointer-events: auto; }
-
-        /* --- PERFORMANCE MANIFEST (The Scanned Log) --- */
-        .log-container { width: 100%; max-width: 800px; }
+        
+        /* --- THE MANIFEST GRID --- */
+        .log-container { width: 100%; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
         .calendar-table { width: 100%; border-collapse: collapse; }
-        .past-show { opacity: 0.3; transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-bottom: 1px solid #111; }
-        .past-show.in-view { opacity: 1; }
-        .past-show td { padding: 15px 10px; font-size: 11px; color: #fff; }
-        .date-cell { width: 120px; font-weight: bold; color: #ff0000; text-transform: uppercase; }
+        
+        .year-header { font-size: 14px; color: #333; padding: 40px 0 10px; letter-spacing: 10px; border-bottom: 1px solid #111; }
 
-        @media (max-width: 768px) { .nav-btn { font-size: 32px; letter-spacing: 8px; } .archive-grid { grid-template-columns: repeat(2, 1fr); } }
+        /* SCROLL LIGHT LOGIC */
+        .past-show { 
+            opacity: 0.3; 
+            transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1); 
+            border-bottom: 1px solid #111; 
+        }
+        .past-show.in-view { opacity: 1; }
+        
+        .past-show td { padding: 18px 10px; font-size: 11px; color: #fff; text-transform: uppercase; }
+        .date-cell { width: 100px; font-weight: bold; color: #ff0000; }
+        .location-cell { text-align: right; color: #444; font-size: 9px; }
+
+        /* SPECIAL ANCHOR FOR VOL 1 */
+        .anchor-row { border-left: 3px solid #ff0000; background: rgba(255,0,0,0.03); }
     </style>
 </head>
-<body onclick="closeAll(event)">
+<body>
 
-    <div id="landing-page">
-        <div class="section-panel" onclick="switchView(event, 'music')">
-            <div class="nav-btn">MUSIC</div>
-            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
-        </div>
-        <div class="section-panel" onclick="switchView(event, 'merch')">
-            <div class="nav-btn">CLOTHING</div>
-            <div class="panel-bg-text">DESIGN_LOG_20/20</div>
-        </div>
-        <div class="section-panel" onclick="switchView(event, 'shows')">
-            <div class="nav-btn">SHOWS</div>
-            <div class="panel-bg-text">LIVE_LOGS</div>
-        </div>
-    </div>
-
-    <div id="shows-section">
+    <div class="log-container">
         <div class="ui-header">
             <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
-            <div class="title">LOG_01_TO_70</div>
+            <div class="title">[ 71 / 71_ENTRIES ]</div>
         </div>
-        <div id="shows-section">
-        <div class="ui-header">
-            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
-            <div class="title">RESIDENCY_ERA: [HONEY / RED_SEA]</div>
-        </div>
-        <div class="log-container" onclick="event.stopPropagation()">
-            <table class="calendar-table">
-                <tbody id="full-manifest-body">
-                    <tr class="past-show"><td class="date-cell">MAY 02 20</td><td>ONLINE_SHOWCASE [GLOBAL]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JAN 20 20</td><td>7TH_ST_ENTRY [MPLS]</td></tr>
 
-                    <tr class="past-show"><td class="date-cell">JAN 13 18</td><td>RED_SEA / PALMERS [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">DEC 10 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">NOV 11 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">OCT 14 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">SEP 09 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">AUG 12 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUL 15 17</td><td>7TH_ST_ENTRY (KPW SHOW) [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUL 08 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUN 10 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAY 13 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">APR 08 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAR 11 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">FEB 11 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JAN 14 17</td><td>RED_SEA / HONEY [MPLS]</td></tr>
+        <table class="calendar-table">
+            <tbody>
+                <tr class="year-header"><td colspan="3">2020_FINAL_RUN</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 02</td><td>ONLINE SHOWCASE</td><td class="location-cell">ONLINE</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 20</td><td>RED SEA / PALMERS</td><td class="location-cell">MINNEAPOLIS</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 02</td><td>ONLINE SHOWCASE (SESSION 2)</td><td class="location-cell">ONLINE</td></tr>
+                <tr class="past-show"><td class="date-cell">JAN 20</td><td>7TH ST ENTRY (MLK DAY)</td><td class="location-cell">DOWNTOWN MPLS</td></tr>
 
-                    <tr class="past-show"><td class="date-cell">DEC 10 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">NOV 12 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">OCT 08 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">SEP 10 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">AUG 13 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUL 15 16</td><td>HONEY_LAUNCH (HEAVY ROTATION) [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUL 09 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUN 11 16</td><td>RED_SEA / HONEY [MPLS]</td></tr>
-                    
-                    </tbody>
-            </table>
-        </div>
+                <tr class="year-header"><td colspan="3">2019_EXPANSION</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 30</td><td>PART WOLF / NOMAD</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 14</td><td>HOLIDAY BEAT SHOWCASE (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 17</td><td>CAYDENCE RECORDS</td><td class="location-cell">ST. PAUL</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 14</td><td>MPLS CLUB UNDERGROUND</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 12</td><td>FALL PRODUCER SPOTLIGHT (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 30</td><td>PART WOLF / NOMADS</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">AUG 17</td><td>SUMMER SERIES: VOL 8 (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 15</td><td>SOLSTICE HIP-HOP SET (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 06</td><td>MEARS PARK (THE LOVE PROJECT)</td><td class="location-cell">ST. PAUL</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 13</td><td>SPRING ROTATION (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">FEB 24</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">FEB 09</td><td>WINTER BEAT BAR (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+
+                <tr class="year-header"><td colspan="3">2018_TRANSITION</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 16</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 12</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 05</td><td>PALMERS</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 03</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 10</td><td>HEAVY ROTATION: THE KICKBACK (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">NOV 01</td><td>PALMERS</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 08</td><td>ARTIST & PRODUCER MIXER (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 06</td><td>PALMERS</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 02</td><td>THE RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUL 14</td><td>MID-SUMMER SESSIONS (RED SEA / PALMERS)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 22</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 12</td><td>SPRING BLOOM SHOWCASE</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 10</td><td>HEAVY ROTATION VOL. 6</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JAN 13</td><td>NEW YEAR BEAT SESSION</td><td class="location-cell">MPLS</td></tr>
+
+                <tr class="year-header"><td colspan="3">2017_PEAK_RESIDENCY</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 10</td><td>END OF YEAR SHOWCASE</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 09</td><td>YEAR-END FINALE</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 14</td><td>VOLUME 5</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 16</td><td>FALL BEAT BATTLE</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">AUG 12</td><td>SUMMER HEAVY ROTATION</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 24</td><td>SUMMER SOLSTICE MC SET</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUN 10</td><td>VOLUME 4</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAY 09</td><td>MAY 9TH 2017 HONEY MPLS</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">APR 03</td><td>APRIL 3RD HONEY</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 11</td><td>VOLUME 3</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">FEB 20</td><td>7TH ST ENTRY (KPW SHOW)</td><td class="location-cell">DOWNTOWN MPLS</td></tr>
+
+                <tr class="year-header"><td colspan="3">2016_THE_LAUNCH</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 25</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 10</td><td>HEAVY ROTATION VOL. 2</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">DEC 04</td><td>DEC 4TH HONEY</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">OCT 22</td><td>HEAVY ROTATION: VOLUME 2</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show anchor-row"><td class="date-cell">SEP 17</td><td>HEAVY ROTATION VOL. 1 (LAUNCH AT HONEY)</td><td class="location-cell">MPLS</td></tr>
+                <tr class="past-show"><td class="date-cell">JUL 15</td><td>HEAVY ROTATION: VOLUME 1</td><td class="location-cell">MPLS</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -115,31 +114,9 @@
                 if (entry.isIntersecting) entry.target.classList.add('in-view');
                 else entry.target.classList.remove('in-view');
             });
-        }, { threshold: 0.6, rootMargin: "-10% 0px -10% 0px" });
+        }, { threshold: 0.8, rootMargin: "-10% 0px -10% 0px" });
 
-        function switchView(e, viewName) {
-            if (e) e.stopPropagation();
-            document.body.classList.add('view-active');
-            document.body.classList.remove('view-music', 'view-merch', 'view-shows');
-            document.body.classList.add('view-' + viewName);
-            window.scrollTo(0,0);
-            
-            setTimeout(() => {
-                // Initialize observer for items and table rows
-                const targets = document.querySelectorAll('.item, .past-show');
-                targets.forEach(t => {
-                    scrollObserver.observe(t);
-                    const rect = t.getBoundingClientRect();
-                    if(rect.top < window.innerHeight && rect.bottom > 0) t.classList.add('in-view');
-                });
-            }, 100);
-        }
-
-        function closeAll(event) {
-            if (event.target.tagName === 'BODY' || ['archive-section', 'merch-section', 'shows-section'].includes(event.target.id)) {
-                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
-            }
-        }
+        document.querySelectorAll('.past-show').forEach(row => scrollObserver.observe(row));
     </script>
 </body>
 </html>
