@@ -5,21 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE</title>
     <style>
-        /* --- SYSTEM CORE --- */
+        /* --- CORE SYSTEM --- */
         body, html { 
-            margin: 0; padding: 0; 
-            background: #000; color: #fff; 
-            font-family: 'Courier New', monospace; 
-            height: 100%; width: 100%;
-            overflow: hidden; /* Locked for Landing */
+            margin: 0; padding: 0; background: #000; color: #fff; 
+            font-family: 'Courier New', monospace; height: 100%; width: 100%;
+            overflow: hidden; 
         }
 
-        /* --- THE 3/3 VERTICAL LANDING --- */
+        /* --- 3/3 VERTICAL LANDING --- */
         #landing-page {
             display: flex; flex-direction: column;
             height: 100vh; width: 100vw;
             position: fixed; top: 0; left: 0; z-index: 2000;
-            transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body.view-active #landing-page { transform: translateY(-100%); }
@@ -60,6 +58,21 @@
         .esc-btn { cursor: pointer; color: #444; font-size: 11px; letter-spacing: 3px; transition: 0.3s; }
         .esc-btn:hover { color: #ff0000; }
 
+        /* --- MUSIC GRID --- */
+        .project-card { width: 100%; max-width: 800px; margin-bottom: 40px; }
+        .project-title { font-size: 20px; font-weight: 900; letter-spacing: 8px; color: #fff; margin-bottom: 5px; }
+        .project-meta { font-size: 9px; color: #ff0000; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .track-row { 
+            padding: 18px 10px; border-bottom: 1px solid #111; 
+            display: flex; justify-content: space-between; 
+            color: #444; cursor: pointer; font-size: 11px; transition: 0.2s;
+        }
+        .track-row:hover { color: #fff; background: #050505; }
+        .decrypt-tag { color: #222; font-size: 9px; }
+        .track-row:hover .decrypt-tag { color: #ff0000; }
+        .playing-now { color: #ff0000 !important; border-left: 2px solid #ff0000; padding-left: 20px; }
+
         /* --- SHOWS: RED-DATE ACCORDION --- */
         .log-container { width: 100%; max-width: 800px; }
         .year-group { border-bottom: 1px solid #111; width: 100%; }
@@ -72,26 +85,14 @@
         
         .year-content { 
             max-height: 0; opacity: 0; overflow: hidden; 
-            transition: max-height 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s; 
+            transition: max-height 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s; 
         }
-        .year-group.active .year-content { max-height: 1500px; opacity: 1; padding-bottom: 40px; }
+        .year-group.active .year-content { max-height: 3000px; opacity: 1; padding-bottom: 40px; }
 
         .calendar-table { width: 100%; border-collapse: collapse; }
         .calendar-table td { padding: 15px 10px; color: #444; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #080808; }
-        
-        /* RED DATES DIRECTIVE */
         .date-cell { color: #ff0000 !important; font-weight: 900; width: 100px; }
         .location-cell { text-align: right; opacity: 0.3; font-size: 8px; }
-
-        /* --- MUSIC GRID --- */
-        .track-row { 
-            width: 100%; max-width: 800px; padding: 20px; 
-            border-bottom: 1px solid #111; display: flex; 
-            justify-content: space-between; color: #444; 
-            cursor: pointer; font-size: 11px; 
-        }
-        .track-row:hover { color: #fff; background: #050505; }
-        .decrypt-tag { color: #ff0000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -109,90 +110,16 @@
             <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
             <div id="now-playing" class="esc-btn">STATUS: [ IDLE ]</div>
         </div>
-        <div class="track-row" onclick="playTrack('test12.mp3', 'TEST_12')">FILE_12_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
-        <div class="track-row" onclick="playTrack('Cosmic Slopurtunity.mp3', 'COSMIC_SLOP')">COSMIC_SLOPURTUNITY <span class="decrypt-tag">[DECRYPT]</span></div>
-    </div>
 
-    <div id="merch-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
-            <div class="esc-btn" style="pointer-events:none">SAMPLES_v01</div>
+        <div class="project-card">
+            <div class="project-title">CORE_TEST_SEQUENCE</div>
+            <div class="project-meta">MAR_APR_2026 // UNRELEASED</div>
+            <div class="track-row" onclick="playTrack('test12.mp3', 'TEST_12', this)">12_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
+            <div class="track-row" onclick="playTrack('test11.mp3', 'TEST_11', this)">11_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
+            <div class="track-row" onclick="playTrack('test1.mp3', 'TEST_01', this)">01_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
         </div>
-        <div class="nav-btn" style="color:#222; margin-top:20vh;">COMING_SOON</div>
-    </div>
 
-    <div id="shows-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
-            <div class="esc-btn" style="pointer-events:none">71_ENTRIES_ARCHIVED</div>
-        </div>
-        
-        <div class="log-container">
-            <div class="year-group">
-                <div class="year-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="year-num">2020</span><span class="esc-btn">[+]</span>
-                </div>
-                <div class="year-content">
-                    <table class="calendar-table">
-                        <tr><td class="date-cell">MAY 02</td><td>ONLINE SHOWCASE</td><td class="location-cell">ONLINE</td></tr>
-                        <tr><td class="date-cell">JAN 20</td><td>7TH ST ENTRY</td><td class="location-cell">MPLS</td></tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="year-group">
-                <div class="year-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="year-num">2019</span><span class="esc-btn">[+]</span>
-                </div>
-                <div class="year-content">
-                    <table class="calendar-table">
-                        <tr><td class="date-cell">DEC 30</td><td>PART WOLF / NOMAD</td><td class="location-cell">MPLS</td></tr>
-                        <tr><td class="date-cell">JUN 06</td><td>MEARS PARK</td><td class="location-cell">ST. PAUL</td></tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="year-group">
-                <div class="year-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="year-num">2018</span><span class="esc-btn">[+]</span>
-                </div>
-                <div class="year-content">
-                    <table class="calendar-table">
-                        <tr><td class="date-cell">DEC 16</td><td>RED SEA</td><td class="location-cell">MPLS</td></tr>
-                        <tr><td class="date-cell">NOV 10</td><td>HEAVY ROTATION</td><td class="location-cell">MPLS</td></tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const player = document.getElementById('global-player');
-        const statusLabel = document.getElementById('now-playing');
-
-        function switchView(view) {
-            document.body.classList.add('view-active', 'view-' + view);
-            // Enable scrolling for content
-            document.documentElement.style.overflow = 'auto';
-            document.body.style.overflow = 'auto';
-            window.scrollTo(0, 0);
-        }
-
-        function exitView() {
-            document.body.className = '';
-            // Lock scrolling for landing
-            document.documentElement.style.overflow = 'hidden';
-            document.body.style.overflow = 'hidden';
-            player.pause();
-            statusLabel.innerText = "STATUS: [ IDLE ]";
-        }
-
-        function playTrack(file, title) {
-            player.src = file;
-            player.play().catch(() => alert("Interaction required for audio."));
-            statusLabel.innerText = "STREAMING: [" + title + "]";
-            statusLabel.style.color = "#ff0000";
-        }
-    </script>
-</body>
-</html>
+        <div class="project-card">
+            <div class="project-title">TITLED_WORKS</div>
+            <div class="
+                
