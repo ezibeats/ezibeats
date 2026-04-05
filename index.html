@@ -12,77 +12,73 @@
             overflow: hidden; 
         }
 
-        /* --- 3/3 VERTICAL LANDING --- */
+        /* --- 3-PILLAR LANDING --- */
         #landing-page {
-            display: flex; flex-direction: column;
-            height: 100vh; width: 100vw;
+            display: flex; height: 100vh; width: 100vw;
             position: fixed; top: 0; left: 0; z-index: 2000;
             transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
-
         body.view-active #landing-page { transform: translateY(-100%); }
 
-        .section-panel {
-            flex: 1; width: 100%;
-            display: flex; justify-content: center; align-items: center;
-            border-bottom: 1px solid #111;
-            cursor: pointer; transition: all 0.5s ease;
-            background: #000;
+        .pillar {
+            flex: 1; height: 100%; display: flex; 
+            justify-content: center; align-items: center;
+            border-right: 1px solid #111; cursor: pointer;
+            transition: 0.5s; background: #000;
         }
-
+        .pillar:hover { background: #080808; flex: 1.2; }
         .nav-btn { 
-            font-size: 50px; font-weight: 900; letter-spacing: 15px; 
-            color: #111; transition: 0.4s; pointer-events: none; 
-            text-transform: uppercase;
+            font-size: 40px; font-weight: 900; letter-spacing: 10px; 
+            writing-mode: vertical-rl; text-orientation: mixed;
+            color: #1a1a1a; transition: 0.4s;
         }
-
-        .section-panel:hover { background: #050505; flex: 1.2; }
-        .section-panel:hover .nav-btn { color: #fff; letter-spacing: 25px; }
+        .pillar:hover .nav-btn { color: #ff0000; letter-spacing: 20px; }
 
         /* --- CONTENT VIEW LOGIC --- */
         .content-view { 
-            display: none; width: 100%; min-height: 100vh; 
-            flex-direction: column; align-items: center; 
-            padding-bottom: 150px; background: #000;
+            display: none; width: 100%; height: 100vh; 
+            position: relative; background: #000; overflow: hidden;
         }
         body.view-music #music-section, 
-        body.view-shows #shows-section,
-        body.view-merch #merch-section { display: flex; }
+        body.view-shows #shows-section { display: block; }
 
-        /* --- UI SHARED HEADER --- */
+        /* --- FLOATING WINDOWS (MUSIC) --- */
+        .floating-window {
+            position: absolute; width: 320px; background: #080808;
+            border: 1px solid #222; padding: 0; z-index: 10;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            cursor: move;
+        }
+        .window-header {
+            background: #111; padding: 10px; font-size: 10px;
+            letter-spacing: 2px; color: #444; border-bottom: 1px solid #222;
+            display: flex; justify-content: space-between;
+        }
+        .window-content { padding: 15px; }
+        .track-row {
+            padding: 12px 5px; border-bottom: 1px solid #111;
+            font-size: 11px; color: #666; cursor: pointer;
+            display: flex; justify-content: space-between;
+        }
+        .track-row:hover { color: #fff; background: #111; }
+        .playing { color: #ff0000 !important; }
+
+        /* --- SHOWS SECTION (SCROLLABLE) --- */
+        #shows-section { overflow-y: auto; }
         .ui-header { 
-            width: 100%; max-width: 900px; margin: 80px auto 40px; 
-            display: flex; justify-content: space-between; 
-            border-bottom: 1px solid #222; padding-bottom: 15px; 
+            position: sticky; top: 0; width: 100%; padding: 40px 0;
+            background: rgba(0,0,0,0.9); z-index: 100;
+            border-bottom: 1px solid #111; display: flex; justify-content: space-around;
         }
-        .esc-btn { cursor: pointer; color: #444; font-size: 11px; letter-spacing: 3px; transition: 0.3s; }
-        .esc-btn:hover { color: #fff; }
+        .esc-btn { cursor: pointer; color: #444; font-size: 10px; letter-spacing: 3px; }
+        .esc-btn:hover { color: #ff0000; }
 
-        /* --- MUSIC GRID --- */
-        .project-card { width: 100%; max-width: 900px; margin-bottom: 60px; }
-        .project-title { font-size: 22px; font-weight: 900; letter-spacing: 10px; color: #fff; margin-bottom: 8px; }
-        .project-meta { font-size: 9px; color: #444; letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; }
-        
-        .track-row { 
-            padding: 20px 10px; border-bottom: 1px solid #111; 
-            display: flex; justify-content: space-between; 
-            color: #333; cursor: pointer; font-size: 11px; transition: 0.3s;
-        }
-        .track-row:hover { color: #fff; background: #050505; padding-left: 20px; }
-        .decrypt-tag { font-size: 9px; opacity: 0.2; }
-        .track-row:hover .decrypt-tag { opacity: 1; color: #fff; }
-
-        /* --- SHOWS: SCROLL-LIGHTING --- */
-        .log-container { width: 100%; max-width: 900px; }
+        .log-container { max-width: 800px; margin: 40px auto; }
         .show-row { 
-            padding: 25px 10px; display: flex; 
-            justify-content: space-between; border-bottom: 1px solid #111; 
-            opacity: 0.15; transition: 0.6s; text-transform: uppercase; font-size: 10px;
+            padding: 20px; display: flex; justify-content: space-between; 
+            border-bottom: 1px solid #080808; font-size: 10px; color: #333;
         }
-        .show-row.in-view { opacity: 1; color: #fff; }
-        .date-cell { width: 120px; font-weight: bold; }
-        .location-cell { text-align: right; color: #222; width: 150px; }
-        .show-row.in-view .location-cell { color: #444; }
+        .date-cell { color: #ff0000; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -90,111 +86,87 @@
     <audio id="global-player" style="display:none;"></audio>
 
     <div id="landing-page">
-        <div class="section-panel" onclick="switchView('music')"><div class="nav-btn">MUSIC</div></div>
-        <div class="section-panel" onclick="switchView('merch')"><div class="nav-btn">CLOTHING</div></div>
-        <div class="section-panel" onclick="switchView('shows')"><div class="nav-btn">SHOWS</div></div>
+        <div class="pillar" onclick="switchView('music')"><div class="nav-btn">MUSIC</div></div>
+        <div class="pillar" onclick="switchView('merch')"><div class="nav-btn">CLOTHING</div></div>
+        <div class="pillar" onclick="switchView('shows')"><div class="nav-btn">SHOWS</div></div>
     </div>
 
     <div id="music-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
-            <div id="now-playing" class="esc-btn">STATUS: [ IDLE ]</div>
+        <div class="ui-header" style="position:absolute; width:100%; border:none;">
+            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
+            <div id="status" class="esc-btn">STATUS: IDLE</div>
         </div>
 
-        <div class="project-card">
-            <div class="project-title">CORE_TEST_SEQUENCE</div>
-            <div class="project-meta">MAR_APR_2026 // UNRELEASED</div>
-            <div class="track-row" onclick="playTrack('test12.mp3', 'TEST_12')">12_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
-            <div class="track-row" onclick="playTrack('test11.mp3', 'TEST_11')">11_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
-            <div class="track-row" onclick="playTrack('test1.mp3', 'TEST_01')">01_FILE_SEQ <span class="decrypt-tag">[DECRYPT]</span></div>
+        <div class="floating-window" style="top: 20%; left: 10%;">
+            <div class="window-header"><span>CORE_SEQUENCE</span><span>[01]</span></div>
+            <div class="window-content">
+                <div class="track-row" onclick="play('test12.mp3', 'TEST_12', this)">12_FILE_SEQ <span>[PLAY]</span></div>
+                <div class="track-row" onclick="play('test11.mp3', 'TEST_11', this)">11_FILE_SEQ <span>[PLAY]</span></div>
+                <div class="track-row" onclick="play('test1.mp3', 'TEST_01', this)">01_FILE_SEQ <span>[PLAY]</span></div>
+            </div>
         </div>
 
-        <div class="project-card">
-            <div class="project-title">TITLED_WORKS</div>
-            <div class="project-meta">NFT_CANDIDATES // AUDIO_VERIFIED</div>
-            <div class="track-row" onclick="playTrack('Cosmic Slopurtunity.mp3', 'COSMIC_SLOP')">COSMIC_SLOPURTUNITY <span class="decrypt-tag">[DECRYPT]</span></div>
-            <div class="track-row" onclick="playTrack('Did You Remember Your Pills v1.mp3', 'PILLS_V1')">REMEMBER_PILLS <span class="decrypt-tag">[DECRYPT]</span></div>
-            <div class="track-row" onclick="playTrack('Untitled (Vocals).mp3', 'VOCALS')">UNTITLED_VOCALS <span class="decrypt-tag">[DECRYPT]</span></div>
+        <div class="floating-window" style="top: 30%; left: 50%;">
+            <div class="window-header"><span>TITLED_WORKS</span><span>[02]</span></div>
+            <div class="window-content">
+                <div class="track-row" onclick="play('Cosmic Slopurtunity.mp3', 'COSMIC_SLOP', this)">COSMIC_SLOP <span>[PLAY]</span></div>
+                <div class="track-row" onclick="play('Did You Remember Your Pills v1.mp3', 'PILLS_V1', this)">REMEMBER_PILLS <span>[PLAY]</span></div>
+            </div>
         </div>
     </div>
 
     <div id="shows-section" class="content-view">
         <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
-            <div class="esc-btn" style="pointer-events:none">71_ENTRIES_ARCHIVED</div>
+            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
+            <div class="esc-btn">SHOW_LOG_71</div>
         </div>
-        
-        <div class="log-container" id="scroll-log">
-            <div class="show-row"><div class="date-cell">MAY 02 2020</div><div>ONLINE SHOWCASE</div><div class="location-cell">ONLINE</div></div>
-            <div class="show-row"><div class="date-cell">APR 20 2020</div><div>RED SEA / PALMERS</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">JAN 20 2020</div><div>7TH ST ENTRY (MLK DAY)</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">DEC 30 2019</div><div>PART WOLF / NOMAD</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">NOV 17 2019</div><div>CAYDENCE RECORDS</div><div class="location-cell">ST. PAUL</div></div>
-            <div class="show-row"><div class="date-cell">SEP 30 2019</div><div>PART WOLF / NOMADS</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">JUN 06 2019</div><div>MEARS PARK (THE LOVE PROJECT)</div><div class="location-cell">ST. PAUL</div></div>
-            <div class="show-row"><div class="date-cell">FEB 09 2019</div><div>WINTER BEAT BAR</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">DEC 16 2018</div><div>RED SEA</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">NOV 10 2018</div><div>HEAVY ROTATION: THE KICKBACK</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">SEP 08 2018</div><div>ARTIST & PRODUCER MIXER</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">JUL 14 2018</div><div>MID-SUMMER SESSIONS</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">JAN 13 2018</div><div>NEW YEAR BEAT SESSION</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">MAY 09 2017</div><div>HONEY MPLS</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">FEB 20 2017</div><div>7TH ST ENTRY (KPW)</div><div class="location-cell">MPLS</div></div>
-            <div class="show-row"><div class="date-cell">SEP 17 2016</div><div>HEAVY ROTATION VOL. 1</div><div class="location-cell">HONEY MPLS</div></div>
+        <div class="log-container">
+            <div class="show-row"><span class="date-cell">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>ONLINE</span></div>
+            <div class="show-row"><span class="date-cell">APR 20 2020</span><span>RED SEA / PALMERS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JAN 20 2020</span><span>7TH ST ENTRY (MLK DAY)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">DEC 30 2019</span><span>PART WOLF / NOMAD</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION VOL. 1</span><span>HONEY</span></div>
         </div>
-    </div>
-
-    <div id="merch-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_ARCHIVE ]</div>
-            <div class="esc-btn" style="pointer-events:none">SAMPLES_v01</div>
-        </div>
-        <div style="margin-top: 100px; color: #222; font-size: 12px; letter-spacing: 5px;">UNDER_CONSTRUCTION</div>
     </div>
 
     <script>
         const player = document.getElementById('global-player');
-        const statusLabel = document.getElementById('now-playing');
+        const status = document.getElementById('status');
 
         function switchView(view) {
             document.body.classList.add('view-active', 'view-' + view);
-            document.documentElement.style.overflow = 'auto';
-            document.body.style.overflow = 'auto';
-            window.scrollTo(0, 0);
-            
-            if(view === 'shows') initScrollLighting();
         }
 
         function exitView() {
             document.body.className = '';
-            document.documentElement.style.overflow = 'hidden';
-            document.body.style.overflow = 'hidden';
             player.pause();
-            statusLabel.innerText = "STATUS: [ IDLE ]";
         }
 
-        function playTrack(file, title) {
+        function play(file, title, el) {
+            document.querySelectorAll('.track-row').forEach(r => r.classList.remove('playing'));
+            el.classList.add('playing');
             player.src = file;
-            player.play().catch(e => {
-                statusLabel.innerText = "STATUS: [INTERACTION_REQ]";
-                console.log("Audio play blocked");
-            });
-            statusLabel.innerText = "STREAMING: [" + title + "]";
+            player.play();
+            status.innerText = "STREAMING: " + title;
         }
 
-        function initScrollLighting() {
-            const rows = document.querySelectorAll('.show-row');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('in-view');
-                    else entry.target.classList.remove('in-view');
-                });
-            }, { 
-                rootMargin: '-20% 0% -20% 0%',
-                threshold: 0.5 
-            });
-            rows.forEach(row => observer.observe(row));
-        }
+        // --- DRAGGABLE LOGIC ---
+        document.querySelectorAll('.floating-window').forEach(win => {
+            let isDragging = false;
+            win.querySelector('.window-header').onmousedown = (e) => {
+                isDragging = true;
+                let shiftX = e.clientX - win.getBoundingClientRect().left;
+                let shiftY = e.clientY - win.getBoundingClientRect().top;
+                
+                document.onmousemove = (e) => {
+                    if (!isDragging) return;
+                    win.style.left = e.clientX - shiftX + 'px';
+                    win.style.top = e.clientY - shiftY + 'px';
+                };
+                
+                document.onmouseup = () => { isDragging = false; };
+            };
+        });
     </script>
 </body>
 </html>
