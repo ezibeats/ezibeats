@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE</title>
+    <title>EZIBEATS_ARCHIVE_v2.5</title>
     <style>
-        /* --- GLOBAL STYLE CONTROLS --- */
+        /* --- SYSTEM CORE --- */
         :root {
-            --bg-opacity: 0.9;         /* Adjust window transparency here */
-            --pillar-opacity: 0.8;     /* Adjust landing stack transparency here */
+            --bg-opacity: 0.9;
             --accent-red: #ff0000;
             --interface-grey: #111;
         }
@@ -16,7 +15,7 @@
         body, html { 
             margin: 0; padding: 0; background: #000; color: #fff; 
             font-family: 'Courier New', monospace; height: 100%; width: 100%;
-            overflow: hidden; 
+            overflow: hidden; text-transform: uppercase;
         }
 
         /* --- LANDING STACK --- */
@@ -32,62 +31,97 @@
             justify-content: center; align-items: center;
             border-bottom: 1px solid var(--interface-grey); cursor: pointer;
             transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
-            background: rgba(0, 0, 0, var(--pillar-opacity));
+            background: rgba(0, 0, 0, var(--bg-opacity));
         }
         .pillar:hover { background: rgba(5, 5, 5, 1); flex: 1.5; }
         
         .nav-btn { 
             font-size: 28px; font-weight: 900; letter-spacing: 20px; 
             color: #1a1a1a; transition: 0.4s; pointer-events: none;
-            text-transform: uppercase;
         }
         .pillar:hover .nav-btn { color: #fff; letter-spacing: 35px; }
 
         /* --- CONTENT VIEWS --- */
         .content-view { 
             display: none; width: 100%; height: 100vh; 
-            position: relative; background: #000; overflow: hidden;
+            position: relative; background: #000; overflow-y: auto; padding: 40px;
+            box-sizing: border-box;
         }
         body.view-music #music-section, 
         body.view-shows #shows-section { display: block; }
 
-        /* --- MUSIC WINDOWS --- */
-        .floating-window {
-            position: absolute; width: 680px; 
-            background: rgba(10, 10, 10, var(--bg-opacity));
-            border: 1px solid #222; z-index: 10;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-        .window-header {
-            background: #111; padding: 12px 18px; font-size: 10px;
-            letter-spacing: 3px; color: #444; border-bottom: 1px solid #222;
-            display: flex; justify-content: space-between; cursor: grab;
-        }
-        .window-content { padding: 15px; display: flex; gap: 15px; overflow-x: auto; }
-        
-        .track-item {
-            flex: 0 0 auto; padding: 25px; background: #050505;
-            border: 1px solid #111; font-size: 11px; color: #555;
-            cursor: pointer; transition: 0.3s; min-width: 180px; text-align: center;
-        }
-        .track-item:hover { color: #fff; border-color: #444; }
-        .track-item.playing { color: var(--accent-red) !important; border-color: var(--accent-red); }
+        h1 { font-size: 14px; letter-spacing: 4px; margin-bottom: 30px; font-weight: 300; border-bottom: 2px solid #fff; padding-bottom: 10px; }
 
-        /* --- SHOW LOG --- */
-        #shows-section { overflow-y: auto; }
-        .log-container { max-width: 900px; margin: 120px auto; padding: 0 60px; }
+        /* --- MUSIC GRID SYSTEM --- */
+        .album-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2px; background: #fff; border: 2px solid #fff;
+        }
+        
+        .album {
+            background: #000; aspect-ratio: 1/1; position: relative; overflow: hidden;
+            background-position: center; background-size: cover;
+            filter: grayscale(100%); transition: filter 0.5s ease, opacity 0.5s ease; opacity: 0.6;
+        }
+        .album:hover { opacity: 1; filter: grayscale(0%); z-index: 10; }
+
+        .album-info {
+            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 25px; display: flex; flex-direction: column;
+            opacity: 0; transition: opacity 0.4s ease-in-out; pointer-events: none;
+        }
+        .album:hover .album-info { opacity: 1; pointer-events: auto; }
+        
+        h2 { font-size: 12px; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 10px; letter-spacing: 2px; }
+        
+        .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .tracklist li {
+            font-size: 10px; padding: 12px 0; border-bottom: 1px solid #222;
+            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+            letter-spacing: 1px;
+        }
+        .tracklist li:hover { background: #fff; color: #000; }
+
+        .status-dot { width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--accent-red); }
+        .playing .status-dot { display: block; animation: pulse 1.2s infinite ease-in-out; }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .timer-container { width: 100%; height: 2px; background: #222; margin-top: auto; }
+        .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
+
+        /* --- SHOW HISTORY UI --- */
+        .log-container { max-width: 900px; margin: 60px auto; }
         .show-row { 
             padding: 22px 0; display: flex; justify-content: space-between; 
-            border-bottom: 1px solid #0a0a0a; font-size: 10px; color: #333;
-            text-transform: uppercase;
+            border-bottom: 1px solid #111; font-size: 10px; color: #444;
         }
         .date-cell { color: var(--accent-red); font-weight: 900; width: 140px; }
+        
+        .esc-btn { position: fixed; top: 40px; right: 40px; cursor: pointer; color: #444; font-size: 10px; z-index: 9999; letter-spacing: 2px; }
+        .esc-btn:hover { color: #fff; }
+
+        #unlocker {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: opacity 0.8s ease;
+        }
     </style>
 </head>
 <body>
 
-    <audio id="global-player" style="display:none;"></audio>
+    <audio id="global-player"></audio>
+
+    <div id="unlocker" onclick="this.style.opacity='0'; setTimeout(()=>{this.style.display='none'}, 800);">
+        <div style="border: 1px solid #fff; padding: 30px; letter-spacing: 5px; font-size: 12px;">
+            [ INITIALIZE_SYSTEM ]
+        </div>
+    </div>
 
     <div id="landing-page">
         <div class="pillar" onclick="switchView('music')"><div class="nav-btn">MUSIC_FILE</div></div>
@@ -95,45 +129,4 @@
         <div class="pillar" onclick="switchView('shows')"><div class="nav-btn">SHOW_HISTORY</div></div>
     </div>
 
-    <div id="music-section" class="content-view">
-        <div class="floating-window" style="top: 25%; left: 15%;" onmousedown="focusWin(this)">
-            <div class="window-header"><span>ARCHIVE_SEQUENCE</span><span>[ 01 ]</span></div>
-            <div class="window-content">
-                <div class="track-item" onclick="play('test12.mp3', 'FILE_12', this)">12_FILE_SEQ</div>
-                <div class="track-item" onclick="play('test11.mp3', 'FILE_11', this)">11_FILE_SEQ</div>
-                <div class="track-item" onclick="play('test1.mp3', 'FILE_01', this)">01_FILE_SEQ</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="shows-section" class="content-view">
-        <div class="log-container">
-            <div class="show-row"><span class="date-cell">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>STREAMS</span></div>
-            <div class="show-row"><span class="date-cell">APR 20 2020</span><span>RED SEA / PALMERS</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">JAN 20 2020</span><span>7TH ST ENTRY</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">NOV 17 2019</span><span>CAYDENCE RECORDS</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">AUG 25 2018</span><span>PAISLEY PARK</span><span>CHANHASSEN</span></div>
-            <div class="show-row"><span class="date-cell">JAN 05 2017</span><span>THE BITTER END</span><span>NEW YORK</span></div>
-            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION LAUNCH</span><span>HONEY MPLS</span></div>
-
-            <script>
-                const log = document.querySelector('.log-container');
-                for (let i = 64; i >= 1; i--) {
-                    const row = document.createElement('div');
-                    row.className = 'show-row';
-                    const id = i.toString().padStart(2, '0');
-                    row.innerHTML = `<span class="date-cell">ARCHIVE_${id}</span><span>HISTORICAL_LOG_DATA</span><span>MPLS_REGION</span>`;
-                    log.appendChild(row);
-                }
-            </script>
-            <div class="show-row" style="border-bottom: 2px solid var(--accent-red);"><span class="date-cell">JAN 2016</span><span>SYSTEM_START</span><span>ORIGIN</span></div>
-        </div>
-    </div>
-
-    <script>
-        let highestZ = 100;
-        function switchView(v) { document.body.classList.add('view-active', 'view-' + v); }
-        function focusWin(w) { w.style.zIndex = ++highestZ; }
-    </script>
-</body>
-</html>
+    <div id="music-section"
