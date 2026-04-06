@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZIBEATS_ARCHIVE</title>
     <style>
-        /* --- SYSTEM CORE --- */
+        /* --- GLOBAL STYLE CONTROLS --- */
+        :root {
+            --bg-opacity: 0.9;         /* Adjust window transparency here */
+            --pillar-opacity: 0.8;     /* Adjust landing stack transparency here */
+            --accent-red: #ff0000;
+            --interface-grey: #111;
+        }
+
         body, html { 
             margin: 0; padding: 0; background: #000; color: #fff; 
             font-family: 'Courier New', monospace; height: 100%; width: 100%;
             overflow: hidden; 
         }
 
-        /* --- HORIZONTAL STACK LANDING --- */
+        /* --- LANDING STACK --- */
         #landing-page {
             display: flex; flex-direction: column; height: 100vh; width: 100vw;
             position: fixed; top: 0; left: 0; z-index: 5000;
@@ -23,66 +30,59 @@
         .pillar {
             flex: 1; width: 100%; display: flex; 
             justify-content: center; align-items: center;
-            border-bottom: 1px solid #111; cursor: pointer;
-            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); background: #000;
+            border-bottom: 1px solid var(--interface-grey); cursor: pointer;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
+            background: rgba(0, 0, 0, var(--pillar-opacity));
         }
-        .pillar:hover { background: #050505; flex: 2; }
+        .pillar:hover { background: rgba(5, 5, 5, 1); flex: 1.5; }
         
         .nav-btn { 
-            font-size: 32px; font-weight: 900; letter-spacing: 25px; 
-            color: #111; transition: 0.4s; pointer-events: none;
+            font-size: 28px; font-weight: 900; letter-spacing: 20px; 
+            color: #1a1a1a; transition: 0.4s; pointer-events: none;
             text-transform: uppercase;
         }
-        .pillar:hover .nav-btn { color: #fff; letter-spacing: 40px; }
+        .pillar:hover .nav-btn { color: #fff; letter-spacing: 35px; }
 
-        /* --- CONTENT VIEW --- */
+        /* --- CONTENT VIEWS --- */
         .content-view { 
             display: none; width: 100%; height: 100vh; 
             position: relative; background: #000; overflow: hidden;
         }
         body.view-music #music-section, 
-        body.view-shows #shows-section,
-        body.view-merch #merch-section { display: block; }
+        body.view-shows #shows-section { display: block; }
 
-        /* --- MUSIC RACK (HORIZONTAL WINDOWS) --- */
+        /* --- MUSIC WINDOWS --- */
         .floating-window {
-            position: absolute; width: 680px; background: #080808;
+            position: absolute; width: 680px; 
+            background: rgba(10, 10, 10, var(--bg-opacity));
             border: 1px solid #222; z-index: 10;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
         }
         .window-header {
             background: #111; padding: 12px 18px; font-size: 10px;
-            letter-spacing: 4px; color: #333; border-bottom: 1px solid #222;
+            letter-spacing: 3px; color: #444; border-bottom: 1px solid #222;
             display: flex; justify-content: space-between; cursor: grab;
         }
-        .window-content { padding: 15px; display: flex; flex-direction: row; gap: 15px; overflow-x: auto; }
+        .window-content { padding: 15px; display: flex; gap: 15px; overflow-x: auto; }
         
         .track-item {
-            flex: 0 0 auto; padding: 22px 30px; background: #050505;
-            border: 1px solid #111; font-size: 11px; color: #444;
-            cursor: pointer; transition: 0.3s; min-width: 180px;
-            text-align: center;
+            flex: 0 0 auto; padding: 25px; background: #050505;
+            border: 1px solid #111; font-size: 11px; color: #555;
+            cursor: pointer; transition: 0.3s; min-width: 180px; text-align: center;
         }
-        .track-item:hover { color: #fff; border-color: #555; }
-        .track-item.playing { color: #ff0000 !important; border-color: #ff0000; }
-
-        /* --- UI OVERLAY --- */
-        .ui-header { 
-            position: fixed; top: 0; width: 100%; padding: 40px 0;
-            z-index: 9999; display: flex; justify-content: space-around;
-            pointer-events: none;
-        }
-        .esc-btn { cursor: pointer; color: #444; font-size: 10px; letter-spacing: 3px; pointer-events: auto; }
-        .esc-btn:hover { color: #fff; }
+        .track-item:hover { color: #fff; border-color: #444; }
+        .track-item.playing { color: var(--accent-red) !important; border-color: var(--accent-red); }
 
         /* --- SHOW LOG --- */
         #shows-section { overflow-y: auto; }
-        .log-container { max-width: 900px; margin: 140px auto; padding: 0 60px; }
+        .log-container { max-width: 900px; margin: 120px auto; padding: 0 60px; }
         .show-row { 
-            padding: 25px 0; display: flex; justify-content: space-between; 
-            border-bottom: 1px solid #0a0a0a; font-size: 10px; color: #222;
+            padding: 22px 0; display: flex; justify-content: space-between; 
+            border-bottom: 1px solid #0a0a0a; font-size: 10px; color: #333;
+            text-transform: uppercase;
         }
-        .date-cell { color: #ff0000; font-weight: 900; width: 150px; }
+        .date-cell { color: var(--accent-red); font-weight: 900; width: 140px; }
     </style>
 </head>
 <body>
@@ -96,118 +96,44 @@
     </div>
 
     <div id="music-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
-            <div id="status" class="esc-btn">STATUS: [ IDLE ]</div>
-        </div>
-
-        <div class="floating-window" style="top: 20%; left: 10%;" onmousedown="focusWin(this)">
-            <div class="window-header"><span>CORE_TEST_SEQUENCE</span><span>[ 01 ]</span></div>
+        <div class="floating-window" style="top: 25%; left: 15%;" onmousedown="focusWin(this)">
+            <div class="window-header"><span>ARCHIVE_SEQUENCE</span><span>[ 01 ]</span></div>
             <div class="window-content">
-                <div class="track-item" onclick="play('test12.mp3', 'TEST_12', this)">12_FILE_SEQ</div>
-                <div class="track-item" onclick="play('test11.mp3', 'TEST_11', this)">11_FILE_SEQ</div>
-                <div class="track-item" onclick="play('test1.mp3', 'TEST_01', this)">01_FILE_SEQ</div>
-            </div>
-        </div>
-
-        <div class="floating-window" style="top: 50%; left: 30%;" onmousedown="focusWin(this)">
-            <div class="window-header"><span>TITLED_WORKS</span><span>[ 02 ]</span></div>
-            <div class="window-content">
-                <div class="track-item" onclick="play('Cosmic Slopurtunity.mp3', 'COSMIC_SLOP', this)">COSMIC_SLOP</div>
-                <div class="track-item" onclick="play('Did You Remember Your Pills v1.mp3', 'PILLS_V1', this)">REMEMBER_PILLS</div>
-                <div class="track-item" onclick="play('Untitled (Vocals).mp3', 'VOCALS_RAW', this)">VOCALS_RAW</div>
+                <div class="track-item" onclick="play('test12.mp3', 'FILE_12', this)">12_FILE_SEQ</div>
+                <div class="track-item" onclick="play('test11.mp3', 'FILE_11', this)">11_FILE_SEQ</div>
+                <div class="track-item" onclick="play('test1.mp3', 'FILE_01', this)">01_FILE_SEQ</div>
             </div>
         </div>
     </div>
 
     <div id="shows-section" class="content-view">
-        <div class="ui-header" style="position: sticky; background: rgba(0,0,0,0.9); pointer-events: auto;">
-            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
-            <div class="esc-btn">LOG_71_TOTAL</div>
-        </div>
         <div class="log-container">
-            <div class="show-row"><span class="date-cell">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>ONLINE</span></div>
+            <div class="show-row"><span class="date-cell">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>STREAMS</span></div>
             <div class="show-row"><span class="date-cell">APR 20 2020</span><span>RED SEA / PALMERS</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">JAN 20 2020</span><span>7TH ST ENTRY (MLK DAY)</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">DEC 30 2019</span><span>PART WOLF / NOMAD</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JAN 20 2020</span><span>7TH ST ENTRY</span><span>MPLS</span></div>
             <div class="show-row"><span class="date-cell">NOV 17 2019</span><span>CAYDENCE RECORDS</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">OCT 24 2019</span><span>PALMERS BAR</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">SEP 30 2019</span><span>PART WOLF / NOMADS</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">AUG 21 2019</span><span>RED SEA</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">JUN 06 2019</span><span>MEARS PARK (THE LOVE PROJECT)</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">MAY 21 2019</span><span>HONEY MPLS</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">FEB 20 2019</span><span>7TH ST ENTRY</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">JAN 15 2019</span><span>RED SEA RESIDENCY</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">DEC 16 2018</span><span>RED SEA</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">NOV 10 2018</span><span>HEAVY ROTATION: THE KICKBACK</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">AUG 25 2018</span><span>PAISLEY PARK (CELEBRATION)</span><span>CHANHASSEN</span></div>
-            <div class="show-row"><span class="date-cell">JUN 10 2018</span><span>ICEHOUSE MPLS</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">APR 21 2018</span><span>RECORD STORE DAY (CAYDENCE)</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">FEB 18 2018</span><span>DARK HORSE</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">JAN 13 2018</span><span>NEW YEAR BEAT SESSION</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">OCT 27 2017</span><span>SKYWAY THEATRE</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">JUL 20 2017</span><span>ICEHOUSE (BEAT BATTLE)</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">MAR 18 2017</span><span>THE CABOOZE</span><span>MPLS</span></div>
-            <div class="show-row"><span class="date-cell">FEB 20 2017</span><span>7TH ST ENTRY (KPW)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">AUG 25 2018</span><span>PAISLEY PARK</span><span>CHANHASSEN</span></div>
             <div class="show-row"><span class="date-cell">JAN 05 2017</span><span>THE BITTER END</span><span>NEW YORK</span></div>
-            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION VOL. 1 LAUNCH</span><span>HONEY MPLS</span></div>
-            <div class="show-row" style="border-bottom: 2px solid #ff0000;"><span class="date-cell">OCT 2015</span><span>ARCHIVE_ENTRY_01</span><span>ORIGIN</span></div>
-        </div>
-    </div>
+            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION LAUNCH</span><span>HONEY MPLS</span></div>
 
-    <div id="merch-section" class="content-view">
-        <div class="ui-header">
-            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
+            <script>
+                const log = document.querySelector('.log-container');
+                for (let i = 64; i >= 1; i--) {
+                    const row = document.createElement('div');
+                    row.className = 'show-row';
+                    const id = i.toString().padStart(2, '0');
+                    row.innerHTML = `<span class="date-cell">ARCHIVE_${id}</span><span>HISTORICAL_LOG_DATA</span><span>MPLS_REGION</span>`;
+                    log.appendChild(row);
+                }
+            </script>
+            <div class="show-row" style="border-bottom: 2px solid var(--accent-red);"><span class="date-cell">JAN 2016</span><span>SYSTEM_START</span><span>ORIGIN</span></div>
         </div>
-        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#111; font-size:40px; letter-spacing:30px;">SAMPLES_v01</div>
     </div>
 
     <script>
-        const player = document.getElementById('global-player');
-        const status = document.getElementById('status');
         let highestZ = 100;
-
-        function switchView(view) {
-            document.body.classList.add('view-active', 'view-' + view);
-            document.documentElement.style.overflow = (view === 'shows') ? 'auto' : 'hidden';
-        }
-
-        function exitView() {
-            document.body.className = '';
-            player.pause();
-            status.innerText = "STATUS: [ IDLE ]";
-        }
-
-        function play(file, title, el) {
-            document.querySelectorAll('.track-item').forEach(r => r.classList.remove('playing'));
-            el.classList.add('playing');
-            player.src = file;
-            player.play();
-            status.innerText = "STREAMING: [" + title + "]";
-            status.style.color = "#ff0000";
-        }
-
-        function focusWin(win) {
-            highestZ++;
-            win.style.zIndex = highestZ;
-        }
-
-        document.querySelectorAll('.floating-window').forEach(win => {
-            let isDragging = false;
-            const header = win.querySelector('.window-header');
-            header.onmousedown = (e) => {
-                isDragging = true;
-                focusWin(win);
-                let shiftX = e.clientX - win.getBoundingClientRect().left;
-                let shiftY = e.clientY - win.getBoundingClientRect().top;
-                document.onmousemove = (e) => {
-                    if (!isDragging) return;
-                    win.style.left = e.clientX - shiftX + 'px';
-                    win.style.top = e.clientY - shiftY + 'px';
-                };
-                document.onmouseup = () => { isDragging = false; };
-            };
-        });
+        function switchView(v) { document.body.classList.add('view-active', 'view-' + v); }
+        function focusWin(w) { w.style.zIndex = ++highestZ; }
     </script>
 </body>
 </html>
