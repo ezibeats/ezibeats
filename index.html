@@ -1,10 +1,3 @@
-The reason **Music** and **Merch** are not displaying is that while your landing page buttons are calling `switchView('music')` and `switchView('merch')`, the corresponding HTML containers for those sections are missing from your code. You only have the `#shows-section` defined.
-
-I have updated your code to include the **Music** and **Merch** sections, using the same "archive grid" style from our previous versions. I also ensured the **opacity logic** is consistent: items are dimmed until hovered (Music/Merch) or scrolled into view (Shows).
-
-### **EZIBEATS_ARCHIVE_v07.21 // MULTI_VIEW_RESTORE**
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
