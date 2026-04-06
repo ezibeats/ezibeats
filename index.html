@@ -2,69 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v2.5</title>
+    <title>MUSIC_ARCHIVE_v02.1</title>
     <style>
-        /* --- SYSTEM CORE --- */
-        :root {
-            --bg-opacity: 0.9;
-            --accent-red: #ff0000;
-            --interface-grey: #111;
+        body {
+            background: #000; color: #fff; font-family: Helvetica, Arial, sans-serif;
+            padding: 40px; text-transform: uppercase; margin: 0; letter-spacing: 1px;
         }
-
-        body, html { 
-            margin: 0; padding: 0; background: #000; color: #fff; 
-            font-family: 'Courier New', monospace; height: 100%; width: 100%;
-            overflow: hidden; text-transform: uppercase;
-        }
-
-        /* --- LANDING STACK --- */
-        #landing-page {
-            display: flex; flex-direction: column; height: 100vh; width: 100vw;
-            position: fixed; top: 0; left: 0; z-index: 5000;
-            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        body.view-active #landing-page { transform: translateY(-100%); }
-
-        .pillar {
-            flex: 1; width: 100%; display: flex; 
-            justify-content: center; align-items: center;
-            border-bottom: 1px solid var(--interface-grey); cursor: pointer;
-            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
-            background: rgba(0, 0, 0, var(--bg-opacity));
-        }
-        .pillar:hover { background: rgba(5, 5, 5, 1); flex: 1.5; }
-        
-        .nav-btn { 
-            font-size: 28px; font-weight: 900; letter-spacing: 20px; 
-            color: #1a1a1a; transition: 0.4s; pointer-events: none;
-        }
-        .pillar:hover .nav-btn { color: #fff; letter-spacing: 35px; }
-
-        /* --- CONTENT VIEWS --- */
-        .content-view { 
-            display: none; width: 100%; height: 100vh; 
-            position: relative; background: #000; overflow-y: auto; padding: 40px;
-            box-sizing: border-box;
-        }
-        body.view-music #music-section, 
-        body.view-shows #shows-section { display: block; }
-
         h1 { font-size: 14px; letter-spacing: 4px; margin-bottom: 30px; font-weight: 300; border-bottom: 2px solid #fff; padding-bottom: 10px; }
 
-        /* --- MUSIC GRID SYSTEM --- */
+        /* TAB NAVIGATION */
+        .nav-container { margin-bottom: 40px; display: flex; gap: 40px; }
+        .nav-link { cursor: pointer; color: #444; font-size: 12px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: #fff; border-bottom: 1px solid #fff; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* MUSIC GRID */
         .album-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            display: grid; grid-template-columns: repeat(5, 1fr);
             gap: 2px; background: #fff; border: 2px solid #fff;
         }
-        
         .album {
             background: #000; aspect-ratio: 1/1; position: relative; overflow: hidden;
             background-position: center; background-size: cover;
             filter: grayscale(100%); transition: filter 0.5s ease, opacity 0.5s ease; opacity: 0.6;
         }
         .album:hover { opacity: 1; filter: grayscale(0%); z-index: 10; }
-
         .album-info {
             position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -72,39 +36,25 @@
             opacity: 0; transition: opacity 0.4s ease-in-out; pointer-events: none;
         }
         .album:hover .album-info { opacity: 1; pointer-events: auto; }
-        
-        h2 { font-size: 12px; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 10px; letter-spacing: 2px; }
-        
+        h2 { font-size: 12px; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .tracklist { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .tracklist li {
             font-size: 10px; padding: 12px 0; border-bottom: 1px solid #222;
             cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-            letter-spacing: 1px;
         }
         .tracklist li:hover { background: #fff; color: #000; }
-
-        .status-dot { width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--accent-red); }
+        .status-dot { width: 6px; height: 6px; background: #ff0000; border-radius: 50%; display: none; box-shadow: 0 0 8px #ff0000; }
         .playing .status-dot { display: block; animation: pulse 1.2s infinite ease-in-out; }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
         .timer-container { width: 100%; height: 2px; background: #222; margin-top: auto; }
         .timer-bar { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
 
-        /* --- SHOW HISTORY UI --- */
-        .log-container { max-width: 900px; margin: 60px auto; }
+        /* SHOW LOG */
+        .show-log { max-width: 900px; margin-top: 40px; }
         .show-row { 
-            padding: 22px 0; display: flex; justify-content: space-between; 
-            border-bottom: 1px solid #111; font-size: 10px; color: #444;
+            padding: 18px 0; display: flex; justify-content: space-between; 
+            border-bottom: 1px solid #111; font-size: 10px; color: #555;
         }
-        .date-cell { color: var(--accent-red); font-weight: 900; width: 140px; }
-        
-        .esc-btn { position: fixed; top: 40px; right: 40px; cursor: pointer; color: #444; font-size: 10px; z-index: 9999; letter-spacing: 2px; }
-        .esc-btn:hover { color: #fff; }
+        .date { color: #ff0000; width: 140px; font-weight: 900; }
 
         #unlocker {
             position: fixed; inset: 0; background: #000; z-index: 9999;
@@ -115,18 +65,97 @@
 </head>
 <body>
 
-    <audio id="global-player"></audio>
-
     <div id="unlocker" onclick="this.style.opacity='0'; setTimeout(()=>{this.style.display='none'}, 800);">
-        <div style="border: 1px solid #fff; padding: 30px; letter-spacing: 5px; font-size: 12px;">
-            [ INITIALIZE_SYSTEM ]
+        <div style="border: 1px solid #fff; padding: 30px; letter-spacing: 5px; font-size: 12px;">[ INITIALIZE_SYSTEM ]</div>
+    </div>
+
+    <h1>EZIBEATS // ARCHIVE_V02.1</h1>
+
+    <div class="nav-container">
+        <div class="nav-link active" onclick="showTab('music')">MUSIC_FILE</div>
+        <div class="nav-link" onclick="showTab('shows')">SHOW_HISTORY</div>
+    </div>
+
+    <div id="music-section" class="section active">
+        <div class="album-grid">
+            <div class="album" style="background-image: url('project_1.jpg');" onmouseleave="stopPreview()">
+                <div class="album-info">
+                    <h2>PROJECT_001</h2>
+                    <ul class="tracklist">
+                        <li onmouseenter="startPreview('test1.mp3', this)">TEST_01 <span class="status-dot"></span></li>
+                        <li onmouseenter="startPreview('test2.mp3', this)">TEST_02 <span class="status-dot"></span></li>
+                        <li onmouseenter="startPreview('test3.mp3', this)">TEST_03 <span class="status-dot"></span></li>
+                    </ul>
+                    <div class="timer-container"><div class="timer-bar"></div></div>
+                </div>
+            </div>
+            <div class="album"></div><div class="album"></div><div class="album"></div><div class="album"></div>
         </div>
     </div>
 
-    <div id="landing-page">
-        <div class="pillar" onclick="switchView('music')"><div class="nav-btn">MUSIC_FILE</div></div>
-        <div class="pillar" onclick="switchView('merch')"><div class="nav-btn">OBJECT_SAMPLES</div></div>
-        <div class="pillar" onclick="switchView('shows')"><div class="nav-btn">SHOW_HISTORY</div></div>
+    <div id="shows-section" class="section">
+        <div class="show-log">
+            <div class="show-row"><span class="date">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>STREAMS</span></div>
+            <div class="show-row"><span class="date">APR 20 2020</span><span>RED SEA / PALMERS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date">JAN 20 2020</span><span>7TH ST ENTRY (MLK DAY)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date">DEC 30 2019</span><span>PART WOLF / NOMAD</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date">NOV 17 2019</span><span>CAYDENCE RECORDS</span><span>ST. PAUL</span></div>
+            <div class="show-row"><span class="date">OCT 24 2019</span><span>PALMERS BAR</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date">JUN 06 2019</span><span>MEARS PARK</span><span>ST. PAUL</span></div>
+            <div class="show-row"><span class="date">AUG 25 2018</span><span>PAISLEY PARK</span><span>CHANHASSEN</span></div>
+            <div class="show-row"><span class="date">JAN 05 2017</span><span>THE BITTER END</span><span>NYC</span></div>
+            <div class="show-row"><span class="date">SEP 17 2016</span><span>HEAVY ROTATION LAUNCH</span><span>HONEY MPLS</span></div>
+            <script>
+                const container = document.querySelector('.show-log');
+                for (let i = 61; i >= 1; i--) {
+                    const row = document.createElement('div');
+                    row.className = 'show-row';
+                    row.innerHTML = `<span class="date">RESIDENCY_${i}</span><span>RED SEA / HONEY</span><span>MPLS</span>`;
+                    container.appendChild(row);
+                }
+            </script>
+            <div class="show-row" style="border-top: 1px solid #fff;"><span class="date">JAN 2016</span><span>SYSTEM_START</span><span>MPLS</span></div>
+        </div>
     </div>
 
-    <div id="music-section"
+    <audio id="global-player"></audio>
+
+    <script>
+        const player = document.getElementById('global-player');
+        let barInterval;
+
+        function showTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(tab + '-section').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function startPreview(file, element) {
+            clearInterval(barInterval);
+            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
+            element.classList.add('playing');
+            const album = element.closest('.album');
+            const timerBar = album.querySelector('.timer-bar');
+            player.pause();
+            player.src = file;
+            player.play().catch(e => {});
+            let progress = 0;
+            barInterval = setInterval(() => {
+                progress += 0.5;
+                if(timerBar) timerBar.style.width = progress + "%";
+                if (progress >= 100) stopPreview();
+            }, 100);
+        }
+
+        function stopPreview() {
+            clearInterval(barInterval);
+            player.pause();
+            player.src = "";
+            document.querySelectorAll('.timer-bar').forEach(b => b.style.width = "0%");
+            document.querySelectorAll('.tracklist li').forEach(li => li.classList.remove('playing'));
+        }
+    </script>
+</body>
+</html>
