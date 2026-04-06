@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v07.21</title>
+    <title>EZIBEATS_ARCHIVE_v07.23</title>
     <style>
         /* --- CORE SYSTEM --- */
         body { 
@@ -37,7 +37,7 @@
 
         .nav-btn {
             font-size: 60px; letter-spacing: 15px;
-            color: #1a1a1a; transition: 0.4s ease;
+            color: #111; transition: 0.4s ease;
             font-weight: 900; text-transform: uppercase;
         }
 
@@ -75,20 +75,30 @@
         .grid-item { 
             aspect-ratio: 1/1; background-color: #080808; border: 1px solid #111; 
             cursor: pointer; position: relative; overflow: hidden; 
-            opacity: 0.3; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0.5; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: cover; background-position: center;
         }
         .grid-item:hover { opacity: 1; border-color: #333; }
+
+        .date-tag {
+            position: absolute; top: 10px; left: 10px;
+            font-size: 8px; color: #444; letter-spacing: 1px;
+            z-index: 5; transition: 0.3s;
+        }
+        .grid-item:hover .date-tag { color: #ff0000; }
+
         .item-info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.9); 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.95); 
             opacity: 0; display: flex; flex-direction: column; 
             justify-content: center; padding: 20px; transition: 0.2s; 
         }
         .grid-item:hover .item-info { opacity: 1; }
-        .item-info h3 { font-size: 12px; margin-bottom: 10px; color: #ff0000; }
+        .item-info h3 { font-size: 11px; margin-bottom: 5px; color: #fff; letter-spacing: 2px; }
+        .item-info p { font-size: 9px; color: #666; margin: 0; }
 
-        /* --- SHOWS TABLE --- */
+        /* --- PERFORMANCE MANIFEST (SHOWS) --- */
         .calendar-table { width: 100%; border-collapse: collapse; max-width: 800px; }
-        .year-header { font-size: 14px; color: #333; padding: 40px 0 10px; letter-spacing: 10px; border-bottom: 1px solid #111; text-transform: uppercase; }
+        .year-header { font-size: 14px; color: #222; padding: 40px 0 10px; letter-spacing: 10px; border-bottom: 1px solid #111; text-transform: uppercase; }
         .past-show { opacity: 0.3; transition: opacity 0.3s ease; border-bottom: 1px solid #111; }
         .past-show.in-view { opacity: 1; }
         .past-show td { padding: 18px 10px; font-size: 11px; color: #fff; text-transform: uppercase; }
@@ -118,13 +128,24 @@
     <div id="music-section" class="archive-view">
         <div class="ui-header">
             <div class="title esc-btn" onclick="exitView(event)">[ ESC_ARCHIVE ]</div>
-            <div class="title">[ AUDIO_LOG ]</div>
+            <div class="title">[ AUDIO_LOG_BY_DATE ]</div>
         </div>
         <div class="archive-grid">
             <div class="grid-item">
-                <div class="item-info"><h3>DOWNTOWN ST. PAUL</h3><p style="font-size:9px">2026_PROD</p></div>
+                <div class="date-tag">MAR_2026</div>
+                <div class="item-info">
+                    <h3>DOWNTOWN ST. PAUL</h3>
+                    <p>MASTER_FILES</p>
+                </div>
             </div>
-            <div class="grid-item"></div><div class="grid-item"></div>
+            <div class="grid-item">
+                <div class="date-tag">JAN_2026</div>
+                <div class="item-info"><h3>AMBIENT_SESSIONS</h3><p>WAV_ARCHIVE</p></div>
+            </div>
+            <div class="grid-item">
+                <div class="date-tag">DEC_2025</div>
+                <div class="item-info"><h3>BEAT_BATCH_07</h3><p>PROD_FILES</p></div>
+            </div>
         </div>
     </div>
 
@@ -135,9 +156,13 @@
         </div>
         <div class="archive-grid">
             <div class="grid-item">
-                <div class="item-info"><h3>[ 1 OF 20 ]</h3><p style="font-size:9px">PAINTED_SERIES</p></div>
+                <div class="date-tag">2026_MOD</div>
+                <div class="item-info"><h3>[ 1 OF 20 ]</h3><p>PAINTED_RIPSTOP</p></div>
             </div>
-            <div class="grid-item"></div><div class="grid-item"></div>
+            <div class="grid-item">
+                <div class="date-tag">2026_DEV</div>
+                <div class="item-info"><h3>APOLLO_PANT</h3><p>TECHNICAL_SAMPLE</p></div>
+            </div>
         </div>
     </div>
 
@@ -162,7 +187,6 @@
             document.body.classList.add('view-' + viewName);
             window.scrollTo(0, 0);
             
-            // Re-trigger observer for shows if that view is selected
             if(viewName === 'shows') {
                 setTimeout(() => {
                     document.querySelectorAll('.past-show').forEach(row => scrollObserver.observe(row));
@@ -177,7 +201,6 @@
         }
 
         function closeAll(event) {
-            // Closes if clicking background of an active view
             if (event.target.classList.contains('archive-view')) {
                 exitView();
             }
@@ -193,4 +216,3 @@
     </script>
 </body>
 </html>
-```
