@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE</title>
+    <title>EZIBEATS_ARCHIVE_MASTER</title>
     <style>
         /* --- SYSTEM CORE --- */
         body, html { 
@@ -34,7 +34,7 @@
         }
         .pillar:hover .nav-btn { color: #fff; letter-spacing: 20px; }
 
-        /* --- CONTENT VIEW LOGIC --- */
+        /* --- CONTENT VIEW --- */
         .content-view { 
             display: none; width: 100%; height: 100vh; 
             position: relative; background: #000; overflow: hidden;
@@ -43,55 +43,45 @@
         body.view-shows #shows-section,
         body.view-merch #merch-section { display: block; }
 
-        /* --- HORIZONTAL WINDOWS (RESTORED SYSTEM) --- */
+        /* --- HORIZONTAL WINDOWS (MUSIC RACK) --- */
         .floating-window {
-            position: absolute; width: 620px; background: #080808;
+            position: absolute; width: 650px; background: #080808;
             border: 1px solid #222; padding: 0; z-index: 10;
             box-shadow: 0 40px 100px rgba(0,0,0,0.9);
         }
-        
         .window-header {
             background: #111; padding: 10px 15px; font-size: 10px;
             letter-spacing: 4px; color: #333; border-bottom: 1px solid #222;
             display: flex; justify-content: space-between; cursor: grab;
-            user-select: none;
         }
-        .window-header:active { cursor: grabbing; color: #ff0000; }
-
-        .window-content { 
-            padding: 12px; display: flex; flex-direction: row; 
-            gap: 12px; overflow-x: auto;
-        }
-        
+        .window-content { padding: 12px; display: flex; flex-direction: row; gap: 12px; overflow-x: auto; }
         .track-item {
-            flex: 0 0 auto; padding: 18px 25px; background: #050505;
+            flex: 0 0 auto; padding: 20px 25px; background: #050505;
             border: 1px solid #111; font-size: 11px; color: #444;
-            cursor: pointer; transition: 0.3s; min-width: 160px;
+            cursor: pointer; transition: 0.3s; min-width: 170px;
             text-align: center; text-transform: uppercase;
         }
-        .track-item:hover { color: #fff; border-color: #555; background: #0a0a0a; }
-        .track-item.playing { color: #ff0000 !important; border-color: #ff0000; background: #110000; }
+        .track-item:hover { color: #fff; border-color: #555; }
+        .track-item.playing { color: #ff0000 !important; border-color: #ff0000; }
 
-        /* --- SHOWS LOG (RESTORED) --- */
-        #shows-section { overflow-y: auto; }
+        /* --- UI OVERLAY --- */
         .ui-header { 
-            position: sticky; top: 0; width: 100%; padding: 40px 0;
-            background: rgba(0,0,0,0.95); z-index: 1000;
-            border-bottom: 1px solid #111; display: flex; justify-content: space-around;
+            position: fixed; top: 0; width: 100%; padding: 40px 0;
+            z-index: 9999; display: flex; justify-content: space-around;
+            pointer-events: none;
         }
-        .esc-btn { cursor: pointer; color: #444; font-size: 10px; letter-spacing: 3px; transition: 0.3s; }
-        .esc-btn:hover { color: #ff0000; }
+        .esc-btn { cursor: pointer; color: #444; font-size: 10px; letter-spacing: 3px; pointer-events: auto; }
+        .esc-btn:hover { color: #fff; }
 
-        .log-container { max-width: 900px; margin: 40px auto; padding: 0 40px; }
+        /* --- SHOW LOG --- */
+        #shows-section { overflow-y: auto; }
+        .log-container { max-width: 900px; margin: 120px auto; padding: 0 40px; }
         .show-row { 
-            padding: 30px 0; display: flex; justify-content: space-between; 
+            padding: 20px 0; display: flex; justify-content: space-between; 
             border-bottom: 1px solid #0a0a0a; font-size: 10px; color: #222;
+            text-transform: uppercase;
         }
         .date-cell { color: #ff0000; font-weight: 900; width: 140px; }
-        .show-row:hover { color: #fff; }
-
-        /* --- OBJECTS --- */
-        .merch-grid { height: 100%; display: flex; align-items: center; justify-content: center; color: #080808; font-size: 40px; letter-spacing: 30px; }
     </style>
 </head>
 <body>
@@ -105,12 +95,12 @@
     </div>
 
     <div id="music-section" class="content-view">
-        <div class="ui-header" style="position:fixed; top:0; background:none; border:none; z-index:9999; pointer-events:none;">
-            <div class="esc-btn" onclick="exitView()" style="pointer-events:auto;">[ ESC_SYSTEM ]</div>
+        <div class="ui-header">
+            <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
             <div id="status" class="esc-btn">STATUS: [ IDLE ]</div>
         </div>
 
-        <div class="floating-window" style="top: 20%; left: 8%;" onmousedown="focusWin(this)">
+        <div class="floating-window" style="top: 25%; left: 10%;" onmousedown="focusWin(this)">
             <div class="window-header"><span>CORE_TEST_SEQUENCE</span><span>[ 01 ]</span></div>
             <div class="window-content">
                 <div class="track-item" onclick="play('test12.mp3', 'TEST_12', this)">12_FILE_SEQ</div>
@@ -119,7 +109,7 @@
             </div>
         </div>
 
-        <div class="floating-window" style="top: 55%; left: 35%;" onmousedown="focusWin(this)">
+        <div class="floating-window" style="top: 50%; left: 35%;" onmousedown="focusWin(this)">
             <div class="window-header"><span>TITLED_WORKS_V1</span><span>[ 02 ]</span></div>
             <div class="window-content">
                 <div class="track-item" onclick="play('Cosmic Slopurtunity.mp3', 'COSMIC_SLOP', this)">COSMIC_SLOP</div>
@@ -130,9 +120,9 @@
     </div>
 
     <div id="shows-section" class="content-view">
-        <div class="ui-header">
+        <div class="ui-header" style="position: sticky; background: rgba(0,0,0,0.9);">
             <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
-            <div class="esc-btn" style="pointer-events:none">71_ENTRIES_ARCHIVED</div>
+            <div class="esc-btn">SHOW_LOG_ARCHIVE_71</div>
         </div>
         <div class="log-container">
             <div class="show-row"><span class="date-cell">MAY 02 2020</span><span>ONLINE SHOWCASE</span><span>ONLINE</span></div>
@@ -140,9 +130,43 @@
             <div class="show-row"><span class="date-cell">JAN 20 2020</span><span>7TH ST ENTRY (MLK DAY)</span><span>MPLS</span></div>
             <div class="show-row"><span class="date-cell">DEC 30 2019</span><span>PART WOLF / NOMAD</span><span>MPLS</span></div>
             <div class="show-row"><span class="date-cell">NOV 17 2019</span><span>CAYDENCE RECORDS</span><span>ST. PAUL</span></div>
+            <div class="show-row"><span class="date-cell">OCT 24 2019</span><span>PALMERS BAR</span><span>MPLS</span></div>
             <div class="show-row"><span class="date-cell">SEP 30 2019</span><span>PART WOLF / NOMADS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">AUG 21 2019</span><span>RED SEA</span><span>MPLS</span></div>
             <div class="show-row"><span class="date-cell">JUN 06 2019</span><span>MEARS PARK (THE LOVE PROJECT)</span><span>ST. PAUL</span></div>
-            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION VOL. 1</span><span>HONEY MPLS</span></div>
+            <div class="show-row"><span class="date-cell">MAY 21 2019</span><span>HONEY MPLS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">FEB 09 2019</span><span>WINTER BEAT BAR</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JAN 15 2019</span><span>RED SEA RESIDENCY</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">DEC 16 2018</span><span>RED SEA</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">NOV 10 2018</span><span>HEAVY ROTATION: THE KICKBACK</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">SEP 08 2018</span><span>ARTIST & PRODUCER MIXER</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">AUG 25 2018</span><span>PAISLEY PARK (CELEBRATION)</span><span>CHANHASSEN</span></div>
+            <div class="show-row"><span class="date-cell">JUL 14 2018</span><span>MID-SUMMER SESSIONS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JUN 10 2018</span><span>ICEHOUSE MPLS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">MAY 15 2018</span><span>HONEY RESIDENCY</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">APR 21 2018</span><span>RECORD STORE DAY (CAYDENCE)</span><span>ST. PAUL</span></div>
+            <div class="show-row"><span class="date-cell">JAN 13 2018</span><span>NEW YEAR BEAT SESSION</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">DEC 19 2017</span><span>HONEY MPLS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">OCT 27 2017</span><span>SKYWAY THEATRE</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">SEP 15 2017</span><span>PIMIENTO RUM BAR</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JUL 20 2017</span><span>ICEHOUSE (BEAT BATTLE)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">MAY 09 2017</span><span>HONEY MPLS</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">MAR 18 2017</span><span>THE CABOOZE</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">FEB 20 2017</span><span>7TH ST ENTRY (KPW)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JAN 05 2017</span><span>THE BITTER END</span><span>NEW YORK</span></div>
+            <div class="show-row"><span class="date-cell">DEC 20 2016</span><span>HONEY (HOLIDAY SESSION)</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">NOV 11 2016</span><span>THE ARMORY</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">OCT 15 2016</span><span>COMO DOCKSIDE</span><span>ST. PAUL</span></div>
+            <div class="show-row"><span class="date-cell">SEP 17 2016</span><span>HEAVY ROTATION VOL. 1 LAUNCH</span><span>HONEY MPLS</span></div>
+            <div class="show-row"><span class="date-cell">AUG 2016</span><span>PRE-LAUNCH SESSION B</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">JUL 2016</span><span>SEQUENCE TEST 08</span><span>STUDIO</span></div>
+            <div class="show-row"><span class="date-cell">JUN 2016</span><span>SEQUENCE TEST 04</span><span>STUDIO</span></div>
+            <div class="show-row"><span class="date-cell">MAY 2016</span><span>ARCHIVE_ENTRY_14</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">APR 2016</span><span>ARCHIVE_ENTRY_12</span><span>ST PAUL</span></div>
+            <div class="show-row"><span class="date-cell">MAR 2016</span><span>ARCHIVE_ENTRY_10</span><span>MPLS</span></div>
+            <div class="show-row"><span class="date-cell">FEB 2016</span><span>ARCHIVE_ENTRY_08</span><span>ST PAUL</span></div>
+            <div class="show-row"><span class="date-cell">JAN 2016</span><span>ARCHIVE_ENTRY_06</span><span>MPLS</span></div>
+            <div class="show-row" style="border-bottom: 2px solid #ff0000;"><span class="date-cell">OCT 2015</span><span>ARCHIVE_ENTRY_01</span><span>ORIGIN</span></div>
         </div>
     </div>
 
@@ -150,7 +174,7 @@
         <div class="ui-header">
             <div class="esc-btn" onclick="exitView()">[ ESC_SYSTEM ]</div>
         </div>
-        <div class="merch-grid">SAMPLES_v01</div>
+        <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#111; letter-spacing:20px;">SAMPLES_v01</div>
     </div>
 
     <script>
@@ -167,17 +191,13 @@
             document.body.className = '';
             player.pause();
             status.innerText = "STATUS: [ IDLE ]";
-            status.style.color = "#444";
         }
 
         function play(file, title, el) {
             document.querySelectorAll('.track-item').forEach(r => r.classList.remove('playing'));
             el.classList.add('playing');
             player.src = file;
-            player.play().catch(e => {
-                status.innerText = "STATUS: [ ERROR ]";
-                console.log("Audio Error:", e);
-            });
+            player.play();
             status.innerText = "STREAMING: [" + title + "]";
             status.style.color = "#ff0000";
         }
@@ -187,11 +207,9 @@
             win.style.zIndex = highestZ;
         }
 
-        // --- DRAG ENGINE ---
         document.querySelectorAll('.floating-window').forEach(win => {
             let isDragging = false;
             const header = win.querySelector('.window-header');
-            
             header.onmousedown = (e) => {
                 isDragging = true;
                 focusWin(win);
