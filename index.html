@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v06.98</title>
+    <title>EZIBEATS_ARCHIVE_v07.75</title>
     <style>
         /* --- CORE SYSTEM --- */
         body {
@@ -23,9 +23,9 @@
         }
 
         body.view-active #landing-page { 
-            opacity: 0; visibility: hidden; 
-            pointer-events: none; z-index: -1; 
-        }
+             opacity: 0; visibility: hidden; 
+             pointer-events: none; z-index: -1; 
+         }
 
         .section-panel {
             flex: 1; width: 100%;
@@ -45,9 +45,9 @@
 
         .section-panel:hover { background: #050505; flex: 1.4; }
         .section-panel:hover .nav-btn { 
-            color: #ff0000; letter-spacing: 25px; 
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
-        }
+             color: #ff0000; letter-spacing: 25px; 
+             text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
+         }
 
         .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
 
@@ -76,8 +76,8 @@
         .item:hover .item-image { transform: scale(1.05); }
 
         .info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
-            transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 20px; pointer-events: none; z-index: 10;
+             position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
+             transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 20px; pointer-events: none; z-index: 10;
         }
         .item.active .info { opacity: 1; pointer-events: auto; }
         
@@ -130,65 +130,64 @@
             <div class="title">EZIBEATS // AUDIO_GRID</div>
             <div id="timer">TRACK_TIME: 00:00</div>
         </div>
-
-        <div class="title" style="width:100%; max-width:800px; margin-bottom:15px; color:#444;">[ ACTIVE_RELEASES ]</div>
-        <div class="featured-row" onclick="event.stopPropagation()">
-            
-            <div class="active-release">
-                <div class="item-image" style="background-image: url('PROJECT_007/cover.jpg');"></div>
-                <div class="meta-overlay">
-                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_007</h3>
-                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
-                </div>
-            </div>
-
-            <div class="active-release">
-                <div class="item-image" style="background-image: url('PROJECT_006/cover.jpg');"></div>
-                <div class="meta-overlay">
-                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_006</h3>
-                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
-                </div>
-            </div>
-
-            <div class="active-release">
-                <div class="item-image" style="background-image: url('PROJECT_005/cover.jpg');"></div>
-                <div class="meta-overlay">
-                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_005</h3>
-                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="title" style="width:100%; max-width:800px; margin-bottom:15px; color:#222;">[ LEGACY_FILE_SYSTEM ]</div>
         <div class="archive-grid" onclick="event.stopPropagation()">
             
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div>
+                <div class="info">
+                    <h3>[ PROJECT_007 ]</h3>
+                    <ul class="tracks">
+                        <li onclick="play('PROJECT_007/audio.mp3', this)">01_TRACK_v1</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div>
+                <div class="info">
+                    <h3>[ PROJECT_006 ]</h3>
+                    <ul class="tracks">
+                        <li onclick="play('PROJECT_006/audio.mp3', this)">01_TRACK_v1</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div>
+                <div class="info">
+                    <h3>[ PROJECT_005 ]</h3>
+                    <ul class="tracks">
+                        <li onclick="play('PROJECT_005/audio.mp3', this)">01_TRACK_v1</li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div>
                 <div class="info">
                     <h3>[ PROJECT_004 ]</h3>
                     <ul class="tracks">
-                        <li onclick="play('PROJECT_004/audio_file.mp3', this)">FILE_v01</li>
+                        <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
                     </ul>
                 </div>
             </div>
 
             <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_002/cover.jpg');"></div>
+                <div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div>
                 <div class="info">
                     <h3>[ PROJECT_002 ]</h3>
                     <ul class="tracks">
-                        <li onclick="play('PROJECT_002/audio_file.mp3', this)">FILE_v01</li>
+                        <li onclick="play('PROJECT_002/audio.mp3', this)">01_TRACK_v1</li>
                     </ul>
                 </div>
             </div>
 
             <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_001/archive_cover.jpg');"></div>
+                <div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div>
                 <div class="info">
                     <h3>[ PROJECT_001 ]</h3>
                     <ul class="tracks">
-                        <li onclick="play('PROJECT_001/audio_file.mp3', this)">FILE_v01</li>
+                        <li onclick="play('PROJECT_001/audio.mp3', this)">01_TRACK_v1</li>
                     </ul>
                 </div>
             </div>
@@ -339,9 +338,9 @@
         }
 
         function resetTimer() { 
-            clearInterval(timerInterval); 
-            if(document.getElementById('timer')) document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
-        }
+             clearInterval(timerInterval); 
+             if(document.getElementById('timer')) document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
+         }
     </script>
 </body>
 </html>
