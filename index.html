@@ -130,25 +130,69 @@
             <div class="title">EZIBEATS // AUDIO_GRID</div>
             <div id="timer">TRACK_TIME: 00:00</div>
         </div>
+
+        <div class="title" style="width:100%; max-width:800px; margin-bottom:15px; color:#444;">[ ACTIVE_RELEASES ]</div>
+        <div class="featured-row" onclick="event.stopPropagation()">
+            
+            <div class="active-release">
+                <div class="item-image" style="background-image: url('PROJECT_007/cover.jpg');"></div>
+                <div class="meta-overlay">
+                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_007</h3>
+                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
+                </div>
+            </div>
+
+            <div class="active-release">
+                <div class="item-image" style="background-image: url('PROJECT_006/cover.jpg');"></div>
+                <div class="meta-overlay">
+                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_006</h3>
+                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
+                </div>
+            </div>
+
+            <div class="active-release">
+                <div class="item-image" style="background-image: url('PROJECT_005/cover.jpg');"></div>
+                <div class="meta-overlay">
+                    <h3 style="font-size: 13px; letter-spacing: 4px;">PROJECT_005</h3>
+                    <p style="font-size: 9px; color: #ff0000; letter-spacing: 2px;">STATUS: RECENT_UPLOAD</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="title" style="width:100%; max-width:800px; margin-bottom:15px; color:#222;">[ LEGACY_FILE_SYSTEM ]</div>
         <div class="archive-grid" onclick="event.stopPropagation()">
+            
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div>
                 <div class="info">
-                    <h3>[ PROJECT_004_A ]</h3>
+                    <h3>[ PROJECT_004 ]</h3>
                     <ul class="tracks">
-                        <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
+                        <li onclick="play('PROJECT_004/audio_file.mp3', this)">FILE_v01</li>
                     </ul>
                 </div>
             </div>
+
             <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_005/settle 2 cover.jpg');"></div>
+                <div class="item-image" style="background-image: url('PROJECT_002/cover.jpg');"></div>
                 <div class="info">
-                    <h3>[ PROJECT_005]</h3>
+                    <h3>[ PROJECT_002 ]</h3>
                     <ul class="tracks">
-                        <li onclick="play('PROJECT_004/test11.mp3', this)">02_TRACK_11</li>
+                        <li onclick="play('PROJECT_002/audio_file.mp3', this)">FILE_v01</li>
                     </ul>
                 </div>
             </div>
+
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_001/archive_cover.jpg');"></div>
+                <div class="info">
+                    <h3>[ PROJECT_001 ]</h3>
+                    <ul class="tracks">
+                        <li onclick="play('PROJECT_001/audio_file.mp3', this)">FILE_v01</li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 
