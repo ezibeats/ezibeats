@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v07.75</title>
+    <title>EZIBEATS_ARCHIVE_v08.20</title>
     <style>
         /* --- CORE SYSTEM --- */
         body {
@@ -22,89 +22,75 @@
             transition: opacity 0.5s ease, visibility 0.5s;
         }
 
-        body.view-active #landing-page { 
-             opacity: 0; visibility: hidden; 
-             pointer-events: none; z-index: -1; 
-         }
+        body.view-active #landing-page { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
 
         .section-panel {
-            flex: 1; width: 100%;
-            border-bottom: 1px solid #222;
+            flex: 1; width: 100%; border-bottom: 1px solid #222;
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             position: relative;
         }
 
         .section-panel:last-child { border-bottom: none; }
-
-        .nav-btn {
-            font-size: 60px; letter-spacing: 15px;
-            color: #1a1a1a; transition: 0.4s ease;
-            font-weight: 900; text-transform: uppercase;
-        }
-
+        .nav-btn { font-size: 60px; letter-spacing: 15px; color: #1a1a1a; transition: 0.4s ease; font-weight: 900; text-transform: uppercase; }
         .section-panel:hover { background: #050505; flex: 1.4; }
-        .section-panel:hover .nav-btn { 
-             color: #ff0000; letter-spacing: 25px; 
-             text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
-         }
-
+        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
         .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
 
         /* --- MODULE VISIBILITY --- */
-        #archive-section, #merch-section, #shows-section {
-            display: none; opacity: 0;
-            flex-direction: column; align-items: center;
-            padding: 60px 20px; min-height: 100vh;
-            position: relative; z-index: 10;
+        #archive-section, #merch-section, #shows-section, #stream-section {
+            display: none; opacity: 0; flex-direction: column; align-items: center;
+            padding: 40px 20px; min-height: 100vh; position: relative; z-index: 10;
         }
         
-        body.view-music #archive-section { display: flex; opacity: 1; }
+        body.view-music #archive-section { display: flex; opacity: 1; height: 100vh; overflow: hidden; justify-content: center; }
         body.view-merch #merch-section { display: flex; opacity: 1; }
         body.view-shows #shows-section { display: flex; opacity: 1; }
+        body.view-stream #stream-section { display: flex; opacity: 1; }
 
         /* --- UI ELEMENTS --- */
-        .ui-header { width: 100%; max-width: 800px; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
+        .ui-header { width: 100%; max-width: 1000px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
         .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
         #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
 
-        /* --- GRID SYSTEM --- */
-        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 800px; }
+        /* --- MUSIC GRID (NO-SCROLL MATRIX) --- */
+        .archive-grid { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 10px; width: 100%; max-width: 1100px; 
+        }
+
         .item { aspect-ratio: 1/1; background-color: #111; border: 1px solid #333; cursor: pointer; position: relative; overflow: hidden; }
         .item.active { border-color: #fff; }
-        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: 0; transition: transform 0.3s ease; }
+        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; }
         .item:hover .item-image { transform: scale(1.05); }
 
         .info { 
-             position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
-             transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 20px; pointer-events: none; z-index: 10;
+            position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
+            transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
         }
         .item.active .info { opacity: 1; pointer-events: auto; }
-        
+        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; }
         .tracks { list-style: none; padding: 0; margin: 0; }
-        .tracks li { font-size: 10px; padding: 8px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
+        .tracks li { font-size: 9px; padding: 5px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
 
-        /* --- SHOW LOG ARCHIVE --- */
-        .log-container {
-            width: 100%; max-width: 800px; max-height: 75vh; 
-            overflow-y: auto; border: 1px solid #111;
-            scrollbar-width: thin; scrollbar-color: #ff0000 #000;
-        }
-        .log-container::-webkit-scrollbar { width: 4px; }
-        .log-container::-webkit-scrollbar-thumb { background: #ff0000; }
-
+        /* --- LOGS & TABLES --- */
+        .log-container { width: 100%; max-width: 800px; max-height: 70vh; overflow-y: auto; border: 1px solid #111; }
         .calendar-table { width: 100%; border-collapse: collapse; }
-        .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; transition: 0.2s; }
+        .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; }
         .past-show:hover td { color: #fff; background: #050505; }
-        .date-cell { width: 120px; font-weight: bold; color: #600; text-transform: uppercase;}
+        .date-cell { width: 120px; font-weight: bold; color: #600; }
 
-        /* --- MOBILE --- */
-        @media (max-width: 768px) {
-            .nav-btn { font-size: 32px; letter-spacing: 8px; }
-            .archive-grid { grid-template-columns: repeat(2, 1fr); }
-            .ui-header { flex-direction: column; gap: 10px; }
-            .date-cell { width: 90px; }
+        /* --- STREAM PLAYER --- */
+        .stream-player-box { width: 100%; max-width: 800px; border: 1px solid #222; background: #050505; margin-bottom: 20px; }
+        .visualizer-placeholder { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #222; position: relative; }
+        .stream-controls { padding: 20px; display: flex; align-items: center; gap: 20px; border-top: 1px solid #111; }
+        .stream-controls button { background: none; border: 1px solid #ff0000; color: #ff0000; padding: 8px 15px; font-family: monospace; cursor: pointer; }
+        
+        @media (max-width: 800px) {
+            .archive-grid { grid-template-columns: repeat(3, 1fr); }
+            #archive-section { height: auto; overflow: visible; }
         }
     </style>
 </head>
@@ -116,12 +102,16 @@
             <div class="panel-bg-text">AUDIO_ARCHIVE</div>
         </div>
         <div class="section-panel" onclick="switchView(event, 'merch')">
-            <div class="nav-btn">MERCH</div>
+            <div class="nav-btn">CLOTHING</div>
             <div class="panel-bg-text">DESIGN_LOG_20/20</div>
         </div>
         <div class="section-panel" onclick="switchView(event, 'shows')">
             <div class="nav-btn">SHOWS</div>
             <div class="panel-bg-text">LIVE_LOGS</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'stream')">
+            <div class="nav-btn">STREAM</div>
+            <div class="panel-bg-text">SESSION_RECORDS</div>
         </div>
     </div>
 
@@ -131,164 +121,61 @@
             <div id="timer">TRACK_TIME: 00:00</div>
         </div>
         <div class="archive-grid" onclick="event.stopPropagation()">
-            
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT010/cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_010 ]</h3><ul class="tracks"><li onclick="play('PROJECT010/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT008/cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_008 ]</h3><ul class="tracks"><li onclick="play('PROJECT008/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_007 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_007/audio.mp3', this)">01_TRACK_v1</li>
-                    </ul>
-                </div>
+                <div class="info"><h3>[ PROJECT_007 ]</h3><ul class="tracks"><li onclick="play('PROJECT_007/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
-
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_006 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_006/audio.mp3', this)">01_TRACK_v1</li>
-                    </ul>
-                </div>
+                <div class="info"><h3>[ PROJECT_006 ]</h3><ul class="tracks"><li onclick="play('PROJECT_006/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
-
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_005 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_005/audio.mp3', this)">01_TRACK_v1</li>
-                    </ul>
-                </div>
+                <div class="info"><h3>[ PROJECT_005 ]</h3><ul class="tracks"><li onclick="play('PROJECT_005/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
-
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_004 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li>
-                    </ul>
-                </div>
+                <div class="info"><h3>[ PROJECT_004 ]</h3><ul class="tracks"><li onclick="play('PROJECT_004/test10.mp3', this)">01_TRACK_10</li></ul></div>
             </div>
-
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT003/cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_003 ]</h3><ul class="tracks"><li onclick="play('PROJECT003/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_002 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_002/audio.mp3', this)">01_TRACK_v1</li>
-                    </ul>
-                </div>
+                <div class="info"><h3>[ PROJECT_002 ]</h3><ul class="tracks"><li onclick="play('PROJECT_002/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
-
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_001 ]</h3>
-                    <ul class="tracks">
-                        <li onclick="play('PROJECT_001/audio.mp3', this)">01_TRACK_v1</li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="merch-section">
-        <div class="ui-header">
-            <div class="title">EZIBEATS // ARCHIVAL_SERIES</div>
-            <div class="title">[ 20 / 20 ]</div>
-        </div>
-        <div class="archive-grid" onclick="event.stopPropagation()">
-             <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('MERCH/item1.jpg');"></div>
-                <div class="info"><h3>[ 1 OF 20 ]</h3><p>RIPSTOP / PAINTED</p></div>
+                <div class="info"><h3>[ PROJECT_001 ]</h3><ul class="tracks"><li onclick="play('PROJECT_001/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
         </div>
     </div>
 
     <div id="shows-section">
-        <div class="ui-header">
-            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
-            <div class="title">[ 70_ENTRIES_FOUND ]</div>
-        </div>
-        <div class="log-container" onclick="event.stopPropagation()">
+        <div class="ui-header"><div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div><div class="title">[ 2016_ORIGIN ]</div></div>
+        <div class="log-container">
             <table class="calendar-table">
-                <tr class="past-show"><td class="date-cell">MAY 02 20</td><td>ONLINE_SHOWCASE</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 20 20</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 14 20</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">FEB 08 20</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 20 20</td><td>7TH_ST_ENTRY (MLK DAY)</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 11 20</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 30 19</td><td>PART_WOLF / NOMAD</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 14 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 17 19</td><td>CAYDENCE_RECORDS</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 09 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 26 19</td><td>MPLS_CLUB (UNDERGROUND)</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 12 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 30 19</td><td>PART_WOLF / NOMAD</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 14 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">AUG 17 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JUL 20 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 15 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 06 19</td><td>MEARS_PARK</td></tr>
-                <tr class="past-show"><td class="date-cell">MAY 11 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 13 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 09 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">FEB 09 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 12 19</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 16 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 14 18</td><td>CLUB UNDERGROUND MPLS</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 10 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 13 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 08 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">AUG 11 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JUL 14 18</td><td>RED_SEA / PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 09 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">MAY 12 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 14 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 10 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 22 18</td><td>CLUB UNDERGROUND MPLS</td></tr>
-                <tr class="past-show"><td class="date-cell">FEB 10 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 13 18</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 10 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 11 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 14 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 16 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">AUG 12 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUL 08 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 24 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 10 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">MAY 13 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 08 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 04 17</td><td> THE TECHNICS HONEY MPLS</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 11 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">FEB 11 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 14 17</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 10 16</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 12 16</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 08 16</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 10 16</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">AUG 13 16</td><td>RED_SEA / HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUL 15 16</td><td>HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 10 16</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">MAY 14 16</td><td>PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 09 16</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 12 16</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">FEB 13 16</td><td>HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">DEC 05 15</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">NOV 07 15</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">OCT 10 15</td><td>PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">SEP 12 15</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">AUG 08 15</td><td>HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">JUL 11 15</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">JUN 13 15</td><td>PALMERS</td></tr>
-                <tr class="past-show"><td class="date-cell">MAY 09 15</td><td>RED_SEA</td></tr>
-                <tr class="past-show"><td class="date-cell">APR 11 15</td><td>HONEY</td></tr>
-                <tr class="past-show"><td class="date-cell">MAR 14 15</td><td>RED_SEA</td></tr>
-            </table>
+                <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>SYSTEM_START / RED_SEA</td></tr>
+                </table>
+        </div>
+    </div>
+
+    <div id="stream-section">
+        <div class="ui-header"><div class="title">EZIBEATS // STREAM_LOG</div><div id="load-status" style="font-size:11px;color:#0f0">READY</div></div>
+        <div class="stream-player-box">
+            <div class="visualizer-placeholder">FILE_SIZE: 535MB // BUFFER_ENABLED</div>
+            <div class="stream-controls">
+                <button onclick="initiateLargeStream('STREAMS/recorded_session.mp3')">INITIATE_STREAM</button>
+            </div>
         </div>
     </div>
 
@@ -299,7 +186,7 @@
         function switchView(e, viewName) {
             if (e) e.stopPropagation();
             document.body.classList.add('view-active');
-            document.body.classList.remove('view-music', 'view-merch', 'view-shows');
+            document.body.classList.remove('view-music', 'view-merch', 'view-shows', 'view-stream');
             document.body.classList.add('view-' + viewName);
             window.scrollTo(0,0);
         }
@@ -310,9 +197,9 @@
         }
 
         function closeAll(event) {
-            const validClosers = ['archive-section', 'merch-section', 'shows-section'];
+            const validClosers = ['archive-section', 'merch-section', 'shows-section', 'stream-section'];
             if (event.target.tagName === 'BODY' || validClosers.includes(event.target.id)) {
-                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows');
+                document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows', 'view-stream');
                 if (audio) { audio.pause(); audio = null; resetTimer(); }
                 document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
             }
@@ -329,6 +216,16 @@
             timerInterval = setInterval(updateTimer, 1000);
         }
 
+        function initiateLargeStream(src) {
+            if (audio) audio.pause();
+            audio = new Audio();
+            audio.preload = "metadata";
+            audio.src = src;
+            audio.play();
+            resetTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
         function updateTimer() {
             if (audio) {
                 let mins = Math.floor(audio.currentTime / 60);
@@ -338,9 +235,9 @@
         }
 
         function resetTimer() { 
-             clearInterval(timerInterval); 
-             if(document.getElementById('timer')) document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
-         }
+            clearInterval(timerInterval); 
+            if(document.getElementById('timer')) document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
+        }
     </script>
 </body>
 </html>
