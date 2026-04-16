@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v08.20</title>
+    <title>EZIBEATS_ARCHIVE_v08.30</title>
     <style>
         /* --- CORE SYSTEM --- */
         body {
@@ -43,51 +43,56 @@
             padding: 40px 20px; min-height: 100vh; position: relative; z-index: 10;
         }
         
+        /* MUSIC: FIXED VIEWPORT */
         body.view-music #archive-section { display: flex; opacity: 1; height: 100vh; overflow: hidden; justify-content: center; }
-        body.view-merch #merch-section { display: flex; opacity: 1; }
-        body.view-shows #shows-section { display: flex; opacity: 1; }
-        body.view-stream #stream-section { display: flex; opacity: 1; }
+        
+        /* OTHERS: SCROLLABLE */
+        body.view-merch #merch-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
+        body.view-shows #shows-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
+        body.view-stream #stream-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
 
         /* --- UI ELEMENTS --- */
-        .ui-header { width: 100%; max-width: 1000px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
+        .ui-header { width: 100%; max-width: 1100px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; }
         .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
         #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
 
-        /* --- MUSIC GRID (NO-SCROLL MATRIX) --- */
+        /* --- GRID LOGIC --- */
         .archive-grid { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             gap: 10px; width: 100%; max-width: 1100px; 
         }
 
-        .item { aspect-ratio: 1/1; background-color: #111; border: 1px solid #333; cursor: pointer; position: relative; overflow: hidden; }
+        .item { aspect-ratio: 1/1; background-color: #050505; border: 1px solid #222; cursor: pointer; position: relative; overflow: hidden; }
         .item.active { border-color: #fff; }
-        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; }
-        .item:hover .item-image { transform: scale(1.05); }
+        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; filter: grayscale(50%); }
+        .item:hover .item-image { transform: scale(1.05); filter: grayscale(0%); }
 
         .info { 
             position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
             transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
         }
         .item.active .info { opacity: 1; pointer-events: auto; }
-        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; }
-        .tracks { list-style: none; padding: 0; margin: 0; }
-        .tracks li { font-size: 9px; padding: 5px 0; color: #666; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
+        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
+        /* TRACKLIST / META */
+        .tracks, .merch-meta { list-style: none; padding: 0; margin: 0; font-size: 9px; color: #666; letter-spacing: 1px; }
+        .tracks li { padding: 5px 0; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
+        .merch-meta { color: #ff0000; line-height: 1.6; text-transform: uppercase; }
 
-        /* --- LOGS & TABLES --- */
-        .log-container { width: 100%; max-width: 800px; max-height: 70vh; overflow-y: auto; border: 1px solid #111; }
+        /* --- TABLES & STREAM --- */
+        .log-container { width: 100%; max-width: 800px; border: 1px solid #111; }
         .calendar-table { width: 100%; border-collapse: collapse; }
         .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; }
         .past-show:hover td { color: #fff; background: #050505; }
         .date-cell { width: 120px; font-weight: bold; color: #600; }
 
-        /* --- STREAM PLAYER --- */
-        .stream-player-box { width: 100%; max-width: 800px; border: 1px solid #222; background: #050505; margin-bottom: 20px; }
-        .visualizer-placeholder { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #222; position: relative; }
+        .stream-player-box { width: 100%; max-width: 800px; border: 1px solid #222; background: #050505; }
+        .visualizer-placeholder { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #222; }
         .stream-controls { padding: 20px; display: flex; align-items: center; gap: 20px; border-top: 1px solid #111; }
         .stream-controls button { background: none; border: 1px solid #ff0000; color: #ff0000; padding: 8px 15px; font-family: monospace; cursor: pointer; }
-        
+
         @media (max-width: 800px) {
             .archive-grid { grid-template-columns: repeat(3, 1fr); }
             #archive-section { height: auto; overflow: visible; }
@@ -99,19 +104,19 @@
     <div id="landing-page">
         <div class="section-panel" onclick="switchView(event, 'music')">
             <div class="nav-btn">MUSIC</div>
-            <div class="panel-bg-text">AUDIO_ARCHIVE</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE_v08</div>
         </div>
         <div class="section-panel" onclick="switchView(event, 'merch')">
-            <div class="nav-btn">CLOTHING</div>
-            <div class="panel-bg-text">DESIGN_LOG_20/20</div>
+            <div class="nav-btn">MERCH</div>
+            <div class="panel-bg-text">ARCHIVE_INVENTORY_1/20</div>
         </div>
         <div class="section-panel" onclick="switchView(event, 'shows')">
             <div class="nav-btn">SHOWS</div>
-            <div class="panel-bg-text">LIVE_LOGS</div>
+            <div class="panel-bg-text">PERFORMANCE_MANIFEST</div>
         </div>
         <div class="section-panel" onclick="switchView(event, 'stream')">
             <div class="nav-btn">STREAM</div>
-            <div class="panel-bg-text">SESSION_RECORDS</div>
+            <div class="panel-bg-text">SESSION_RECORDS_535MB</div>
         </div>
     </div>
 
@@ -157,14 +162,36 @@
                 <div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div>
                 <div class="info"><h3>[ PROJECT_001 ]</h3><ul class="tracks"><li onclick="play('PROJECT_001/audio.mp3', this)">01_TRACK_v1</li></ul></div>
             </div>
+            <div class="item" style="opacity: 0.1;"><div class="info"><h3>[ PENDING ]</h3></div></div>
         </div>
     </div>
 
+    <div id="merch-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // MERCH_LOG</div>
+            <div class="title">[ STATUS: 1_OF_20 ]</div>
+        </div>
+        <div class="archive-grid" onclick="event.stopPropagation()">
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('MERCH/01.jpg');"></div>
+                <div class="info">
+                    <h3>[ MERCH_01 ]</h3>
+                    <div class="merch-meta">TYPE: THRIFTED_PAINTED<br>SIZE: [XL]<br>STATUS: ARCHIVED</div>
+                </div>
+            </div>
+            </div>
+    </div>
+
     <div id="shows-section">
-        <div class="ui-header"><div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div><div class="title">[ 2016_ORIGIN ]</div></div>
+        <div class="ui-header">
+            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
+            <div class="title">[ ORIGIN: 2016 ]</div>
+        </div>
         <div class="log-container">
             <table class="calendar-table">
                 <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>SYSTEM_START / RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">MAR 12 16</td><td>RED_SEA</td></tr>
+                <tr class="past-show"><td class="date-cell">SEP 17 16</td><td>HEAVY_ROTATION_VOL.1_(HONEY)</td></tr>
                 </table>
         </div>
     </div>
