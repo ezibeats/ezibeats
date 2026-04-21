@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v09.50</title>
+    <title>EZIBEATS // ARCHIVE_v0.85</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0000; --bg: #000; --ui-grey: #1a1a1a; }
@@ -13,28 +13,74 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER SYSTEM --- */
-        header {
+        /* --- HEADER --- */
+        header { 
             padding: 40px; border-bottom: 1px solid var(--ui-grey);
             display: flex; justify-content: space-between; align-items: flex-end;
         }
-        .brand h1 { font-size: 40px; margin: 0; letter-spacing: -2px; font-weight: 700; }
-        .brand p { font-size: 10px; margin: 5px 0 0; color: #666; letter-spacing: 4px; }
-        #timer { font-size: 10px; color: var(--accent); }
+        .brand h1 { font-size: 40px; margin: 0; letter-spacing: -2px; }
+        .brand p { font-size: 10px; color: #666; letter-spacing: 4px; margin-top: 5px; }
+        #status-light { font-size: 10px; color: var(--accent); }
+
+        .container { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 11px; color: #444; margin: 60px 0 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
+
+        /* --- PROJECT GRID --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .project-card {
+            position: relative;
+            background: #050505;
+            border: 1px solid var(--ui-grey);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .project-card img {
+            width: 100%; aspect-ratio: 1/1;
+            display: block; filter: grayscale(100%);
+            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .project-card:hover img { filter: grayscale(0%); transform: scale(1.02); }
+
+        /* --- LINK OVERLAY --- */
+        .link-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.92);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0; transition: 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .project-card.active .link-overlay { opacity: 1; pointer-events: auto; }
+
+        .stream-link {
+            color: #fff; text-decoration: none;
+            font-size: 10px; letter-spacing: 3px;
+            margin: 12px 0; padding: 5px 15px;
+            transition: 0.2s; border-bottom: 1px solid transparent;
+        }
+
+        .stream-link:hover { color: var(--accent); border-bottom: 1px solid var(--accent); }
+        .close-hint { position: absolute; bottom: 15px; font-size: 8px; color: #333; }
 
         /* --- MANIFEST TABLE --- */
-        .container { padding: 40px; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-size: 11px; color: #444; margin-bottom: 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
-        
-        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
-        .manifest-table td { padding: 15px 10px; font-size: 11px; border-bottom: 1px solid var(--ui-grey); color: #888; }
+        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .manifest-table td { padding: 15px 10px; font-size: 10px; border-bottom: 1px solid var(--ui-grey); color: #666; }
         .manifest-table tr:hover td { color: #fff; background: #050505; }
-        .date { width: 120px; color: var(--accent); font-weight: bold; }
+        .date { width: 110px; color: var(--accent); font-weight: bold; }
 
-        /* --- LARGE STREAM MODULE --- */
+        /* --- STREAM MODULE --- */
         .stream-block {
-            background: #050505; border: 1px solid var(--ui-grey); padding: 40px;
-            text-align: center; margin-top: 40px;
+            background: #050505; border: 1px solid var(--ui-grey); padding: 60px 40px;
+            text-align: center; margin: 40px 0 80px;
         }
         .stream-btn {
             background: none; border: 1px solid #fff; color: #fff;
@@ -44,8 +90,13 @@
         .stream-btn:hover { background: #fff; color: #000; }
         .stream-info { font-size: 9px; color: #444; margin-top: 15px; letter-spacing: 2px; }
 
-        /* --- UTILITY --- */
         .footer { padding: 40px; font-size: 9px; color: #222; text-align: center; border-top: 1px solid var(--ui-grey); }
+
+        @media (max-width: 600px) {
+            header, .container { padding: 20px; }
+            .brand h1 { font-size: 30px; }
+            .project-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -55,10 +106,36 @@
             <h1>EZIBEATS</h1>
             <p>TECHNICAL_ARCHIVE // 2016-2026</p>
         </div>
-        <div id="timer">SYSTEM_READY</div>
+        <div id="status-light">SYSTEM_READY</div>
     </header>
 
     <div class="container">
+        
+        <div class="section-title">PROJECT_ARCHIVE // AUDIO_VISUAL</div>
+        <div class="project-grid">
+
+            <div class="project-card" onclick="toggleLinks(this)">
+                <img src="PROJECT010/untitled_23.jpg" alt="P010">
+                <div class="link-overlay">
+                    <a href="https://ezibeats.bandcamp.com" class="stream-link" target="_blank">BANDCAMP</a>
+                    <a href="#" class="stream-link" target="_blank">SPOTIFY</a>
+                    <a href="#" class="stream-link" target="_blank">APPLE_MUSIC</a>
+                    <div class="close-hint">TAP TO CLOSE</div>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="toggleLinks(this)">
+                <img src="PROJECT008/discussion2.jpg" alt="P008">
+                <div class="link-overlay">
+                    <a href="#" class="stream-link">BANDCAMP</a>
+                    <a href="#" class="stream-link">SPOTIFY</a>
+                    <a href="#" class="stream-link">APPLE_MUSIC</a>
+                    <div class="close-hint">TAP TO CLOSE</div>
+                </div>
+            </div>
+
+        </div>
+
         <div class="section-title">PERFORMANCE_MANIFEST [LOGGED: 71]</div>
         <table class="manifest-table">
             <tbody id="manifest-body">
@@ -71,14 +148,14 @@
             <div class="stream-info">HIGH_FIDELITY_ARCHIVE // BUFFERS_ON_START</div>
             <audio id="largeAudio" preload="none"></audio>
         </div>
+
     </div>
 
-    <div class="footer">
-        BRUTAL_MINIMALISM // EZIBEATS_REPO_v09.50
-    </div>
+    <div class="footer">BRUTAL_MINIMALISM // EZIBEATS_v0.85</div>
 
     <script>
-        const manifestData = [
+        // MANIFEST DATA
+        const shows = [
             { d: "MAY 20 20", l: "ONLINE_SHOWCASE_v1.0 (REMOTE)" },
             { d: "MAR 07 20", l: "RED_SEA (MPLS)" },
             { d: "JAN 15 20", l: "7TH_ST_ENTRY (MPLS)" },
@@ -86,39 +163,41 @@
             { d: "NOV 15 19", l: "CAYDENCE_RECORDS (STP)" },
             { d: "SEP 20 19", l: "PALMERS_BAR (MPLS)" },
             { d: "AUG 15 19", l: "PART WOLF (MPLS)" },
-            { d: "JUN 10 19", l: "RED_SEA (MPLS)" },
-            { d: "MAR 09 19", l: "HONEY (MPLS)" },
             { d: "JAN 12 19", l: "RED_SEA_RESIDENCY_REBOOT" },
             { d: "APR 21 18", l: "PAISLEY_PARK (CHANHASSEN)" },
-            { d: "MAY 15 17", l: "THE_BITTER_END (NYC)" },
             { d: "JAN 09 16", l: "SYSTEM_START / RED_SEA (MPLS)" }
         ];
 
-        // Populate Table
         const tableBody = document.getElementById('manifest-body');
-        manifestData.forEach(item => {
-            const row = `<tr><td class="date">${item.d}</td><td>${item.l}</td></tr>`;
-            tableBody.innerHTML += row;
+        shows.forEach(show => {
+            tableBody.innerHTML += `<tr><td class="date">${show.d}</td><td>${show.l}</td></tr>`;
         });
 
-        // 535MB Stream Logic
+        // IMAGE INTERACTION
+        function toggleLinks(card) {
+            const isActive = card.classList.contains('active');
+            document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active'));
+            if (!isActive) card.classList.add('active');
+        }
+
+        // AUDIO STREAM LOGIC
         function initiateLargeStream() {
             const audio = document.getElementById('largeAudio');
             const btn = document.getElementById('streamTrigger');
-            const timer = document.getElementById('timer');
-
-            // Replace with your Direct Google Drive / Cloud Link
-            const streamURL = "YOUR_LARGE_FILE_URL_HERE";
+            const status = document.getElementById('status-light');
+            const streamURL = "YOUR_LARGE_FILE_URL_HERE"; 
 
             if (audio.paused) {
-                if (!audio.src) audio.src = streamURL;
+                if (!audio.src || audio.src.includes("YOUR_LARGE_FILE_URL_HERE")) {
+                    audio.src = streamURL;
+                }
                 audio.play();
                 btn.innerText = "HALT_STREAM";
-                timer.innerText = "STREAM_ACTIVE";
+                status.innerText = "STREAM_ACTIVE";
             } else {
                 audio.pause();
                 btn.innerText = "RESUME_STREAM";
-                timer.innerText = "STREAM_PAUSED";
+                status.innerText = "STREAM_PAUSED";
             }
         }
     </script>
