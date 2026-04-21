@@ -3,64 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ezibeats</title>
+    <title>EZIBEATS_ARCHIVE_v09.50</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header { background-color: #333; color: white; padding: 10px; text-align: center; }
-        nav { margin: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .album { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        .btn { background-color: #5cb85c; color: white; border: none; padding: 10px; cursor: pointer; }
-        .shows-table { width: 100%; border-collapse: collapse; }
-        .shows-table th, .shows-table td { border: 1px solid #ddd; padding: 8px; }
-        .shows-table th { background-color: #f2f2f2; }
+        :root { --accent: #ff0000; --bg: #000; --ui-grey: #1a1a1a; }
+        body { 
+            margin: 0; background: var(--bg); color: #fff; 
+            font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; 
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER SYSTEM --- */
+        header {
+            padding: 40px; border-bottom: 1px solid var(--ui-grey);
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .brand h1 { font-size: 40px; margin: 0; letter-spacing: -2px; font-weight: 700; }
+        .brand p { font-size: 10px; margin: 5px 0 0; color: #666; letter-spacing: 4px; }
+        #timer { font-size: 10px; color: var(--accent); }
+
+        /* --- MANIFEST TABLE --- */
+        .container { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 11px; color: #444; margin-bottom: 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
+        
+        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
+        .manifest-table td { padding: 15px 10px; font-size: 11px; border-bottom: 1px solid var(--ui-grey); color: #888; }
+        .manifest-table tr:hover td { color: #fff; background: #050505; }
+        .date { width: 120px; color: var(--accent); font-weight: bold; }
+
+        /* --- LARGE STREAM MODULE --- */
+        .stream-block {
+            background: #050505; border: 1px solid var(--ui-grey); padding: 40px;
+            text-align: center; margin-top: 40px;
+        }
+        .stream-btn {
+            background: none; border: 1px solid #fff; color: #fff;
+            padding: 15px 40px; font-family: inherit; font-size: 12px;
+            cursor: pointer; transition: 0.3s; letter-spacing: 5px;
+        }
+        .stream-btn:hover { background: #fff; color: #000; }
+        .stream-info { font-size: 9px; color: #444; margin-top: 15px; letter-spacing: 2px; }
+
+        /* --- UTILITY --- */
+        .footer { padding: 40px; font-size: 9px; color: #222; text-align: center; border-top: 1px solid var(--ui-grey); }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Welcome to Ezibeats</h1>
-        <nav>
-            <a href="#archive">Archive</a> |
-            <a href="#shows">Shows</a>
-        </nav>
+        <div class="brand">
+            <h1>EZIBEATS</h1>
+            <p>TECHNICAL_ARCHIVE // 2016-2026</p>
+        </div>
+        <div id="timer">SYSTEM_READY</div>
     </header>
-    <section id="archive">
-        <h2>Archive</h2>
-        <div class="grid">
-            <!-- Sample album artwork items -->
-            <div class="album"><img src="path/to/artwork1.jpg" alt="Album 1"><p>Album 1</p></div>
-            <div class="album"><img src="path/to/artwork2.jpg" alt="Album 2"><p>Album 2</p></div>
-            <!-- Repeat for 10 items -->
-        </div>
-        <div>
-            <h3>Audio Playback</h3>
-            <button class="btn" onclick="play('PROJECT010/A0000007.WAV')">Play Project 010</button>
-            <button class="btn" onclick="play('PROJECT008/A0000007.WAV')">Play Project 008</button>
-            <button class="btn" onclick="play('PROJECT003/A0000004.WAV')">Play Project 003</button>
-        </div>
-        <div>
-            <a href="link_to_apple_music" target="_blank">Apple Music</a>
-            <a href="link_to_bandcamp" target="_blank">Bandcamp</a>
-        </div>
-    </section>
-    <section id="shows">
-        <h2>Shows</h2>
-        <table class="shows-table">
-            <tr><th>Date</th><th>Venue</th><th>Location</th></tr>
-            <!-- Sample show entries -->
-            <tr><td>2023-05-01</td><td>Venue A</td><td>Location A</td></tr>
-            <tr><td>2023-06-15</td><td>Venue B</td><td>Location B</td></tr>
-            <!-- More entries -->
+
+    <div class="container">
+        <div class="section-title">PERFORMANCE_MANIFEST [LOGGED: 71]</div>
+        <table class="manifest-table">
+            <tbody id="manifest-body">
+                </tbody>
         </table>
-    </section>
+
+        <div class="section-title">SESSION_RECORDS [535MB]</div>
+        <div class="stream-block">
+            <button class="stream-btn" id="streamTrigger" onclick="initiateLargeStream()">INITIATE_STREAM</button>
+            <div class="stream-info">HIGH_FIDELITY_ARCHIVE // BUFFERS_ON_START</div>
+            <audio id="largeAudio" preload="none"></audio>
+        </div>
+    </div>
+
+    <div class="footer">
+        BRUTAL_MINIMALISM // EZIBEATS_REPO_v09.50
+    </div>
+
     <script>
-        function switchView() { /* Logic here */ }
-        function forceReset() { /* Logic here */ }
-        function openItem(item) { /* Logic here */ }
-        function closeAll() { /* Logic here */ }
-        function play(file) { /* Logic to play audio */ }
-        function updateTimer() { /* Update playback timer */ }
-        function resetTimer() { /* Reset audio timer */ }
+        const manifestData = [
+            { d: "MAY 20 20", l: "ONLINE_SHOWCASE_v1.0 (REMOTE)" },
+            { d: "MAR 07 20", l: "RED_SEA (MPLS)" },
+            { d: "JAN 15 20", l: "7TH_ST_ENTRY (MPLS)" },
+            { d: "DEC 31 19", l: "DECADE_END @ RED SEA" },
+            { d: "NOV 15 19", l: "CAYDENCE_RECORDS (STP)" },
+            { d: "SEP 20 19", l: "PALMERS_BAR (MPLS)" },
+            { d: "AUG 15 19", l: "PART WOLF (MPLS)" },
+            { d: "JUN 10 19", l: "RED_SEA (MPLS)" },
+            { d: "MAR 09 19", l: "HONEY (MPLS)" },
+            { d: "JAN 12 19", l: "RED_SEA_RESIDENCY_REBOOT" },
+            { d: "APR 21 18", l: "PAISLEY_PARK (CHANHASSEN)" },
+            { d: "MAY 15 17", l: "THE_BITTER_END (NYC)" },
+            { d: "JAN 09 16", l: "SYSTEM_START / RED_SEA (MPLS)" }
+        ];
+
+        // Populate Table
+        const tableBody = document.getElementById('manifest-body');
+        manifestData.forEach(item => {
+            const row = `<tr><td class="date">${item.d}</td><td>${item.l}</td></tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        // 535MB Stream Logic
+        function initiateLargeStream() {
+            const audio = document.getElementById('largeAudio');
+            const btn = document.getElementById('streamTrigger');
+            const timer = document.getElementById('timer');
+
+            // Replace with your Direct Google Drive / Cloud Link
+            const streamURL = "YOUR_LARGE_FILE_URL_HERE";
+
+            if (audio.paused) {
+                if (!audio.src) audio.src = streamURL;
+                audio.play();
+                btn.innerText = "HALT_STREAM";
+                timer.innerText = "STREAM_ACTIVE";
+            } else {
+                audio.pause();
+                btn.innerText = "RESUME_STREAM";
+                timer.innerText = "STREAM_PAUSED";
+            }
+        }
     </script>
 </body>
 </html>
