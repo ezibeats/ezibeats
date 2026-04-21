@@ -3,234 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v08.55</title>
+    <title>Ezibeats</title>
     <style>
-        /* --- CORE SYSTEM --- */
-        body {
-            margin: 0; padding: 0;
-            background: #000; color: #fff;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden; min-height: 100vh;
-        }
-
-        /* --- LANDING PAGE --- */
-        #landing-page {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
-            z-index: 2000; background: #000;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-
-        body.view-active #landing-page { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
-
-        .section-panel {
-            flex: 1; width: 100%; border-bottom: 1px solid #222;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative;
-        }
-
-        .section-panel:last-child { border-bottom: none; }
-        .nav-btn { font-size: 60px; letter-spacing: 15px; color: #1a1a1a; transition: 0.4s ease; font-weight: 900; text-transform: uppercase; }
-        .section-panel:hover { background: #050505; flex: 1.4; }
-        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
-        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
-
-        /* --- MODULE VISIBILITY --- */
-        #archive-section, #merch-section, #shows-section, #stream-section {
-            display: none; opacity: 0; flex-direction: column; align-items: center;
-            padding: 40px 20px; min-height: 100vh; position: relative; z-index: 10;
-        }
-        
-        body.view-music #archive-section { display: flex; opacity: 1; height: 100vh; overflow: hidden; justify-content: center; }
-        body.view-merch #merch-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-        body.view-shows #shows-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-        body.view-stream #stream-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-
-        /* --- UI ELEMENTS --- */
-        .ui-header { width: 100%; max-width: 1100px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
-        .reset-btn { font-size: 10px; color: #444; cursor: pointer; letter-spacing: 2px; transition: 0.3s; padding: 5px; }
-        .reset-btn:hover { color: #ff0000; }
-
-        /* --- GRID LOGIC --- */
-        .archive-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 10px; width: 100%; max-width: 1100px; 
-        }
-
-        .item { aspect-ratio: 1/1; background-color: #050505; border: 1px solid #222; cursor: pointer; position: relative; overflow: hidden; }
-        .item.active { border-color: #fff; }
-        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; filter: grayscale(50%); }
-        .item:hover .item-image { transform: scale(1.05); filter: grayscale(0%); }
-
-        .info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
-            transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
-            overflow-y: auto;
-        }
-        .item.active .info { opacity: 1; pointer-events: auto; }
-        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        
-        .tracks { list-style: none; padding: 0; margin: 0; font-size: 9px; color: #666; letter-spacing: 1px; }
-        .tracks li { padding: 5px 0; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
-        .tracks li.playing { color: #ff0000; font-weight: bold; }
-
-        /* --- LINKS SECTION --- */
-        .links {
-            margin-top: 10px; 
-            border-top: 1px solid #333; 
-            padding-top: 10px;
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: wrap;
-            justify-content: flex-start;
-        }
-
-        .link-btn, .links a {
-            font-size: 8px; 
-            color: #ff0000; 
-            text-decoration: none; 
-            letter-spacing: 1px;
-            border: 1px solid #333; 
-            padding: 3px 6px; 
-            transition: 0.2s;
-            background: transparent;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            display: inline-block;
-        }
-
-        .link-btn:hover, .links a:hover { 
-            background: #ff0000; 
-            color: #000; 
-        }
-
-        .link-btn.playing {
-            background: #ff0000;
-            color: #000;
-        }
-
-        /* --- MANIFEST TABLE --- */
-        .log-container { width: 100%; max-width: 800px; border: 1px solid #111; }
-        .calendar-table { width: 100%; border-collapse: collapse; }
-        .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; }
-        .past-show:hover td { color: #fff; background: #050505; }
-        .date-cell { width: 120px; font-weight: bold; color: #600; }
-
-        @media (max-width: 800px) {
-            .archive-grid { grid-template-columns: repeat(3, 1fr); }
-            #archive-section { height: auto; overflow: visible; }
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header { background-color: #333; color: white; padding: 10px; text-align: center; }
+        nav { margin: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .album { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        .btn { background-color: #5cb85c; color: white; border: none; padding: 10px; cursor: pointer; }
+        .shows-table { width: 100%; border-collapse: collapse; }
+        .shows-table th, .shows-table td { border: 1px solid #ddd; padding: 8px; }
+        .shows-table th { background-color: #f2f2f2; }
     </style>
 </head>
-<body onclick="closeAll(event)">
-
-    <div id="landing-page">
-        <div class="section-panel" onclick="switchView(event, 'music')">
-            <div class="nav-btn">MUSIC</div>
-            <div class="panel-bg-text">AUDIO_ARCHIVE_v08</div>
+<body>
+    <header>
+        <h1>Welcome to Ezibeats</h1>
+        <nav>
+            <a href="#archive">Archive</a> |
+            <a href="#shows">Shows</a>
+        </nav>
+    </header>
+    <section id="archive">
+        <h2>Archive</h2>
+        <div class="grid">
+            <!-- Sample album artwork items -->
+            <div class="album"><img src="path/to/artwork1.jpg" alt="Album 1"><p>Album 1</p></div>
+            <div class="album"><img src="path/to/artwork2.jpg" alt="Album 2"><p>Album 2</p></div>
+            <!-- Repeat for 10 items -->
         </div>
-        <div class="section-panel" onclick="switchView(event, 'merch')">
-            <div class="nav-btn">MERCH</div>
-            <div class="panel-bg-text">ARCHIVE_INVENTORY_1/20</div>
+        <div>
+            <h3>Audio Playback</h3>
+            <button class="btn" onclick="play('PROJECT010/A0000007.WAV')">Play Project 010</button>
+            <button class="btn" onclick="play('PROJECT008/A0000007.WAV')">Play Project 008</button>
+            <button class="btn" onclick="play('PROJECT003/A0000004.WAV')">Play Project 003</button>
         </div>
-        <div class="section-panel" onclick="switchView(event, 'shows')">
-            <div class="nav-btn">SHOWS</div>
-            <div class="panel-bg-text">PERFORMANCE_MANIFEST</div>
+        <div>
+            <a href="link_to_apple_music" target="_blank">Apple Music</a>
+            <a href="link_to_bandcamp" target="_blank">Bandcamp</a>
         </div>
-        <div class="section-panel" onclick="switchView(event, 'stream')">
-            <div class="nav-btn">STREAM</div>
-            <div class="panel-bg-text">SESSION_RECORDS_535MB</div>
-        </div>
-    </div>
-
-    <div id="archive-section">
-        <div class="ui-header">
-            <div class="title">EZIBEATS // AUDIO_GRID</div>
-            <div id="timer">TRACK_TIME: 00:00</div>
-            <div class="reset-btn" onclick="forceReset()">[RESET]</div>
-        </div>
-        <div class="archive-grid" onclick="event.stopPropagation()">
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT010/untitled 23.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_010 ]</h3>
-                    <ul class="tracks"><li onclick="play('PROJECT010/A0000007.WAV', this)">01_TRACK_v1</li></ul>
-                    <div class="links">
-                        <button class="link-btn" onclick="play('PROJECT010/A0000007.WAV', event)">▶ PLAY</button>
-                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
-                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
-                    </div>
-                </div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT008/a discussion2.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_008 ]</h3>
-                    <ul class="tracks"><li onclick="play('PROJECT008/A0000007.WAV', this)">01_TRACK_v1</li></ul>
-                    <div class="links">
-                        <button class="link-btn" onclick="play('PROJECT008/A0000007.WAV', event)">▶ PLAY</button>
-                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
-                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
-                    </div>
-                </div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT003/pink cover.jpg');"></div>
-                <div class="info">
-                    <h3>[ PROJECT_003 ]</h3>
-                    <ul class="tracks"><li onclick="play('PROJECT003/A0000004.WAV', this)">01_TRACK_v1</li></ul>
-                    <div class="links">
-                        <button class="link-btn" onclick="play('PROJECT003/A0000004.WAV', event)">▶ PLAY</button>
-                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
-                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
-                    </div>
-                </div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_007 ]</h3></div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_006 ]</h3></div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_005 ]</h3></div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_004 ]</h3></div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_002 ]</h3></div>
-            </div>
-            <div class="item" onclick="openItem(this)">
-                <div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_001 ]</h3></div>
-            </div>
-            <div class="item" style="opacity: 0.1;"><div class="info"><h3>[ PENDING ]</h3></div></div>
-        </div>
-    </div>
-
-    <div id="shows-section">
-        <div class="ui-header">
-            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
-            <div class="title">[ LOGGED: 71 ]</div>
-            <div class="reset-btn" onclick="forceReset()">[RESET]</div>
-        </div>
-        <div class="log-container">
-            <table class="calendar-table">
-                <tbody>
-                    <tr class="past-show"><td class="date-cell">MAY 20 20</td><td>ONLINE_SHOWCASE_v1.0 (REMOTE)</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAR 07 20</td><td>RED_SEA (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">JAN 15 20</td><td>7TH_ST_ENTRY (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">DEC 31 19</td><td>DECADE_END @ RED SEA</td></tr>
-                    <tr class="past-show"><td class="date-cell">NOV 15 19</td><td>CAYDENCE_RECORDS (STP*
-
+    </section>
+    <section id="shows">
+        <h2>Shows</h2>
+        <table class="shows-table">
+            <tr><th>Date</th><th>Venue</th><th>Location</th></tr>
+            <!-- Sample show entries -->
+            <tr><td>2023-05-01</td><td>Venue A</td><td>Location A</td></tr>
+            <tr><td>2023-06-15</td><td>Venue B</td><td>Location B</td></tr>
+            <!-- More entries -->
+        </table>
+    </section>
+    <script>
+        function switchView() { /* Logic here */ }
+        function forceReset() { /* Logic here */ }
+        function openItem(item) { /* Logic here */ }
+        function closeAll() { /* Logic here */ }
+        function play(file) { /* Logic to play audio */ }
+        function updateTimer() { /* Update playback timer */ }
+        function resetTimer() { /* Reset audio timer */ }
+    </script>
+</body>
+</html>
