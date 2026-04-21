@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS // ARCHIVE_v0.85</title>
+    <title>EZIBEATS // ARCHIVE_v8.0</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0000; --bg: #000; --ui-grey: #1a1a1a; }
@@ -13,14 +13,9 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
-        header { 
-            padding: 40px; border-bottom: 1px solid var(--ui-grey);
-            display: flex; justify-content: space-between; align-items: flex-end;
-        }
-        .brand h1 { font-size: 40px; margin: 0; letter-spacing: -2px; }
-        .brand p { font-size: 10px; color: #666; letter-spacing: 4px; margin-top: 5px; }
-        #status-light { font-size: 10px; color: var(--accent); }
+        header { padding: 40px; border-bottom: 1px solid var(--ui-grey); }
+        h1 { font-size: 40px; margin: 0; letter-spacing: -2px; }
+        .sub { font-size: 10px; color: #666; letter-spacing: 4px; margin-top: 5px; }
 
         .container { padding: 40px; max-width: 1200px; margin: 0 auto; }
         .section-title { font-size: 11px; color: #444; margin: 60px 0 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
@@ -72,29 +67,14 @@
         .close-hint { position: absolute; bottom: 15px; font-size: 8px; color: #333; }
 
         /* --- MANIFEST TABLE --- */
-        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
         .manifest-table td { padding: 15px 10px; font-size: 10px; border-bottom: 1px solid var(--ui-grey); color: #666; }
         .manifest-table tr:hover td { color: #fff; background: #050505; }
         .date { width: 110px; color: var(--accent); font-weight: bold; }
 
-        /* --- STREAM MODULE --- */
-        .stream-block {
-            background: #050505; border: 1px solid var(--ui-grey); padding: 60px 40px;
-            text-align: center; margin: 40px 0 80px;
-        }
-        .stream-btn {
-            background: none; border: 1px solid #fff; color: #fff;
-            padding: 15px 40px; font-family: inherit; font-size: 12px;
-            cursor: pointer; transition: 0.3s; letter-spacing: 5px;
-        }
-        .stream-btn:hover { background: #fff; color: #000; }
-        .stream-info { font-size: 9px; color: #444; margin-top: 15px; letter-spacing: 2px; }
-
-        .footer { padding: 40px; font-size: 9px; color: #222; text-align: center; border-top: 1px solid var(--ui-grey); }
-
         @media (max-width: 600px) {
             header, .container { padding: 20px; }
-            .brand h1 { font-size: 30px; }
+            h1 { font-size: 30px; }
             .project-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -102,11 +82,8 @@
 <body>
 
     <header>
-        <div class="brand">
-            <h1>EZIBEATS</h1>
-            <p>TECHNICAL_ARCHIVE // 2016-2026</p>
-        </div>
-        <div id="status-light">SYSTEM_READY</div>
+        <h1>EZIBEATS</h1>
+        <div class="sub">TECHNICAL_ARCHIVE // 2016-2026</div>
     </header>
 
     <div class="container">
@@ -142,16 +119,7 @@
                 </tbody>
         </table>
 
-        <div class="section-title">SESSION_RECORDS [535MB]</div>
-        <div class="stream-block">
-            <button class="stream-btn" id="streamTrigger" onclick="initiateLargeStream()">INITIATE_STREAM</button>
-            <div class="stream-info">HIGH_FIDELITY_ARCHIVE // BUFFERS_ON_START</div>
-            <audio id="largeAudio" preload="none"></audio>
-        </div>
-
     </div>
-
-    <div class="footer">BRUTAL_MINIMALISM // EZIBEATS_v0.85</div>
 
     <script>
         // MANIFEST DATA
@@ -163,8 +131,11 @@
             { d: "NOV 15 19", l: "CAYDENCE_RECORDS (STP)" },
             { d: "SEP 20 19", l: "PALMERS_BAR (MPLS)" },
             { d: "AUG 15 19", l: "PART WOLF (MPLS)" },
+            { d: "JUN 10 19", l: "RED_SEA (MPLS)" },
+            { d: "MAR 09 19", l: "HONEY (MPLS)" },
             { d: "JAN 12 19", l: "RED_SEA_RESIDENCY_REBOOT" },
             { d: "APR 21 18", l: "PAISLEY_PARK (CHANHASSEN)" },
+            { d: "MAY 15 17", l: "THE_BITTER_END (NYC)" },
             { d: "JAN 09 16", l: "SYSTEM_START / RED_SEA (MPLS)" }
         ];
 
@@ -179,27 +150,7 @@
             document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active'));
             if (!isActive) card.classList.add('active');
         }
-
-        // AUDIO STREAM LOGIC
-        function initiateLargeStream() {
-            const audio = document.getElementById('largeAudio');
-            const btn = document.getElementById('streamTrigger');
-            const status = document.getElementById('status-light');
-            const streamURL = "YOUR_LARGE_FILE_URL_HERE"; 
-
-            if (audio.paused) {
-                if (!audio.src || audio.src.includes("YOUR_LARGE_FILE_URL_HERE")) {
-                    audio.src = streamURL;
-                }
-                audio.play();
-                btn.innerText = "HALT_STREAM";
-                status.innerText = "STREAM_ACTIVE";
-            } else {
-                audio.pause();
-                btn.innerText = "RESUME_STREAM";
-                status.innerText = "STREAM_PAUSED";
-            }
-        }
     </script>
+
 </body>
 </html>
