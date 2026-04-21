@@ -3,79 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS // ARCHIVE_v8.0</title>
+    <title>EZIBEATS // 2x5_ARCHIVE</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0000; --bg: #000; --ui-grey: #1a1a1a; }
         body { 
             margin: 0; background: var(--bg); color: #fff; 
             font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; 
-            overflow-x: hidden;
         }
 
         header { padding: 40px; border-bottom: 1px solid var(--ui-grey); }
         h1 { font-size: 40px; margin: 0; letter-spacing: -2px; }
         .sub { font-size: 10px; color: #666; letter-spacing: 4px; margin-top: 5px; }
 
-        .container { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .container { padding: 40px; max-width: 1000px; margin: 0 auto; }
         .section-title { font-size: 11px; color: #444; margin: 60px 0 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
 
-        /* --- PROJECT GRID --- */
+        /* --- FORCED 2-COLUMN GRID --- */
         .project-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr); /* FORCES 2 COLUMNS */
+            gap: 20px;
         }
 
         .project-card {
-            position: relative;
-            background: #050505;
-            border: 1px solid var(--ui-grey);
-            overflow: hidden;
-            cursor: pointer;
+            position: relative; background: #050505;
+            border: 1px solid var(--ui-grey); overflow: hidden; cursor: pointer;
         }
 
         .project-card img {
-            width: 100%; aspect-ratio: 1/1;
+            width: 100%; aspect-ratio: 1/1; object-fit: cover;
             display: block; filter: grayscale(100%);
             transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .project-card:hover img { filter: grayscale(0%); transform: scale(1.02); }
+        .project-card:hover img { filter: grayscale(0%); transform: scale(1.05); }
 
-        /* --- LINK OVERLAY --- */
-        .link-overlay {
-            position: absolute; inset: 0;
-            background: rgba(0,0,0,0.92);
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; transition: 0.3s;
-            pointer-events: none;
-            z-index: 10;
+        .project-label {
+            position: absolute; bottom: 10px; left: 10px;
+            font-size: 9px; background: rgba(0,0,0,0.8); padding: 2px 5px;
+            color: #fff; border: 1px solid var(--ui-grey);
         }
 
-        .project-card.active .link-overlay { opacity: 1; pointer-events: auto; }
-
-        .stream-link {
-            color: #fff; text-decoration: none;
-            font-size: 10px; letter-spacing: 3px;
-            margin: 12px 0; padding: 5px 15px;
-            transition: 0.2s; border-bottom: 1px solid transparent;
-        }
-
-        .stream-link:hover { color: var(--accent); border-bottom: 1px solid var(--accent); }
-        .close-hint { position: absolute; bottom: 15px; font-size: 8px; color: #333; }
-
-        /* --- MANIFEST TABLE --- */
+        /* --- MANIFEST --- */
         .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
         .manifest-table td { padding: 15px 10px; font-size: 10px; border-bottom: 1px solid var(--ui-grey); color: #666; }
-        .manifest-table tr:hover td { color: #fff; background: #050505; }
         .date { width: 110px; color: var(--accent); font-weight: bold; }
 
-        @media (max-width: 600px) {
-            header, .container { padding: 20px; }
-            h1 { font-size: 30px; }
-            .project-grid { grid-template-columns: 1fr; }
+        @media (max-width: 700px) {
+            .project-grid { grid-template-columns: 1fr; } /* Stacks on mobile for readability */
         }
     </style>
 </head>
@@ -83,74 +59,54 @@
 
     <header>
         <h1>EZIBEATS</h1>
-        <div class="sub">TECHNICAL_ARCHIVE // 2016-2026</div>
+        <div class="sub">TECHNICAL_ARCHIVE // 10_PROJECT_SYNC</div>
     </header>
 
     <div class="container">
         
-        <div class="section-title">PROJECT_ARCHIVE // AUDIO_VISUAL</div>
+        <div class="section-title">PROJECT_ARCHIVE // 2x5_MATRIX</div>
         <div class="project-grid">
+            <div class="project-card"><img src="PROJECT010/untitled_23.jpg"><div class="project-label">P_010</div></div>
+            <div class="project-card"><img src="PROJECT008/discussion2.jpg"><div class="project-label">P_008</div></div>
+            
+            <div class="project-card"><img src="PROJECT007/image.jpg"><div class="project-label">P_007</div></div>
+            <div class="project-card"><img src="PROJECT006/image.jpg"><div class="project-label">P_006</div></div>
 
-            <div class="project-card" onclick="toggleLinks(this)">
-                <img src="PROJECT010/untitled_23.jpg" alt="P010">
-                <div class="link-overlay">
-                    <a href="https://ezibeats.bandcamp.com" class="stream-link" target="_blank">BANDCAMP</a>
-                    <a href="#" class="stream-link" target="_blank">SPOTIFY</a>
-                    <a href="#" class="stream-link" target="_blank">APPLE_MUSIC</a>
-                    <div class="close-hint">TAP TO CLOSE</div>
-                </div>
-            </div>
+            <div class="project-card"><img src="PROJECT005/image.jpg"><div class="project-label">P_005</div></div>
+            <div class="project-card"><img src="PROJECT004/image.jpg"><div class="project-label">P_004</div></div>
 
-            <div class="project-card" onclick="toggleLinks(this)">
-                <img src="PROJECT008/discussion2.jpg" alt="P008">
-                <div class="link-overlay">
-                    <a href="#" class="stream-link">BANDCAMP</a>
-                    <a href="#" class="stream-link">SPOTIFY</a>
-                    <a href="#" class="stream-link">APPLE_MUSIC</a>
-                    <div class="close-hint">TAP TO CLOSE</div>
-                </div>
-            </div>
+            <div class="project-card"><img src="PROJECT003/image.jpg"><div class="project-label">P_003</div></div>
+            <div class="project-card"><img src="PROJECT_002/image.jpg"><div class="project-label">P_002</div></div>
 
+            <div class="project-card"><img src="PROJECT_001/image.jpg"><div class="project-label">P_001</div></div>
+            <div class="project-card"><img src="album 1/image.jpg"><div class="project-label">ALBUM_01</div></div>
         </div>
 
-        <div class="section-title">PERFORMANCE_MANIFEST [LOGGED: 71]</div>
+        <div class="section-title">PERFORMANCE_MANIFEST</div>
         <table class="manifest-table">
-            <tbody id="manifest-body">
-                </tbody>
+            <tbody id="manifest-body"></tbody>
         </table>
 
     </div>
 
     <script>
-        // MANIFEST DATA
         const shows = [
-            { d: "MAY 20 20", l: "ONLINE_SHOWCASE_v1.0 (REMOTE)" },
+            { d: "MAY 20 20", l: "ONLINE_SHOWCASE_v1.0" },
             { d: "MAR 07 20", l: "RED_SEA (MPLS)" },
             { d: "JAN 15 20", l: "7TH_ST_ENTRY (MPLS)" },
             { d: "DEC 31 19", l: "DECADE_END @ RED SEA" },
             { d: "NOV 15 19", l: "CAYDENCE_RECORDS (STP)" },
             { d: "SEP 20 19", l: "PALMERS_BAR (MPLS)" },
             { d: "AUG 15 19", l: "PART WOLF (MPLS)" },
-            { d: "JUN 10 19", l: "RED_SEA (MPLS)" },
-            { d: "MAR 09 19", l: "HONEY (MPLS)" },
-            { d: "JAN 12 19", l: "RED_SEA_RESIDENCY_REBOOT" },
+            { d: "JAN 12 19", l: "RED_SEA_RESIDENCY" },
             { d: "APR 21 18", l: "PAISLEY_PARK (CHANHASSEN)" },
-            { d: "MAY 15 17", l: "THE_BITTER_END (NYC)" },
-            { d: "JAN 09 16", l: "SYSTEM_START / RED_SEA (MPLS)" }
+            { d: "JAN 09 16", l: "SYSTEM_START" }
         ];
 
         const tableBody = document.getElementById('manifest-body');
         shows.forEach(show => {
             tableBody.innerHTML += `<tr><td class="date">${show.d}</td><td>${show.l}</td></tr>`;
         });
-
-        // IMAGE INTERACTION
-        function toggleLinks(card) {
-            const isActive = card.classList.contains('active');
-            document.querySelectorAll('.project-card').forEach(c => c.classList.remove('active'));
-            if (!isActive) card.classList.add('active');
-        }
     </script>
-
 </body>
 </html>
