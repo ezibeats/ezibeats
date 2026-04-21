@@ -3,110 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS // 2x5_ARCHIVE</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>EZIBEATS_ARCHIVE_v08.55</title>
     <style>
-        :root { --accent: #ff0000; --bg: #000; --ui-grey: #1a1a1a; }
-        body { 
-            margin: 0; background: var(--bg); color: #fff; 
-            font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; 
+        /* --- CORE SYSTEM --- */
+        body {
+            margin: 0; padding: 0;
+            background: #000; color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden; min-height: 100vh;
         }
 
-        header { padding: 40px; border-bottom: 1px solid var(--ui-grey); }
-        h1 { font-size: 40px; margin: 0; letter-spacing: -2px; }
-        .sub { font-size: 10px; color: #666; letter-spacing: 4px; margin-top: 5px; }
-
-        .container { padding: 40px; max-width: 1000px; margin: 0 auto; }
-        .section-title { font-size: 11px; color: #444; margin: 60px 0 20px; border-left: 3px solid var(--accent); padding-left: 10px; }
-
-        /* --- FORCED 2-COLUMN GRID --- */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* FORCES 2 COLUMNS */
-            gap: 20px;
+        /* --- LANDING PAGE --- */
+        #landing-page {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column;
+            z-index: 2000; background: #000;
+            transition: opacity 0.5s ease, visibility 0.5s;
         }
 
-        .project-card {
-            position: relative; background: #050505;
-            border: 1px solid var(--ui-grey); overflow: hidden; cursor: pointer;
+        body.view-active #landing-page { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
+
+        .section-panel {
+            flex: 1; width: 100%; border-bottom: 1px solid #222;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
         }
 
-        .project-card img {
-            width: 100%; aspect-ratio: 1/1; object-fit: cover;
-            display: block; filter: grayscale(100%);
-            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        .section-panel:last-child { border-bottom: none; }
+        .nav-btn { font-size: 60px; letter-spacing: 15px; color: #1a1a1a; transition: 0.4s ease; font-weight: 900; text-transform: uppercase; }
+        .section-panel:hover { background: #050505; flex: 1.4; }
+        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
+
+        /* --- MODULE VISIBILITY --- */
+        #archive-section, #merch-section, #shows-section, #stream-section {
+            display: none; opacity: 0; flex-direction: column; align-items: center;
+            padding: 40px 20px; min-height: 100vh; position: relative; z-index: 10;
+        }
+        
+        body.view-music #archive-section { display: flex; opacity: 1; height: 100vh; overflow: hidden; justify-content: center; }
+        body.view-merch #merch-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
+        body.view-shows #shows-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
+        body.view-stream #stream-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
+
+        /* --- UI ELEMENTS --- */
+        .ui-header { width: 100%; max-width: 1100px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
+        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
+        .reset-btn { font-size: 10px; color: #444; cursor: pointer; letter-spacing: 2px; transition: 0.3s; padding: 5px; }
+        .reset-btn:hover { color: #ff0000; }
+
+        /* --- GRID LOGIC --- */
+        .archive-grid { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 10px; width: 100%; max-width: 1100px; 
         }
 
-        .project-card:hover img { filter: grayscale(0%); transform: scale(1.05); }
+        .item { aspect-ratio: 1/1; background-color: #050505; border: 1px solid #222; cursor: pointer; position: relative; overflow: hidden; }
+        .item.active { border-color: #fff; }
+        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; filter: grayscale(50%); }
+        .item:hover .item-image { transform: scale(1.05); filter: grayscale(0%); }
 
-        .project-label {
-            position: absolute; bottom: 10px; left: 10px;
-            font-size: 9px; background: rgba(0,0,0,0.8); padding: 2px 5px;
-            color: #fff; border: 1px solid var(--ui-grey);
+        .info { 
+            position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
+            transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
         }
+        .item.active .info { opacity: 1; pointer-events: auto; }
+        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
+        .tracks { list-style: none; padding: 0; margin: 0; font-size: 9px; color: #666; letter-spacing: 1px; }
+        .tracks li { padding: 5px 0; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
+        .tracks li.playing { color: #ff0000; font-weight: bold; }
 
-        /* --- MANIFEST --- */
-        .manifest-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
-        .manifest-table td { padding: 15px 10px; font-size: 10px; border-bottom: 1px solid var(--ui-grey); color: #666; }
-        .date { width: 110px; color: var(--accent); font-weight: bold; }
+        /* --- MANIFEST TABLE --- */
+        .log-container { width: 100%; max-width: 800px; border: 1px solid #111; }
+        .calendar-table { width: 100%; border-collapse: collapse; }
+        .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; }
+        .past-show:hover td { color: #fff; background: #050505; }
+        .date-cell { width: 120px; font-weight: bold; color: #600; }
 
-        @media (max-width: 700px) {
-            .project-grid { grid-template-columns: 1fr; } /* Stacks on mobile for readability */
+        @media (max-width: 800px) {
+            .archive-grid { grid-template-columns: repeat(3, 1fr); }
+            #archive-section { height: auto; overflow: visible; }
         }
     </style>
 </head>
-<body>
+<body onclick="closeAll(event)">
 
-    <header>
-        <h1>EZIBEATS</h1>
-        <div class="sub">TECHNICAL_ARCHIVE // 10_PROJECT_SYNC</div>
-    </header>
-
-    <div class="container">
-        
-        <div class="section-title">PROJECT_ARCHIVE // 2x5_MATRIX</div>
-        <div class="project-grid">
-            <div class="project-card"><img src="PROJECT010/untitled_23.jpg"><div class="project-label">P_010</div></div>
-            <div class="project-card"><img src="PROJECT008/discussion2.jpg"><div class="project-label">P_008</div></div>
-            
-            <div class="project-card"><img src="PROJECT007/image.jpg"><div class="project-label">P_007</div></div>
-            <div class="project-card"><img src="PROJECT006/image.jpg"><div class="project-label">P_006</div></div>
-
-            <div class="project-card"><img src="PROJECT005/image.jpg"><div class="project-label">P_005</div></div>
-            <div class="project-card"><img src="PROJECT004/image.jpg"><div class="project-label">P_004</div></div>
-
-            <div class="project-card"><img src="PROJECT003/image.jpg"><div class="project-label">P_003</div></div>
-            <div class="project-card"><img src="PROJECT_002/image.jpg"><div class="project-label">P_002</div></div>
-
-            <div class="project-card"><img src="PROJECT_001/image.jpg"><div class="project-label">P_001</div></div>
-            <div class="project-card"><img src="album 1/image.jpg"><div class="project-label">ALBUM_01</div></div>
+    <div id="landing-page">
+        <div class="section-panel" onclick="switchView(event, 'music')">
+            <div class="nav-btn">MUSIC</div>
+            <div class="panel-bg-text">AUDIO_ARCHIVE_v08</div>
         </div>
+        <div class="section-panel" onclick="switchView(event, 'merch')">
+            <div class="nav-btn">MERCH</div>
+            <div class="panel-bg-text">ARCHIVE_INVENTORY_1/20</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'shows')">
+            <div class="nav-btn">SHOWS</div>
+            <div class="panel-bg-text">PERFORMANCE_MANIFEST</div>
+        </div>
+        <div class="section-panel" onclick="switchView(event, 'stream')">
+            <div class="nav-btn">STREAM</div>
+            <div class="panel-bg-text">SESSION_RECORDS_535MB</div>
+        </div>
+    </div>
 
-        <div class="section-title">PERFORMANCE_MANIFEST</div>
-        <table class="manifest-table">
-            <tbody id="manifest-body"></tbody>
-        </table>
+    <div id="archive-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // AUDIO_GRID</div>
+            <div id="timer">TRACK_TIME: 00:00</div>
+            <div class="reset-btn" onclick="forceReset()">[RESET]</div>
+        </div>
+        <div class="archive-grid" onclick="event.stopPropagation()">
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT010/untitled 23.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_010 ]</h3><ul class="tracks"><li onclick="play('PROJECT010/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT008/a discussion2.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_008 ]</h3><ul class="tracks"><li onclick="play('PROJECT008/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT003/pink cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_003 ]</h3><ul class="tracks"><li onclick="play('PROJECT003/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+            </div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div><div class="info"><h3>[ PROJECT_007 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div><div class="info"><h3>[ PROJECT_006 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div><div class="info"><h3>[ PROJECT_005 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div><div class="info"><h3>[ PROJECT_004 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div><div class="info"><h3>[ PROJECT_002 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div><div class="info"><h3>[ PROJECT_001 ]</h3></div></div>
+            <div class="item" style="opacity: 0.1;"><div class="info"><h3>[ PENDING ]</h3></div></div>
+        </div>
+    </div>
 
+    <div id="shows-section">
+        <div class="ui-header">
+            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
+            <div class="title">[ LOGGED: 71 ]</div>
+            <div class="reset-btn" onclick="forceReset()">[RESET]</div>
+        </div>
+        <div class="log-container">
+            <table class="calendar-table">
+                <tbody>
+                    <tr class="past-show"><td class="date-cell">MAY 20 20</td><td>ONLINE_SHOWCASE_v1.0 (REMOTE)</td></tr>
+                    <tr class="past-show"><td class="date-cell">MAR 07 20</td><td>RED_SEA (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">JAN 15 20</td><td>7TH_ST_ENTRY (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">DEC 31 19</td><td>DECADE_END @ RED SEA</td></tr>
+                    <tr class="past-show"><td class="date-cell">NOV 15 19</td><td>CAYDENCE_RECORDS (STP)</td></tr>
+                    <tr class="past-show"><td class="date-cell">SEP 20 19</td><td>PALMERS_BAR (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">AUG 15 19</td><td>PART WOLF (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">JUN 10 19</td><td>RED_SEA (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">MAR 09 19</td><td>HONEY (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">JAN 12 19</td><td>RED_SEA_RESIDENCY_REBOOT</td></tr>
+                    <tr class="past-show"><td class="date-cell">NOV 20 18</td><td>NOMAD WORLD PUB</td></tr>
+                    <tr class="past-show"><td class="date-cell">SEP 05 18</td><td>ICEHOUSE (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">JUL 12 18</td><td>MEARS_PARK (STP)</td></tr>
+                    <tr class="past-show"><td class="date-cell">APR 21 18</td><td>PAISLEY_PARK (CHANHASSEN)</td></tr>
+                    <tr class="past-show"><td class="date-cell">AUG 04 17</td><td>7TH_ST_ENTRY (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">MAY 15 17</td><td>THE_BITTER_END (NYC)</td></tr>
+                    <tr class="past-show"><td class="date-cell">FEB 11 17</td><td>HONEY RESIDENCY START</td></tr>
+                    <tr class="past-show"><td class="date-cell">SEP 17 16</td><td>HEAVY_ROTATION_VOL.1 @ HONEY</td></tr>
+                    <tr class="past-show"><td class="date-cell">MAR 12 16</td><td>RED_SEA (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>SYSTEM_START / RED_SEA (MPLS)</td></tr>
+                    <tr class="past-show"><td class="date-cell">-- -- --</td><td>PLACEHOLDER_LOG_ENTRY</td></tr>
+                    <tr class="past-show"><td class="date-cell">-- -- --</td><td>PLACEHOLDER_LOG_ENTRY</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        const shows = [
-            { d: "MAY 20 20", l: "ONLINE_SHOWCASE_v1.0" },
-            { d: "MAR 07 20", l: "RED_SEA (MPLS)" },
-            { d: "JAN 15 20", l: "7TH_ST_ENTRY (MPLS)" },
-            { d: "DEC 31 19", l: "DECADE_END @ RED SEA" },
-            { d: "NOV 15 19", l: "CAYDENCE_RECORDS (STP)" },
-            { d: "SEP 20 19", l: "PALMERS_BAR (MPLS)" },
-            { d: "AUG 15 19", l: "PART WOLF (MPLS)" },
-            { d: "JAN 12 19", l: "RED_SEA_RESIDENCY" },
-            { d: "APR 21 18", l: "PAISLEY_PARK (CHANHASSEN)" },
-            { d: "JAN 09 16", l: "SYSTEM_START" }
-        ];
+        let audio = null;
+        let timerInterval = null;
 
-        const tableBody = document.getElementById('manifest-body');
-        shows.forEach(show => {
-            tableBody.innerHTML += `<tr><td class="date">${show.d}</td><td>${show.l}</td></tr>`;
-        });
+        function switchView(e, viewName) {
+            if (e) e.stopPropagation();
+            document.body.classList.add('view-active');
+            document.body.classList.remove('view-music', 'view-merch', 'view-shows', 'view-stream');
+            document.body.classList.add('view-' + viewName);
+            window.scrollTo(0,0);
+        }
+
+        function forceReset() {
+            document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows', 'view-stream');
+            if (audio) { audio.pause(); audio = null; resetTimer(); }
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
+        }
+
+        function openItem(element) {
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function closeAll(event) {
+            if (event.target.tagName === 'BODY' || event.target.id.includes('-section')) {
+                forceReset();
+            }
+        }
+
+        function play(src, element) {
+            if (window.event) window.event.stopPropagation();
+            if (audio) audio.pause();
+            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
+            element.classList.add('playing');
+            audio = new Audio(src);
+            audio.play();
+            resetTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (audio) {
+                let mins = Math.floor(audio.currentTime / 60);
+                let secs = Math.floor(audio.currentTime % 60);
+                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function resetTimer() { 
+            clearInterval(timerInterval); 
+            document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
+        }
     </script>
 </body>
 </html>
