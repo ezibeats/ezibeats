@@ -70,6 +70,7 @@
         .info { 
             position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
             transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
+            overflow-y: auto;
         }
         .item.active .info { opacity: 1; pointer-events: auto; }
         .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
@@ -77,6 +78,41 @@
         .tracks { list-style: none; padding: 0; margin: 0; font-size: 9px; color: #666; letter-spacing: 1px; }
         .tracks li { padding: 5px 0; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
         .tracks li.playing { color: #ff0000; font-weight: bold; }
+
+        /* --- LINKS SECTION --- */
+        .links {
+            margin-top: 10px; 
+            border-top: 1px solid #333; 
+            padding-top: 10px;
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .link-btn, .links a {
+            font-size: 8px; 
+            color: #ff0000; 
+            text-decoration: none; 
+            letter-spacing: 1px;
+            border: 1px solid #333; 
+            padding: 3px 6px; 
+            transition: 0.2s;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+
+        .link-btn:hover, .links a:hover { 
+            background: #ff0000; 
+            color: #000; 
+        }
+
+        .link-btn.playing {
+            background: #ff0000;
+            color: #000;
+        }
 
         /* --- MANIFEST TABLE --- */
         .log-container { width: 100%; max-width: 800px; border: 1px solid #111; }
@@ -121,22 +157,64 @@
         <div class="archive-grid" onclick="event.stopPropagation()">
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT010/untitled 23.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_010 ]</h3><ul class="tracks"><li onclick="play('PROJECT010/A0000007.WAV', this)">01_TRACK_v1</li> <button class="link-btn" onclick="play('PROJECT010/A0000007.WAV', event)">▶ PLAY SONG</button></ul></div>
+                <div class="info">
+                    <h3>[ PROJECT_010 ]</h3>
+                    <ul class="tracks"><li onclick="play('PROJECT010/A0000007.WAV', this)">01_TRACK_v1</li></ul>
+                    <div class="links">
+                        <button class="link-btn" onclick="play('PROJECT010/A0000007.WAV', event)">▶ PLAY</button>
+                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
+                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
+                    </div>
+                </div>
             </div>
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT008/a discussion2.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_008 ]</h3><ul class="tracks"><li onclick="play('PROJECT008/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+                <div class="info">
+                    <h3>[ PROJECT_008 ]</h3>
+                    <ul class="tracks"><li onclick="play('PROJECT008/A0000007.WAV', this)">01_TRACK_v1</li></ul>
+                    <div class="links">
+                        <button class="link-btn" onclick="play('PROJECT008/A0000007.WAV', event)">▶ PLAY</button>
+                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
+                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
+                    </div>
+                </div>
             </div>
             <div class="item" onclick="openItem(this)">
                 <div class="item-image" style="background-image: url('PROJECT003/pink cover.jpg');"></div>
-                <div class="info"><h3>[ PROJECT_003 ]</h3><ul class="tracks"><li onclick="play('PROJECT003/audio.mp3', this)">01_TRACK_v1</li></ul></div>
+                <div class="info">
+                    <h3>[ PROJECT_003 ]</h3>
+                    <ul class="tracks"><li onclick="play('PROJECT003/A0000004.WAV', this)">01_TRACK_v1</li></ul>
+                    <div class="links">
+                        <button class="link-btn" onclick="play('PROJECT003/A0000004.WAV', event)">▶ PLAY</button>
+                        <a href="https://music.apple.com/" target="_blank">🎵 APPLE</a>
+                        <a href="https://bandcamp.com/" target="_blank">🎸 BANDCAMP</a>
+                    </div>
+                </div>
             </div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div><div class="info"><h3>[ PROJECT_007 ]</h3></div></div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div><div class="info"><h3>[ PROJECT_006 ]</h3></div></div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div><div class="info"><h3>[ PROJECT_005 ]</h3></div></div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div><div class="info"><h3>[ PROJECT_004 ]</h3></div></div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div><div class="info"><h3>[ PROJECT_002 ]</h3></div></div>
-            <div class="item" onclick="openItem(this)"><div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div><div class="info"><h3>[ PROJECT_001 ]</h3></div></div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_007/settle 2 cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_007 ]</h3></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_006/ic card cover.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_006 ]</h3></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_005/yeloow cover rejects.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_005 ]</h3></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_004/project_4.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_004 ]</h3></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_002/project_2.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_002 ]</h3></div>
+            </div>
+            <div class="item" onclick="openItem(this)">
+                <div class="item-image" style="background-image: url('PROJECT_001/project_1.jpg');"></div>
+                <div class="info"><h3>[ PROJECT_001 ]</h3></div>
+            </div>
             <div class="item" style="opacity: 0.1;"><div class="info"><h3>[ PENDING ]</h3></div></div>
         </div>
     </div>
@@ -154,82 +232,5 @@
                     <tr class="past-show"><td class="date-cell">MAR 07 20</td><td>RED_SEA (MPLS)</td></tr>
                     <tr class="past-show"><td class="date-cell">JAN 15 20</td><td>7TH_ST_ENTRY (MPLS)</td></tr>
                     <tr class="past-show"><td class="date-cell">DEC 31 19</td><td>DECADE_END @ RED SEA</td></tr>
-                    <tr class="past-show"><td class="date-cell">NOV 15 19</td><td>CAYDENCE_RECORDS (STP)</td></tr>
-                    <tr class="past-show"><td class="date-cell">SEP 20 19</td><td>PALMERS_BAR (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">AUG 15 19</td><td>PART WOLF (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUN 10 19</td><td>RED_SEA (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAR 09 19</td><td>HONEY (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">JAN 12 19</td><td>RED_SEA_RESIDENCY_REBOOT</td></tr>
-                    <tr class="past-show"><td class="date-cell">NOV 20 18</td><td>NOMAD WORLD PUB</td></tr>
-                    <tr class="past-show"><td class="date-cell">SEP 05 18</td><td>ICEHOUSE (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">JUL 12 18</td><td>MEARS_PARK (STP)</td></tr>
-                    <tr class="past-show"><td class="date-cell">APR 21 18</td><td>PAISLEY_PARK (CHANHASSEN)</td></tr>
-                    <tr class="past-show"><td class="date-cell">AUG 04 17</td><td>7TH_ST_ENTRY (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAY 15 17</td><td>THE_BITTER_END (NYC)</td></tr>
-                    <tr class="past-show"><td class="date-cell">FEB 11 17</td><td>HONEY RESIDENCY START</td></tr>
-                    <tr class="past-show"><td class="date-cell">SEP 17 16</td><td>HEAVY_ROTATION_VOL.1 @ HONEY</td></tr>
-                    <tr class="past-show"><td class="date-cell">MAR 12 16</td><td>RED_SEA (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">JAN 09 16</td><td>SYSTEM_START / RED_SEA (MPLS)</td></tr>
-                    <tr class="past-show"><td class="date-cell">-- -- --</td><td>PLACEHOLDER_LOG_ENTRY</td></tr>
-                    <tr class="past-show"><td class="date-cell">-- -- --</td><td>PLACEHOLDER_LOG_ENTRY</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        let audio = null;
-        let timerInterval = null;
-
-        function switchView(e, viewName) {
-            if (e) e.stopPropagation();
-            document.body.classList.add('view-active');
-            document.body.classList.remove('view-music', 'view-merch', 'view-shows', 'view-stream');
-            document.body.classList.add('view-' + viewName);
-            window.scrollTo(0,0);
-        }
-
-        function forceReset() {
-            document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows', 'view-stream');
-            if (audio) { audio.pause(); audio = null; resetTimer(); }
-            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
-        }
-
-        function openItem(element) {
-            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        function closeAll(event) {
-            if (event.target.tagName === 'BODY' || event.target.id.includes('-section')) {
-                forceReset();
-            }
-        }
-
-        function play(src, element) {
-            if (window.event) window.event.stopPropagation();
-            if (audio) audio.pause();
-            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
-            element.classList.add('playing');
-            audio = new Audio(src);
-            audio.play();
-            resetTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            if (audio) {
-                let mins = Math.floor(audio.currentTime / 60);
-                let secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function resetTimer() { 
-            clearInterval(timerInterval); 
-            document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
-        }
-    </script>
-</body>
-</html>
+                    <tr class="past-show"><td class="date-cell">NOV 15 19</td><td>CAYDENCE_RECORDS (STP*
+
