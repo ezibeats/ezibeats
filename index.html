@@ -1,281 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZIBEATS_ARCHIVE_v08.55</title>
-    <style>
-        /* --- CORE SYSTEM --- */
-        body {
-            margin: 0; padding: 0;
-            background: #000; color: #fff;
-            font-family: 'Courier New', monospace;
-            overflow-x: hidden; min-height: 100vh;
-        }
-
-        /* --- LANDING PAGE --- */
-        #landing-page {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
-            z-index: 2000; background: #000;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-
-        body.view-active #landing-page { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
-
-        .section-panel {
-            flex: 1; width: 100%; border-bottom: 1px solid #222;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative;
-        }
-
-        .section-panel:last-child { border-bottom: none; }
-        .nav-btn { font-size: 60px; letter-spacing: 15px; color: #1a1a1a; transition: 0.4s ease; font-weight: 900; text-transform: uppercase; }
-        .section-panel:hover { background: #050505; flex: 1.4; }
-        .section-panel:hover .nav-btn { color: #ff0000; letter-spacing: 25px; text-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
-        .panel-bg-text { position: absolute; bottom: 15px; right: 20px; font-size: 9px; color: #111; letter-spacing: 2px; }
-
-        /* --- MODULE VISIBILITY --- */
-        #archive-section, #merch-section, #shows-section, #stream-section {
-            display: none; opacity: 0; flex-direction: column; align-items: center;
-            padding: 40px 20px; min-height: 100vh; position: relative; z-index: 10;
-        }
-        
-        body.view-music #archive-section { display: flex; opacity: 1; height: 100vh; overflow: hidden; justify-content: center; }
-        body.view-merch #merch-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-        body.view-shows #shows-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-        body.view-stream #stream-section { display: flex; opacity: 1; height: auto; overflow-y: auto; }
-
-        /* --- UI ELEMENTS --- */
-        .ui-header { width: 100%; max-width: 1100px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .title { font-size: 11px; letter-spacing: 5px; font-weight: bold; }
-        #timer { font-size: 11px; color: #ff0000; font-variant-numeric: tabular-nums; }
-        .reset-btn { font-size: 10px; color: #444; cursor: pointer; letter-spacing: 2px; transition: 0.3s; padding: 5px; }
-        .reset-btn:hover { color: #ff0000; }
-
-        /* --- GRID LOGIC --- */
-        .archive-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 10px; width: 100%; max-width: 1100px; 
-        }
-
-        .item { aspect-ratio: 1/1; background-color: #050505; border: 1px solid #222; cursor: pointer; position: relative; overflow: hidden; }
-        .item.active { border-color: #fff; }
-        .item-image { width: 100%; height: 100%; background-size: cover; background-position: center; position: absolute; transition: transform 0.3s ease; filter: grayscale(50%); }
-        .item:hover .item-image { transform: scale(1.05); filter: grayscale(0%); }
-
-        .info { 
-            position: absolute; inset: 0; background: rgba(0,0,0,0.95); opacity: 0; 
-            transition: 0.2s; display: flex; flex-direction: column; justify-content: center; padding: 15px; pointer-events: none; z-index: 10;
-        }
-        .item.active .info { opacity: 1; pointer-events: auto; }
-        .info h3 { font-size: 11px; margin-bottom: 10px; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        
-        .tracks { list-style: none; padding: 0; margin: 0; font-size: 9px; color: #666; letter-spacing: 1px; }
-        .tracks li { padding: 5px 0; border-bottom: 1px solid #1a1a1a; cursor: crosshair; }
-        .tracks li.playing { color: #ff0000; font-weight: bold; }
-
-        /* --- MANIFEST TABLE --- */
-        .log-container { width: 100%; max-width: 800px; border: 1px solid #111; }
-        .calendar-table { width: 100%; border-collapse: collapse; }
-        .past-show td { padding: 12px 10px; font-size: 11px; border-bottom: 1px solid #111; color: #444; }
-        .past-show:hover td { color: #fff; background: #050505; }
-        .date-cell { width: 120px; font-weight: bold; color: #600; }
-
-        @media (max-width: 800px) {
-            .archive-grid { grid-template-columns: repeat(3, 1fr); }
-            #archive-section { height: auto; overflow: visible; }
-        }
-    .show-entry { padding: 10px 12px; font-size: 11px; border-bottom: 1px solid #111; color: #444; letter-spacing: 1px; }
-.show-entry:hover { color: #fff; background: #050505; }
-.year-title { font-size: 11px; color: #ff0000; letter-spacing: 3px; padding: 10px 12px; border-bottom: 1px solid #333; margin-top: 10px; }
-.accordion-trigger { width: 100%; max-width: 800px; background: none; border: 1px solid #222; color: #444; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 3px; padding: 12px; cursor: pointer; transition: 0.3s; margin-top: 5px; text-align: left; }
-.accordion-trigger:hover { color: #ff0000; border-color: #ff0000; }
-.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-.accordion-content.open { max-height: 2000px; }
-    </style>
-    
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EZIBEATS_ARCHIVE_v08.55</title>
+<style>
+body{margin:0;padding:0;background:#000;color:#fff;font-family:'Courier New',monospace;overflow-x:hidden;min-height:100vh}
+#landing-page{position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;flex-direction:column;z-index:2000;background:#000;transition:opacity .5s ease,visibility .5s}
+body.view-active #landing-page{opacity:0;visibility:hidden;pointer-events:none;z-index:-1}
+.section-panel{flex:1;width:100%;border-bottom:1px solid #222;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all .5s cubic-bezier(.19,1,.22,1);position:relative}
+.section-panel:last-child{border-bottom:none}
+.nav-btn{font-size:60px;letter-spacing:15px;color:#1a1a1a;transition:.4s ease;font-weight:900;text-transform:uppercase}
+.section-panel:hover{background:#050505;flex:1.4}
+.section-panel:hover .nav-btn{color:#ff0000;letter-spacing:25px;text-shadow:0 0 20px rgba(255,0,0,.4)}
+.panel-bg-text{position:absolute;bottom:15px;right:20px;font-size:9px;color:#111;letter-spacing:2px}
+#archive-section,#merch-section,#shows-section,#stream-section{display:none;opacity:0;flex-direction:column;align-items:center;padding:40px 20px;min-height:100vh;position:relative;z-index:10}
+body.view-music #archive-section{display:flex;opacity:1;height:100vh;overflow:hidden;justify-content:center}
+body.view-merch #merch-section{display:flex;opacity:1;height:auto;overflow-y:auto}
+body.view-shows #shows-section{display:flex;opacity:1;height:auto;overflow-y:auto}
+body.view-stream #stream-section{display:flex;opacity:1;height:auto;overflow-y:auto}
+.ui-header{width:100%;max-width:1100px;margin-bottom:20px;border-bottom:1px solid #222;padding-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.title{font-size:11px;letter-spacing:5px;font-weight:bold}
+#timer{font-size:11px;color:#ff0000;font-variant-numeric:tabular-nums}
+.reset-btn{font-size:10px;color:#444;cursor:pointer;letter-spacing:2px;transition:.3s;padding:5px}
+.reset-btn:hover{color:#ff0000}
+.archive-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%;max-width:1100px}
+.item{aspect-ratio:1/1;background-color:#050505;border:1px solid #222;cursor:pointer;position:relative;overflow:hidden}
+.item.active{border-color:#fff}
+.item-image{width:100%;height:100%;background-size:cover;background-position:center;position:absolute;transition:transform .3s ease;filter:grayscale(50%)}
+.item:hover .item-image{transform:scale(1.05);filter:grayscale(0%)}
+.info{position:absolute;inset:0;background:rgba(0,0,0,.95);opacity:0;transition:.2s;display:flex;flex-direction:column;justify-content:center;padding:15px;pointer-events:none;z-index:10}
+.item.active .info{opacity:1;pointer-events:auto}
+.info h3{font-size:11px;margin-bottom:10px;letter-spacing:2px;border-bottom:1px solid #333;padding-bottom:5px}
+.tracks{list-style:none;padding:0;margin:0;font-size:9px;color:#666;letter-spacing:1px}
+.tracks li{padding:5px 0;border-bottom:1px solid #1a1a1a;cursor:crosshair}
+.tracks li.playing{color:#ff0000;font-weight:bold}
+.log-container{width:100%;max-width:800px;border:1px solid #111}
+.show-entry{padding:10px 12px;font-size:11px;border-bottom:1px solid #111;color:#444;letter-spacing:1px}
+.show-entry:hover{color:#fff;background:#050505}
+.year-title{font-size:11px;color:#ff0000;letter-spacing:3px;padding:10px 12px;border-bottom:1px solid #333;margin-top:10px}
+.accordion-trigger{width:100%;max-width:800px;background:none;border:1px solid #222;color:#444;font-family:'Courier New',monospace;font-size:11px;letter-spacing:3px;padding:12px;cursor:pointer;transition:.3s;margin-top:5px;text-align:left}
+.accordion-trigger:hover{color:#ff0000;border-color:#ff0000}
+.accordion-content{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.accordion-content.open{max-height:2000px}
+@media(max-width:800px){.archive-grid{grid-template-columns:repeat(3,1fr)}#archive-section{height:auto;overflow:visible}}
+</style>
 </head>
 <body onclick="closeAll(event)">
-
-    <div id="landing-page">
-        <div class="section-panel" onclick="switchView(event, 'music')">
-            <div class="nav-btn">MUSIC</div>
-            <div class="panel-bg-text">AUDIO_ARCHIVE_v08</div>
-        </div>
-        <div class="section-panel" onclick="switchView(event, 'merch')">
-            <div class="nav-btn">MERCH</div>
-            <div class="panel-bg-text">ARCHIVE_INVENTORY_1/20</div>
-        </div>
-        <div class="section-panel" onclick="switchView(event, 'shows')">
-            <div class="nav-btn">SHOWS</div>
-            <div class="panel-bg-text">PERFORMANCE_MANIFEST</div>
-        </div>
-        <div class="section-panel" onclick="switchView(event, 'stream')">
-            <div class="nav-btn">STREAM</div>
-            <div class="panel-bg-text">SESSION_RECORDS_535MB</div>
-        </div>
-    </div>
+<div id="landing-page">
+<div class="section-panel" onclick="switchView(event,'music')"><div class="nav-btn">MUSIC</div><div class="panel-bg-text">AUDIO_ARCHIVE_v08</div></div>
+<div class="section-panel" onclick="switchView(event,'merch')"><div class="nav-btn">MERCH</div><div class="panel-bg-text">ARCHIVE_INVENTORY_1/20</div></div>
+<div class="section-panel" onclick="switchView(event,'shows')"><div class="nav-btn">SHOWS</div><div class="panel-bg-text">PERFORMANCE_MANIFEST</div></div>
+<div class="section-panel" onclick="switchView(event,'stream')"><div class="nav-btn">STREAM</div><div class="panel-bg-text">SESSION_RECORDS_535MB</div></div>
+</div>
 <div id="archive-section">
-    <div class="ui-header">
-        <div class="title">EZIBEATS // AUDIO_GRID</div>
-        <div id="timer">TRACK_TIME: 00:00</div>
-        <div class="reset-btn" onclick="forceReset()">[RESET]
-        </div>
-    </div>
-    <div id="merch-section">...</div>
-<div id="shows-section">...</div>
-<div id="stream-section">...</div>
-    
-        <div class="ui-header">
-            <div class="title">EZIBEATS // PERFORMANCE_MANIFEST</div>
-            <div class="title">[ LOGGED: 71 ]</div>
-            <div class="reset-btn" onclick="forceReset()">[RESET]</div>
-        </div>
-        <div class="log-container">
-            <div class="year-title">[ CURRENT_CYCLE_2018_2020 ]</div>
-            <div class="show-entry">05.02.20 // ONLINE_SHOWCASE — ONLINE</div>
-            <div class="show-entry">04.20.20 // ONLINE_SHOWCASE_S2 — ONLINE</div>
-            <div class="show-entry">04.20.20 // RED_SEA_/_PALMERS* — MPLS</div>
-            <div class="show-entry">01.20.20 // 7TH_ST_ENTRY — MPLS</div>
-            <div class="show-entry">12.30.19 // PART_WOLF_/_NOMAD — MPLS</div>
-            <div class="show-entry">12.14.19 // HOLIDAY_BEAT_SHOWCASE — MPLS</div>
-            <div class="show-entry">11.17.19 // CAYDENCE_RECORDS — STP</div>
-            <div class="show-entry">11.14.19 // UNDERGROUND_MUSIC_CAFE — MPLS</div>
-            <div class="show-entry">10.12.19 // FALL_PRODUCER_SPOTLIGHT — MPLS</div>
-            <div class="show-entry">09.30.19 // PART_WOLF_/_NOMADS — MPLS</div>
-            <div class="show-entry">08.17.19 // SUMMER_SERIES_VOL_8 — MPLS</div>
-            <div class="show-entry">06.15.19 // SOLSTICE_HIP_HOP_SET — MPLS</div>
-            <div class="show-entry">06.06.19 // MEARS_PARK — STP</div>
-            <div class="show-entry">04.13.19 // SPRING_ROTATION — MPLS</div>
-            <div class="show-entry">02.24.19 // RED_SEA — MPLS</div>
-            <div class="show-entry">02.09.19 // WINTER_BEAT_BAR — MPLS</div>
-            <div class="show-entry">12.16.18 // RED_SEA — MPLS</div>
-            <div class="show-entry">12.12.18 // RED_SEA — MPLS</div>
-            <div class="show-entry">12.05.18 // PALMERS — MPLS</div>
-            <div class="show-entry">12.03.18 // RED_SEA — MPLS</div>
-            <div class="show-entry">11.10.18 // THE_KICKBACK — MPLS</div>
-            <div class="show-entry">11.01.18 // PALMERS — MPLS</div>
-            <div class="show-entry">09.08.18 // ARTIST_&_PRODUCER_MIXER — MPLS</div>
-            <div class="show-entry">09.06.18 // PALMERS — MPLS</div>
-            <div class="show-entry">09.02.18 // THE_RED_SEA — MPLS</div>
-            <div class="show-entry">07.24.18 // RED_SEA — MPLS</div>
-            <div class="show-entry">07.14.18 // MID_SUMMER_SESSIONS — MPLS</div>
-            <div class="show-entry">07.12.18 // RED_SEA — MPLS</div>
-            <div class="show-entry">05.22.18 // RED_SEA_/_HONEY* — MPLS</div>
-            <div class="show-entry">05.12.18 // SPRING_BLOOM_SHOWCASE — MPLS</div>
-            <div class="show-entry">03.29.18 // RED_SEA_/_HONEY* — MPLS</div>
-            <div class="show-entry">03.10.18 // HEAVY_ROTATION_VOL_6 — MPLS</div>
-            <div class="show-entry">01.20.18 // RED_SEA_/_HONEY* — MPLS</div>
-            <div class="show-entry">01.13.18 // NEW_YEAR_BEAT_SESSION — MPLS</div>
-
-            <button class="accordion-trigger" onclick="toggleAccordion('archive-2017')">[+] EXPAND_ARCHIVE_2017</button>
-            <div id="archive-2017" class="accordion-content">
-                <div class="show-entry">12.10.17 // END_OF_YEAR_SHOWCASE — MPLS</div>
-                <div class="show-entry">12.09.17 // YEAR_END_FINALE — MPLS</div>
-                <div class="show-entry">12.03.17 // RED_SEA — MPLS</div>
-                <div class="show-entry">10.14.17 // VOLUME_5 — MPLS</div>
-                <div class="show-entry">10.10.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">10.02.17 // RED_SEA — MPLS</div>
-                <div class="show-entry">09.16.17 // FALL_BEAT_BATTLE — MPLS</div>
-                <div class="show-entry">08.12.17 // SUMMER_HEAVY_ROTATION — MPLS</div>
-                <div class="show-entry">07.25.17 // RED_SEA — MPLS</div>
-                <div class="show-entry">07.20.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">07.13.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">06.27.17 // RED_SEA — MPLS</div>
-                <div class="show-entry">06.24.17 // SUMMER_SOLSTICE_MC — MPLS</div>
-                <div class="show-entry">06.10.17 // VOLUME_4 — MPLS</div>
-                <div class="show-entry">05.09.17 // HONEY — MPLS</div>
-                <div class="show-entry">04.03.17 // HONEY — MPLS</div>
-                <div class="show-entry">03.11.17 // VOLUME_3 — MPLS</div>
-                <div class="show-entry">03.06.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">02.23.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">02.20.17 // 7TH_ST_ENTRY_KPW — MPLS</div>
-                <div class="show-entry">02.13.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">02.07.17 // RED_SEA — MPLS</div>
-                <div class="show-entry">01.17.17 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">01.07.17 // RED_SEA — MPLS</div>
-            </div>
-
-            <button class="accordion-trigger" onclick="toggleAccordion('archive-2016')">[+] EXPAND_ARCHIVE_2016</button>
-            <div id="archive-2016" class="accordion-content">
-                <div class="show-entry">12.29.16 // RED_SEA — MPLS</div>
-                <div class="show-entry">12.27.16 // RED_SEA — MPLS</div>
-                <div class="show-entry">12.25.16 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">12.20.16 // RED_SEA — MPLS</div>
-                <div class="show-entry">12.19.16 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">12.16.16 // RED_SEA_/_HONEY* — MPLS</div>
-                <div class="show-entry">12.10.16 // HEAVY_ROTATION_VOL_2 — MPLS</div>
-                <div class="show-entry">12.06.16 // RED_SEA — MPLS</div>
-                <div class="show-entry">12.04.16 // HONEY — MPLS</div>
-                <div class="show-entry">11.22.16 // RED_SEA — MPLS</div>
-                <div class="show-entry">10.22.16 // HEAVY_ROTATION_VOL_2 — MPLS</div>
-                <div class="show-entry">09.17.16 // HEAVY_ROTATION_V1_LAUNCH — MPLS</div>
-                <div class="show-entry">07.15.16 // HEAVY_ROTATION_VOL_1 — MPLS</div>
-            </div>
-        </div>
-    </div>
-
-<script>
-        let audio = null;
-        let timerInterval = null;
-
-        function switchView(e, viewName) {
-            if (e) e.stopPropagation();
-            document.body.classList.add('view-active');
-            document.body.classList.remove('view-music', 'view-merch', 'view-shows', 'view-stream');
-            document.body.classList.add('view-' + viewName);
-            window.scrollTo(0,0);
-        }
-
-        function forceReset() {
-            document.body.classList.remove('view-active', 'view-music', 'view-merch', 'view-shows', 'view-stream');
-            if (audio) { audio.pause(); audio = null; resetTimer(); }
-            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
-        }
-
-        function openItem(element) {
-            document.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        function closeAll(event) {
-            if (event.target.tagName === 'BODY' || event.target.id.includes('-section')) {
-                forceReset();
-            }
-        }
-
-        function play(src, element) {
-            if (window.event) window.event.stopPropagation();
-            if (audio) audio.pause();
-            document.querySelectorAll('.tracks li').forEach(li => li.classList.remove('playing'));
-            element.classList.add('playing');
-            audio = new Audio(src);
-            audio.play();
-            resetTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            if (audio) {
-                let mins = Math.floor(audio.currentTime / 60);
-                let secs = Math.floor(audio.currentTime % 60);
-                document.getElementById('timer').innerText = `TRACK_TIME: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function resetTimer() { 
-            clearInterval(timerInterval); 
-            document.getElementById('timer').innerText = "TRACK_TIME: 00:00"; 
-        }
-    function toggleAccordion(id) {
-    document.getElementById(id).classList.toggle('open');
-}
-</script>
-</body>
-</html>
+<div class="ui-header"><div class="title">EZIBEATS // AUDIO_GRID</div><div id="timer">TRACK_TIME: 00:00</div><div class="reset-btn" onclick="forceReset()">[RESET]</div></div>
+<div class="archive-grid" onclick="event.stopPropagation()">
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT010/untitled 23.jpg')"></div><div class="info"><h3>[ PROJECT_010 ]</h3><ul class="tracks"><li onclick="play('PROJECT010/audio.mp3',this)">01_TRACK_v1</li></ul></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT008/a discussion2.jpg')"></div><div class="info"><h3>[ PROJECT_008 ]</h3><ul class="tracks"><li onclick="play('PROJECT008/audio.mp3',this)">01_TRACK_v1</li></ul></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT003/pink cover.jpg')"></div><div class="info"><h3>[ PROJECT_003 ]</h3><ul class="tracks"><li onclick="play('PROJECT003/audio.mp3',this)">01_TRACK_v1</li></ul></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_002/project_2.jpg')"></div><div class="info"><h3>[ PROJECT_002 ]</h3><ul class="tracks"><li onclick="play('PROJECT_002/Did You Remember Your Pills v1.mp3',this)">01_TRACK_v1</li></ul><div class="links"><iframe style="border:0;width:100%;height:42px;margin-top:10px" src="https://bandcamp.com/EmbeddedPlayer/album=339553395/size=small/bgcol=ffffff/linkcol=0687f5/transparent=true/" seamless></iframe></div></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_001/project_1.jpg')"></div><div class="info"><h3>[ PROJECT_001 ]</h3><ul class="tracks"><li onclick="play('PROJECT_001/track_name.mp3',this)">01_TRACK_v1</li></ul><div class="links"><iframe style="border:0;width:100%;height:42px;margin-top:10px" src="https://bandcamp.com/EmbeddedPlayer/album=1326550235/size=small/bgcol=ffffff/linkcol=0687f5/transparent=true/" seamless><a href="https://ezibeats.bandcamp.com/album/downtown-stp">downtown stp by ezibeats</a></iframe></div></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_007/settle 2 cover.jpg')"></div><div class="info"><h3>[ PROJECT_007 ]</h3></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_006/ic card cover.jpg')"></div><div class="info"><h3>[ PROJECT_006 ]</h3></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_005/yeloow cover rejects.jpg')"></div><div class="info"><h3>[ PROJECT_005 ]</h3></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_004/project_4.jpg')"></div><div class="info"><h3>[ PROJECT_004 ]</h3></div></div>
+<div class="item" onclick="openItem(this)"><div class="item-image" style="background-image:url('PROJECT_011/unnamed.jpg')"></div><div class="info"><h3>[ PROJECT_011 ]</h3></div></div>
+<div class="item" style="opacity:0.1"><div class="info"><h3>[ PENDING ]</h3></div></div>
+</div>
+</div>
